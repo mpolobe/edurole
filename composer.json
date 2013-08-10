@@ -1,0 +1,9 @@
+{
+    "require": {
+        "components/jquery": ">=1.8"
+		"adesigns/calendar-bundle": "dev-master"
+    },
+    "config": {
+        "component-dir": "js"
+    }
+}
