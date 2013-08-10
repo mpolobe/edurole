@@ -1,33 +1,31 @@
 <?php
-//error_reporting(0);
-//error_reporting(E_STRICT|E_NOTICE);
-
-$conf['conf']['debugging'] 		= FALSE;		//ACTIVATE FOR DEBUG LOG
+$conf['conf']['debugging'] 		= FALSE;					//SET TRUE FOR DEBUG LOG
 
 $conf['conf']['titlename'] 		= "EduRole Student Information System";
 $conf['conf']['domain'] 		= "edurole.com";
 $conf['conf']['mailenabled']    = TRUE;
+$conf['conf']['hash']			= "2#FCLWJEFO2j3@K#LKF";	//CHANGE THIS TO SOMETHING UNIQUE
 
 //MYSQL server information
 $conf['mysql']['server']		= "localhost";
 $conf['mysql']['user']          = "root";
-$conf['mysql']['password']		= "nox33509";
+$conf['mysql']['password']		= "PASSWORD";
 $conf['mysql']['db']			= "edurole";
 
-//LDAP server information (MULUNGUSHI UNIVERSITY TEST DATA)
+//LDAP server information (EXAMPLE UNIVERSITY TEST DATA)
 $conf['conf']['ldapenabled']    = FALSE;
 $conf['ldap']['server'] 		= "localhost";
 $conf['ldap']['port']           = "389";
-$conf['ldap']['studentou']		= "ou=students,dc=mu,dc=ac,dc=zm";
-$conf['ldap']['staffou']		= "ou=staff,dc=mu,dc=ac,dc=zm";
-$conf['ldap']['adminou']		= "ou=administrators,dc=mu,dc=ac,dc=zm";
+$conf['ldap']['studentou']		= "ou=students,dc=mulungushi,dc=ac,dc=zm";
+$conf['ldap']['staffou']		= "ou=staff,dc=mulungushi,dc=ac,dc=zm";
+$conf['ldap']['adminou']		= "ou=administrators,dc=mulungushi,dc=ac,dc=zm";
 
 //MAIL server information
 $conf['mail']['server']			= "localhost";
 $conf['mail']['port']			= "389";
 
 //Enabled templates, default is first template listed
-$conf['conf']['templates'] 		= array("edurole", "silver","opus");
+$conf['conf']['templates'] 		= array("edurole", "silver", "opus");
 
 //CSS available to the system, 0 is included on every page
 $conf['css'][0]					= '<link href="templates/%TEMPLATE%/css/style.css" rel="stylesheet" type="text/css" />';

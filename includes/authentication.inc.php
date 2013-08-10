@@ -66,9 +66,9 @@ class auth{
 	
 	private function authenticateSQL($username, $password){
 	
-		$encpassword = sha1($password);	
+		$password = sha512($password . $this->core->conf['conf']['hash'] . $username);	
 	
-		$sql = "SELECT ID FROM `access` WHERE `username` = '$username' AND `password` = '$encpassword'";
+		$sql = "SELECT ID FROM `access` WHERE `username` = '$username' AND `password` = '$password'";
 		$run = $this->core->database->doSelectQuery($sql);
                
 		if ($run->num_rows>0) { 	//successful login
@@ -86,7 +86,7 @@ class auth{
 
 	public function authorize($username, $password){
 
-		$passenc = sha1($password);
+		$passwordHashed = sha512($password . $this->core->conf['conf']['hash'] . $username);		
 	
 		if(is_numeric($username)){
 		
@@ -117,15 +117,17 @@ class auth{
 
 				$_SESSION['saobjects'] = $run->fetch_array(MYSQLI_NUM);
 		
-				if(!isset($_SESSION['access'])){	// user authenticated succesfuly but doesn't have a role assigned (old migration data)
-
-				$this->core->logEvent("Partial user in database: user $username only present in 'basic-information' table","1");
-
-				$sql = "INSERT INTO `access` (`ID`, `Username`, `RoleID`, `Password`) VALUES ('$username', '$username', '1', '$passenc');";
-				$run = $this->core->database->doSelectQuery($sql);
+				if(!isset($_SESSION['access'])){	
 				
-				$_SESSION['access'] = "1";
-			}
+					// student authenticated succesfuly but doesn't have a role assigned (old migration data from Edurole v1.1)
+	
+					$this->core->logEvent("Partial user in database: user $username only present in 'basic-information' table","1");
+	
+					$sql = "INSERT INTO `access` (`ID`, `Username`, `RoleID`, `Password`) VALUES ('$username', '$username', '10', '$passwordHashed');";
+					$run = $this->core->database->doSelectQuery($sql);
+					
+					$_SESSION['access'] = "10";
+				}
 
 			} else{
 
@@ -152,7 +154,7 @@ class auth{
 		
 			if(!isset($_SESSION['access'])){
 
-				$sql = "INSERT INTO `access` (`ID`, `Username`, `RoleID`, `Password`) VALUES (NULL, '$username', '4', '$passenc');";
+				$sql = "INSERT INTO `access` (`ID`, `Username`, `RoleID`, `Password`) VALUES (NULL, '$username', '4', '$passwordHashed');";
 				$run = $this->core->database->doSelectQuery($sql);
 
 			}
