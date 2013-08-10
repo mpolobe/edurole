@@ -1,0 +1,70 @@
+@charset "utf-8";
+.bodycontainer { 
+	width: 100%;
+	min-height: 360px;
+}
+.hl {
+	background-image: url(../images/hl.jpg);
+	background-repeat: no-repeat;
+	background-position: right;
+	height: 347px;
+	width: 50%;
+	float: left;
+	background-color: #1E3D4A;
+}
+.hr {
+	background-image: url(../images/hr.jpg);
+	background-repeat: no-repeat;
+	background-position: left;
+	height: 347px;
+	width: 50%;
+	float: left;
+	min-width: 500px;
+	background-color: #333;
+}
+.homeboxl {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	width: 370px;
+	padding-top: 115px;
+	padding-right: 80px;
+	padding-bottom: 50px;
+	padding-left: 50px;
+	float: right;
+}
+.homeboxr {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	width: 370px;
+	padding-top: 100px;
+	padding-right: 80px;
+	padding-bottom: 50px;
+	padding-left: 90px;
+	float: left;
+}
+.hr #button {
+	width: 70px;
+}
+form .login {
+	font-size: 14px;
+	font-weight:bold;
+	padding: 3px;
+	margin: 2px;
+	border:solid 1px #ccc;
+	width: 200px;
+}
+form .login:hover {
+	font-size: 14px;
+	font-weight:bold;
+	padding: 3px;
+	border:solid 2px #FFCD00;
+	color:#000;
+}
+form .login:focus {
+	font-size: 14px;
+	font-weight:bold;
+	padding: 3px;
+	border:solid 2px #FFCD00;
+	color:#000;
+	width: 200px !important;
+}
