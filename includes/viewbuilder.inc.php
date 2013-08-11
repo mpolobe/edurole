@@ -5,14 +5,14 @@ class viewBuilder{
 
 	public function __construct($core){
 		
-        $this->core = $core;
-		$this->pageSwitch($this->core->route, $this->core->role);
+                $this->core = $core;
+		$this->pageSwitch($this->core->route);
 
 	}
      
-	public function pageSwitch($route, $role){
+	public function pageSwitch($route){
 
-		$this->core->logEvent("Starting viewBuilder","3");
+		$this->core->logEvent("Starting viewBuilder for " $route ,"3");
 		
 		$route = explode('/', $route);
 		
