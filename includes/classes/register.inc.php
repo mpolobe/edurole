@@ -1,5 +1,4 @@
 <?php
-global $connection, $id, $username, $role, $clean;
 
 echo'<div class="breadcrumb"><a href=".">home</a> > <a href="admission.php">registration request</a> </div>
 <div class="contentpadfull"> ';
@@ -27,9 +26,6 @@ function password($length, $charset='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     }
     return $str;
 }
-
-$password = password(6);
-$passenc = sha1($password);
 
 // REPLACE WITH PREPARED STATEMENTS
 $sql = "INSERT INTO `basic-information` (`FirstName`, `MiddleName`, `Surname`, `Sex`, `ID`, `GovernmentID`, `DateOfBirth`, `PlaceOfBirth`, `Nationality`, `StreetName`, `PostalCode`, `Town`, `Country`, `HomePhone`, `MobilePhone`, `Disability`, `DissabilityType`, `PrivateEmail`, `MaritalStatus`, `StudyType`, `Status`) VALUES ('$firstname', '$middlename', '$surname', '$sex', NULL, '$id', '$year-$month-$day', '$pob', '$nationality', '$streetname', '$postalcode', '$town', '$country', '$homephone', '$celphone', '$dissability', '$disytype', '$email', '$mstatus', '$studytype', 'Requesting');";
@@ -130,6 +126,9 @@ if($this->core->database->doInsertQuery($sql)){
 		$this->core->database->doInsertQuery($sql);
 		$this->core->logEvent("Query executed: $sql","3");
 		
+               $password = password(6);
+               $passenc = sha512($password . $this->core->conf['conf']['hash'] . $userid);
+
 		$sql = "INSERT INTO `access` (`ID`, `Username`, `RoleID`, `Password`) VALUES ('$userid', '$userid', '1', '$passenc');";
 		$this->core->database->doInsertQuery($sql);
 		$this->core->logEvent("Query executed: $sql","3");
