@@ -53,9 +53,9 @@ class courses{
     }
 
     function editCourse($sql){
+		echo breadcrumb::generate(get_class());
 
-            echo'<div class="breadcrumb"><a href=".">home</a> > <a href="?id=schools">schools</a> > <a href="?id=studies">studies</a> > <a href="?id=courses">courses</a> > edit course</div>
-            <div class="contentpadfull">
+            echo'<div class="contentpadfull">
             <p class="title2">Edit course</p>';
 
             $run = $this->core->database->doSelectQuery($sql);
@@ -67,8 +67,9 @@ class courses{
 
     function addCourse(){
 
-            echo'<div class="breadcrumb"><a href=".">home</a> > <a href="?id=schools">schools</a> > <a href="?id=studies">studies</a> > <a href="?id=courses">courses</a> > add course</div>
-            <div class="contentpadfull">
+		echo breadcrumb::generate(get_class());
+
+            echo'<div class="contentpadfull">
             <p class="title2">Add course</p>';
 
             include"includes/forms/addcourse.form.php";
@@ -84,8 +85,9 @@ class courses{
 
     function listCourses($sql){
 
-            echo'<div class="breadcrumb"><a href=".">home</a> > <a href="?id=schools">schools</a> > <a href="?id=studies">studies</a> > courses</div>
-            <div class="contentpadfull">
+		echo breadcrumb::generate(get_class());
+
+            echo'<div class="contentpadfull">
             <p class="title2">Overview of courses</p>';
 
             $run = $this->core->database->doSelectQuery($sql);
@@ -118,9 +120,9 @@ class courses{
     }
 
     function showCourse($sql){
+		echo breadcrumb::generate(get_class());
 
-            echo'<div class="breadcrumb"><a href=".">home</a> > <a href="?id=schools">schools</a> > <a href="?id=studies">studies</a> > <a href="?id=courses">courses</a> > view course</div>
-            <div class="contentpadfull">
+            echo'<div class="contentpadfull">
             <p class="title2">View course information</p><br />';
 
             $run = $this->core->database->doSelectQuery($sql);

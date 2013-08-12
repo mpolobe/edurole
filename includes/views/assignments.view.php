@@ -23,16 +23,18 @@ class assignments{
 
         if ($this->core->cleanGet["action"]=="manage" || !isset($this->core->cleanGet["action"])  && $access > 100) { 
 
-                echo'<div class="breadcrumb"><a href=".">home</a> > <a href="?id=users">file management</a></div>
-                <div class="contentpadfull">
+		echo breadcrumb::generate(get_class());
+
+                echo'<div class="contentpadfull">
                 <p class="title2">Overview of all assignments</p> <p><b>Manage assignments for students to view</b>';
 
                 $this->manageAssignments();
 
         } elseif ($this->core->cleanGet["action"]=="overview" || !isset($this->core->cleanGet["action"]) || !isset($this->core->cleanGet["action"]) && $access >= 10 ) { 
 
-                echo'<div class="breadcrumb"><a href=".">home</a> > <a href="?id=users">file management</a></div>
-                <div class="contentpadfull">
+		echo breadcrumb::generate(get_class());
+
+                echo'<div class="contentpadfull">
                 <p class="title2">Overview of personal assignments</p> <p><b>Your assignments currently active in your courses and programmes</b>';
 
                 $this->allAssignments();

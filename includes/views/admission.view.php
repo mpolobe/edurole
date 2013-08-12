@@ -52,8 +52,9 @@ class admission{
 	}
 	
 	function admissionFlow(){
-		echo'<div class="breadcrumb"><a href=".">home</a> > admission management</div>
-		<div class="contentpadfull">
+		echo breadcrumb::generate(get_class());
+
+		echo'<div class="contentpadfull">
 		<p class="title2">Admission management</p> ';
 	
 		$this->admissionManager();
@@ -65,9 +66,10 @@ class admission{
 		$this->core->role = $_SESSION['access'];
 		$id  = $_SESSION['userid'];
 		$uid  = $this->core->cleanGet['uid'];
-	
-		echo'<div class="breadcrumb"><a href=".">home</a> > admission progress</div>
-		<div class="contentpadfull">
+
+		echo breadcrumb::generate(get_class());
+
+		echo'<div class="contentpadfull">
 		<p class="title2">Personal admission progress</p><div class="student">';
 		
 		if($this->core->role < 100){
@@ -284,10 +286,10 @@ class admission{
 		while ($fetch = $run->fetch_row()) {
 	
 			$id  = $_SESSION['userid'];
-			$firstname = $fetch[0]; 		$middlename = $fetch[1];
+			$firstname = $fetch[0]; 	$middlename = $fetch[1];
 			$surname = $fetch[2]; 		$sex = $fetch[3];
-			$studentid = $fetch[4]; 		$nrc = $fetch[5];
-			$studytype = $fetch[22];		$role = $fetch[21];	
+			$studentid = $fetch[4]; 	$nrc = $fetch[5];
+			$studytype = $fetch[22];	$role = $fetch[21];	
 			$status = $fetch[20];
 	
 			echo'<div class="studentname">'.$firstname.' '.$middlename.' '.$surname.' </div>

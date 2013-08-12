@@ -18,8 +18,9 @@ class institution {
 
         $this->core = $core;
         
-        echo'<div class="breadcrumb"><a href=".">home</a> > Institution Management</div>
-        <div class="contentpadfull">';
+	echo breadcrumb::generate(get_class());
+
+        echo'<div class="contentpadfull">';
         echo'<p class="title2">Institution wide application settings</p> <br />';
 
         $this->institutionName();

@@ -18,9 +18,7 @@ class calendar{
 
         $this->core = $core;
 
-		global $inlinejs;
-
-		$inlinejs = "<script>
+	$inlinejs = "<script>
 		$(document).ready(function() {
 	
 		var date = new Date();
@@ -61,12 +59,12 @@ class calendar{
 
 	$run = $this->core->database->doSelectQuery($sql);
 
-		while ($row = $run->fetch_row()) {
+	while ($row = $run->fetch_row()) {
 		
-			$time = date('Y, m, d, h, i', $row[2]);
-			$uid  = $i++;
+	$time = date('Y, m, d, h, i', $row[2]);
+	$uid  = $i++;
 
-			$inlinejs .= '		{
+	$inlinejs .= '		{
 			id: '.$uid.',
 			title: \''.$row[4].'\',
 			start: new Date('.$time.'),

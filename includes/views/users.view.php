@@ -66,29 +66,29 @@ class users {
 
 	function saveEdit(){
 
-		$username = $cleanPost["username"];
-		$firstname = $cleanPost["firstname"];
-		$middlename = $cleanPost["middlename"];
-		$surname = $cleanPost["surname"];
-		$sex = $cleanPost["sex"];
-		$id = $cleanPost["studentid"];
-		$day = $cleanPost["day"];
-		$month = $cleanPost["month"];
-		$year = $cleanPost["year"];
-		$pob = $cleanPost["pob"];
-		$nationality = $cleanPost["nationality"];
-		$streetname = $cleanPost["streetname"];
-		$postalcode = $cleanPost["postalcode"];
-		$town = $cleanPost["town"];
-		$country = $cleanPost["country"];
-		$homephone = $cleanPost["homephone"];
-		$celphone = $cleanPost["celphone"];
-		$dissability = $cleanPost["dissability"];
-		$mstatus = $cleanPost["mstatus"];
-		$email = $cleanPost["email"];
-		$dissabilitytype = $cleanPost["dissabilitytype"];
-		$status = $cleanPost["status"];
-		$roleid = $cleanPost["role"];
+		$username = $this->core->cleanPost["username"];
+		$firstname = $this->core->cleanPost["firstname"];
+		$middlename = $this->core->cleanPost["middlename"];
+		$surname = $this->core->cleanPost["surname"];
+		$sex = $this->core->cleanPost["sex"];
+		$id = $this->core->cleanPost["studentid"];
+		$day = $this->core->cleanPost["day"];
+		$month = $this->core->cleanPost["month"];
+		$year = $this->core->cleanPost["year"];
+		$pob = $this->core->cleanPost["pob"];
+		$nationality = $this->core->cleanPost["nationality"];
+		$streetname = $this->core->cleanPost["streetname"];
+		$postalcode = $this->core->cleanPost["postalcode"];
+		$town = $this->core->cleanPost["town"];
+		$country = $this->core->cleanPost["country"];
+		$homephone = $this->core->cleanPost["homephone"];
+		$celphone = $this->core->cleanPost["celphone"];
+		$dissability = $this->core->cleanPost["dissability"];
+		$mstatus = $this->core->cleanPost["mstatus"];
+		$email = $this->core->cleanPost["email"];
+		$dissabilitytype = $this->core->cleanPost["dissabilitytype"];
+		$status = $this->core->cleanPost["status"];
+		$roleid = $this->core->cleanPost["role"];
 
 		$sql = "UPDATE `basic-information` SET  `Sex` = '$sex', `Nationality` = '$nationality ', `StreetName` = '$streetname ', `PostalCode` = '$postalcode', `Town` = '$town', `Country` = '$country', `HomePhone` = '$homephone', `MobilePhone` = '$celphone', `Disability` = '$dissability', `DissabilityType` = '$dissabilitytype', `PrivateEmail` = '$email', `MaritalStatus` = '$mstatus', `Status` = '$status' WHERE `ID` = '$id' ";
 		$run = $this->database->doInsertQuery($sql);
