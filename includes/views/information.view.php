@@ -35,7 +35,7 @@ class information {
 
 		$pagename = "Search results";
 
-		echo breadcrumb::generate("search-results");
+		echo breadcrumb::generate(get_class());
 
 		echo'<div class="contentpadfull">
 		<p class="title2">'.$pagename.'</p> <p><b>Showing results for: '.$studentfirstname.' '.$studentlastname.'</b> </p> ';
@@ -56,9 +56,7 @@ class information {
 
 		$pagename = "Search results";
 
-		echo breadcrumb::generate("search-results");
-
-		echo'<div class="breadcrumb"><a href="?id=request-student-information">view student information</a> > search results</div>';
+		echo breadcrumb::generate(get_class());
 
 		echo'<div class="contentpadfull">
 		<p class="title2">'.$pagename.'</p> <p><b>Showing results for: '.$studentfirstname.' '.$studentlastname.'</b> </p> ';
@@ -76,8 +74,8 @@ class information {
 	}elseif($action=="personal"){
 
 		$pagename = "Personal information";
-				
-		echo'<div class="breadcrumb"><a href=".">home</a> > personal information</div>';
+
+		echo breadcrumb::generate(get_class());
 
 		echo'<div class="contentpadfull">
 		<p class="title2">'.$pagename.'</p> ';
@@ -95,8 +93,8 @@ class information {
 	}elseif(isset($uid) && is_numeric($uid)){
 
 		$pagename = "Personal information";
-			
-		echo'<div class="breadcrumb"><a href=".">home</a> > personal information</div>';
+
+		echo breadcrumb::generate(get_class());
 
 		echo'<div class="contentpadfull">
 		<p class="title2">'.$pagename.'</p> ';
@@ -331,6 +329,7 @@ class information {
 
 		$sql="SELECT * FROM `education-background` WHERE `StudentID` = '".$nrc."'";
 		$run = $this->core->database->doSelectQuery($sql);
+		$n =0;
 
 		while ($row = $run->fetch_row()) {
 	
@@ -432,8 +431,8 @@ class information {
 
             $pagename = "Edit personal information";
 
-            echo'  <div class="breadcrumb"><a href=".">home</a> > <a href="?id=view-information&action=personal">personal information</a> > edit personal information</div>';
-            echo'	<div class="contentpadfull"><p class="title2">'.$pagename.'</p> ';
+			echo breadcrumb::generate(get_class());
+			echo'	<div class="contentpadfull"><p class="title2">'.$pagename.'</p> ';
 
             while ($row = $run->fetch_row()) {
 

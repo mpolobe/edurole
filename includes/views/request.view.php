@@ -25,7 +25,7 @@ class request {
 		$study = $select->showStudies(null);
 		$program = $select->showPrograms(null, null, null);
 
-		echo'<div class="breadcrumb"><a href=".">home</a> > search student records</div>';
+		echo breadcrumb::generate(get_class());
 
 		echo'<div class="contentpadfull"><p class="title2">Search student records</p>';
 

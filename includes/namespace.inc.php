@@ -5,6 +5,7 @@ class classNamespace {
 
             include "includes/classnamespace.conf.php";
             return($namespace[$classname]);
+
     }
 
 }

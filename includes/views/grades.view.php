@@ -56,9 +56,9 @@ class grades{
     }
 
     function gradebook(){
+			echo breadcrumb::generate(get_class());
 
-            echo'<div class="breadcrumb"><a href=".">home</a> > admission progress</div>
-            <div class="contentpadfull">
+            echo'<div class="contentpadfull">
             <p class="title2">Gradebook</p>';
 
             $sql="SELECT * FROM `grades`, `courses` WHERE `grades`.StudentID = \"".$_SESSION['username']."\" AND `courses`.ID = CourseID ORDER BY Name";
@@ -105,10 +105,9 @@ class grades{
 
     function viewOwn(){
 
-            global $connection, $userid;
+		echo breadcrumb::generate(get_class());
 
-            echo'<div class="breadcrumb"><a href=".">home</a> > grade management</div>
-            <div class="contentpadfull">
+        echo'<div class="contentpadfull">
             <p class="title2">Overview of personally submitted grades</p>';
 
             $sql="SELECT * FROM `gradebook`, `courses` WHERE `courses`.ID = `gradebook`.Course AND `gradebook`.Owner = '$userid' ORDER BY `gradebook`.DateTime";
@@ -151,8 +150,9 @@ class grades{
 
     function manager(){
 
-            echo'<div class="breadcrumb"><a href=".">home</a> > grade management</div>
-            <div class="contentpadfull">
+		echo breadcrumb::generate(get_class());
+
+        echo'<div class="contentpadfull">
             <p class="title2">Grade management</p>';
 
             $sql="SELECT * FROM `gradebook`, `courses`, `basic-information` WHERE  `courses`.ID = `gradebook`.Course AND `gradebook`.Owner = `basic-information`.ID ORDER BY `gradebook`.DateTime";
@@ -247,8 +247,9 @@ class grades{
 	$program 		= $select->showPrograms(null, null, $programselected);
 	$courses 		= $select->showCourses($programselected, null);
 
-	echo'<div class="breadcrumb"><a href=".">home</a> > submit grades</div>
-	<div class="contentpadfull">
+	echo breadcrumb::generate(get_class());
+
+	echo'<div class="contentpadfull">
 	<p class="title2">Submit grades</p>';
 	
 	if(!isset($courseselected)){
@@ -285,9 +286,9 @@ class grades{
 
 
 function gradesSubmit(){
+	echo breadcrumb::generate(get_class());
 
-	echo'<div class="breadcrumb"><a href=".">home</a> > submit grades</div>
-	<div class="contentpadfull">
+	echo'<div class="contentpadfull">
 	<p class="title2">Grades submitted</p><br />';
 
 	$salt = sha1(md5(date('YmdH') . $username . $id . $role . $cleanPost['course']));

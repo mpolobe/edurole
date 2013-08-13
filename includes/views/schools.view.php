@@ -61,24 +61,25 @@ class schools{
         
     function editSchool($sql){
 
-            echo'<div class="breadcrumb"><a href=".">home</a> > schools</div>
-            <div class="contentpadfull">
-            <p class="title2">Edit school</p>';
+		echo breadcrumb::generate(get_class());
 
-            $run = $this->core->database->doSelectQuery($sql);
+		echo'<div class="contentpadfull">
+        <p class="title2">Edit school</p>';
 
-            while ($fetch = $run->fetch_row()) {
-                    include"includes/forms/editschool.form.php";
-            }
+        $run = $this->core->database->doSelectQuery($sql);
+
+        while ($fetch = $run->fetch_row()) {
+        	include"includes/forms/editschool.form.php";
+        }
     }
 
     function addSchool(){
+		echo breadcrumb::generate(get_class());
 
-            echo'<div class="breadcrumb"><a href=".">home</a> > schools</div>
-            <div class="contentpadfull">
-            <p class="title2">Add school</p>';
+        echo'<div class="contentpadfull">
+        <p class="title2">Add school</p>';
 
-            include"includes/forms/addschool.form.php";
+        include"includes/forms/addschool.form.php";
     }
 
     function deleteSchool($id){
@@ -107,8 +108,9 @@ class schools{
 
     function listSchools($sql){
 
-            echo'<div class="breadcrumb"><a href=".">home</a> > schools</div>
-            <div class="contentpadfull">
+		echo breadcrumb::generate(get_class());
+
+        echo'<div class="contentpadfull">
             <p class="title2">Overview of schools</p>';
 
             $run = $this->core->database->doSelectQuery($sql);
@@ -150,13 +152,14 @@ class schools{
 
             while ($fetch = $run->fetch_row()) {
                 
-                    if($i==0){ $bgc='class="zebra"'; $i++; } else { $bgc=''; $i--; }
+				if($i==0){ $bgc='class="zebra"'; $i++; } else { $bgc=''; $i--; }
 
-                    echo'<div class="breadcrumb"><a href=".">home</a> > schools</div>
-                    <div class="contentpadfull">
+				echo breadcrumb::generate(get_class());
+
+				echo'<div class="contentpadfull">
                     <p class="title2">'. $fetch[3] .'</p><br />';
 
-                    echo'<table width="768" border="0" cellpadding="5" cellspacing="0">
+				echo'<table width="768" border="0" cellpadding="5" cellspacing="0">
                   <tr>
                     <td width="205" height="28" bgcolor="#EEEEEE"><strong>Information</strong></td>
                     <td width="200" bgcolor="#EEEEEE"></td>

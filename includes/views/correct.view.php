@@ -17,9 +17,10 @@ class correct(){
     public function buildView($core){
 	
 		$this->core = $core;
-		
-		echo'<div class="breadcrumb"><a href=".">home</a> > incorrect student numbers</div>
-		<div class="contentpadfull">
+
+		echo breadcrumb::generate(get_class());
+
+		echo'<div class="contentpadfull">
 		<p class="title2">List of incorrectly imported student number</p>';
 
 		$sql="SELECT * FROM `basic-information` WHERE `basic-information`.ID < 20000000  OR `basic-information`.ID > 2010222117";

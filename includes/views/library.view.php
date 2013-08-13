@@ -21,18 +21,18 @@ class library (){
 		include"includes/functions/files.inc.php";
 
 
-		if ($this->core->cleanGet["action"]=="manage" || !isset($this->core->cleanGet["action"])  && $access > 100) { 
+		if ($this->core->cleanGet["action"]=="manage" || !isset($this->core->cleanGet["action"])  && $access > 100) {
+			echo breadcrumb::generate(get_class());
 
-			echo'<div class="breadcrumb"><a href=".">home</a> > <a href="?id=users">library management</a></div>
-			<div class="contentpadfull">
+			echo'<div class="contentpadfull">
 			<p class="title2">Overview of all assignments</p> <p><b>Manage assignments for students to view</b>';
 
 			manageBooks();
 
-		} elseif ($this->core->cleanGet["action"]=="overview" || !isset($this->core->cleanGet["action"]) || !isset($this->core->cleanGet["action"]) && $access >= 10 ) { 
+		} elseif ($this->core->cleanGet["action"]=="overview" || !isset($this->core->cleanGet["action"]) || !isset($this->core->cleanGet["action"]) && $access >= 10 ) {
+			echo breadcrumb::generate(get_class());
 
-			echo'<div class="breadcrumb"><a href=".">home</a> > <a href="?id=users">books on loan</a></div>
-			<div class="contentpadfull">
+			echo'<div class="contentpadfull">
 			<p class="title2">Overview of personal assignments</p> <p><b>View your books on loan from the library</b>';
 
 			viewLoans();

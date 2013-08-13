@@ -67,9 +67,9 @@ class studies {
 	}
 
 	function editStudy($sql){
-		
-		echo'<div class="breadcrumb"><a href=".">home</a> > <a href="?id=schools">schools</a> > <a href="?id=studies">studies</a> > study information</div>
-		<div class="contentpadfull">
+		echo breadcrumb::generate(get_class());
+
+		echo'<div class="contentpadfull">
 		<p class="title2">Edit study</p>';
 		
 		$run = $this->database->doInsertQuery($sql);
@@ -80,9 +80,9 @@ class studies {
 	}
 		
 	function addStudy(){
-		
-		echo'<div class="breadcrumb"><a href=".">home</a> > <a href="?id=schools">schools</a> > <a href="?id=studies">studies</a> > add study</div>
-		<div class="contentpadfull">
+		echo breadcrumb::generate(get_class());
+
+		echo'<div class="contentpadfull">
 		<p class="title2">Add study</p>';
 		
 		include"includes/forms/addstudy.form.php";
@@ -120,9 +120,9 @@ class studies {
 	}
 		
 	public function listStudies($sql){
-		
-		echo'<div class="breadcrumb"><a href=".">home</a> > <a href="?id=schools">schools</a> > studies</div>
-		<div class="contentpadfull">
+		echo breadcrumb::generate(get_class());
+
+		echo'<div class="contentpadfull">
 		<p class="title2">Overview of studies</p>';
 			
 
@@ -155,19 +155,19 @@ class studies {
 		
 		
 	function showStudy($sql){
-		
-			echo'<div class="breadcrumb"><a href=".">home</a> > <a href="?id=schools">schools</a> > <a href="?id=studies">studies</a> > study information</div>
-			<div class="contentpadfull">
-			<p class="title2">Study information</p><br />';
-		
-			$run = $this->core->database->doSelectQuery($sql);
+		echo breadcrumb::generate(get_class());
 
-			while ($fetch = $run->fetch_row()) {
-
-				if($i==0){ $bgc='class="zebra"'; $i++; } else { $bgc=''; $i--; }
+		echo'<div class="contentpadfull">
+		<p class="title2">Study information</p><br />';
 		
-				$method = $fetch[4];
-				echo'<table width="768" border="0" cellpadding="5" cellspacing="0">
+		$run = $this->core->database->doSelectQuery($sql);
+
+		while ($fetch = $run->fetch_row()) {
+
+			if($i==0){ $bgc='class="zebra"'; $i++; } else { $bgc=''; $i--; }
+		
+			$method = $fetch[4];
+			echo'<table width="768" border="0" cellpadding="5" cellspacing="0">
 					 <tr>
 						<td width="205" height="28" bgcolor="#EEEEEE"><strong>Information</strong></td>
 						<td width="200" bgcolor="#EEEEEE"></td>
@@ -191,8 +191,8 @@ class studies {
 				<option value="0" >-choose-</option>
 				<option value="1" '; if($method=="1"){ echo'selected="selected"'; } echo'>Regular programme</option>
 				<option value="2" '; if($method=="2"){ echo'selected="selected"'; } echo'>Parallel programme</option>
-			<option value="3" '; if($method=="3"){ echo'selected="selected"'; } echo'>Distance learning</option>
-			<option value="4" '; if($method=="4"){ echo'selected="selected"'; } echo'>Various forms</option>
+				<option value="3" '; if($method=="3"){ echo'selected="selected"'; } echo'>Distance learning</option>
+				<option value="4" '; if($method=="4"){ echo'selected="selected"'; } echo'>Various forms</option>
 		
 			</select></td><td></td></tr>
 		

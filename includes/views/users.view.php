@@ -23,7 +23,7 @@ class users {
 
 		if($action=="add" && $this->core->role >= 100){
 
-			echo'<div class="breadcrumb"><a href=".">home</a> > <a href="?id=users">user management</a> > add user</div>';
+			echo breadcrumb::generate(get_class());
 
 			echo'<div class="contentpadfull">
 			<p class="title2">Add user account</p> <p><b>Please provide the needed information to create a new user account</b>';
@@ -32,7 +32,7 @@ class users {
 
 		} elseif($action=="save" && $this->core->role >= 100){
 
-			echo'<div class="breadcrumb"><a href=".">home</a> > <a href="?id=users">user management</a> > add user</div>';
+			echo breadcrumb::generate(get_class());
 
 			echo'<div class="contentpadfull">
 			<p class="title2">Add user account</p> <p>';
@@ -105,7 +105,7 @@ class users {
 
 	function showUserList(){
 
-		echo'<div class="breadcrumb"><a href=".">home</a> > user management</div>';
+		echo breadcrumb::generate(get_class());
 
 		echo'<div class="contentpadfull">
 		<p class="title2">User management</p> <p><b>Overview of all users with privileges higher than student</b>  |  <b><a href="?id=users&action=add">Create user account</a></b></p>';
@@ -150,8 +150,8 @@ class users {
 	}
 		
 	function showStudentList(){
-			
-		echo'<div class="breadcrumb"><a href=".">home</a> > student management</div>';
+
+		echo breadcrumb::generate(get_class());
 
 		echo'<div class="contentpadfull">
 		<p class="title2">User management</p> <p><b>Overview of all students currently enrolled</b> </b></p>';

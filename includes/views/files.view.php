@@ -74,18 +74,18 @@ class filemanager{
     }
 
     function viewPersonalFiles($path){
+		echo breadcrumb::generate(get_class());
 
-		echo'<div class="breadcrumb"><a href=".">home</a> > <a href="?id=files">file management</a> > upload file</div>
-		<div class="contentpadfull">
+		echo'<div class="contentpadfull">
 		<p class="title2">Overview of personal files</p> <p><b>This directory lists your personal files <img src="templates/edurole/images/up.png"/> <a href="?id=files&action=upload&op='.$current.'">upload a file</a> or <img src="templates/edurole/images/dd.gif"/> <a href="?id=files&action=new&op='.$current.'">create an empty file</a> or <img src="templates/edurole/images/new.gif"/> <a href="?id=files&action=newdir&op='.$current.'">new directory</a></b>';
 
 		overview($path);
     }
 
     function upload(){
+		echo breadcrumb::generate(get_class());
 
-		echo'<div class="breadcrumb"><a href=".">home</a> > <a href="?id=files">file management</a></div>
-		<div class="contentpadfull">
+		echo'<div class="contentpadfull">
 		<p class="title2">Upload a file</p> <p><b>Please note that executables must be compressed and the maximum file size is 50MB</b>
 	
 		<div class="heading">File upload</div>
@@ -127,8 +127,9 @@ class filemanager{
 	}
 
     function newFileForm(){
-        echo'<div class="breadcrumb"><a href=".">home</a> > <a href="?id=files">file management</a> > new file</div>
-        <div class="contentpadfull">
+		echo breadcrumb::generate(get_class());
+
+        echo'<div class="contentpadfull">
         <p class="title2">New file</p> <p><b>Please enter a name for the new file to create it in the current working directory</b>
     
         <div class="heading">New file</div>

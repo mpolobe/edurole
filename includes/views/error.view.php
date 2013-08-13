@@ -18,8 +18,11 @@ class error(){
 	
 		$this->core = $core;
 		
-		echo'<div class="menucontainer"></div><div class="breadcrumb"><a href=".">home</a> > error</div>
-		<div class="contentpadfull">
+		echo'<div class="menucontainer">';
+
+		echo breadcrumb::generate(get_class());
+
+		echo'<div class="contentpadfull">
 		<p class="title2">'.$pagename.'</p>
 		<div class="errorpopup">'.$error.'</div>
 		</div>';

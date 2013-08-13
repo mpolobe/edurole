@@ -20,8 +20,9 @@ class help {
 
 		include "includes/views/item.view.php";
 
-		echo'<div class="breadcrumb"><a href=".">home</a> > welcome</div>
-		<div class="contentpadfull">';
+		echo breadcrumb::generate(get_class());
+
+		echo'<div class="contentpadfull">';
 
 		function globalstatistics(){
 
