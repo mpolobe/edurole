@@ -1,9 +1,10 @@
 <?php
-class breadcrumb {
+class components {
 
-	public static function generate($classname) {
+	public static function generateBreadcrumb($classname, $functionname) {
 
 		$pathArray = classNamespace::getNamespace($classname);
+		$crumb = "";
 
 		foreach ($pathArray['executionpath'] as $class => $name) {
 
@@ -26,6 +27,13 @@ class breadcrumb {
 		return ($completecrumb);
 	}
 
-}
+	public static function generateTitle($title, $description) {
+		$title = '<div class="contentpadfull">' .
+			'<p class="title">' . $title . '</p>' .
+			'<p><b>' . $description . '</b> </b></p>';
 
+		return ($title);
+	}
+
+}
 ?>

@@ -3,7 +3,7 @@ include "includes/functions/showoptions.inc.php";
 
 $select = showUsers("100", null);
 
-echo'<form id="addschool" name="addschool" method="post" action="?id=schools&action=save">
+echo '<form id="addschool" name="addschool" method="post" action="?id=schools&action=save">
 	<p>Please enter the following information</p>
 	<table width="768" border="0" cellpadding="5" cellspacing="0">
               <tr>
@@ -21,7 +21,7 @@ echo'<form id="addschool" name="addschool" method="post" action="?id=schools&act
                 <td><strong>Dean/Rector of school</strong></td>
                 <td>
                   <select name="dean" id="dean">
-			'. $select .'
+			' . $select . '
                   </select></td>
                 <td>Functional head of school</td>
               </tr>
@@ -38,6 +38,6 @@ echo'<form id="addschool" name="addschool" method="post" action="?id=schools&act
 	  <input type="submit" class="submit" name="submit" id="submit" value="Create school" />
         <p>&nbsp;</p>
 
-      </form>'; 
+      </form>';
 
 ?>

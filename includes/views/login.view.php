@@ -1,26 +1,27 @@
-<?php	
-class login{
+<?php
+class login {
 
-    public $core;
+	public $core;
 	public $view;
-	
-	public function configView(){
-		$this->view->header		= TRUE;
-		$this->view->footer		= TRUE;
+
+	public function configView() {
+		$this->view->header = TRUE;
+		$this->view->footer = TRUE;
 		$this->view->javascript = array(3);
-		$this->view->css 		= array(4,6);
-		
+		$this->view->css = array(4, 6);
+
 		return $this->view;
 	}
-	
+
 	public function buildView($core) {
 
 		$this->core = $core;
-		
-		$this->core->logEvent("Initializing login view","3");
+
+		$this->core->logEvent("Initializing login view", "3");
 
 		include "includes/forms/login.form.php";
-		
+
 	}
 }
+
 ?>

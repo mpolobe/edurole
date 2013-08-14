@@ -1,24 +1,24 @@
-<?php 
-class password{
+<?php
+class password {
 
-    public $core;
+	public $core;
 	public $view;
-	
-	public function configView(){
-		$this->view->header		= TRUE;
-		$this->view->footer		= TRUE;
-		$this->view->menu		= FALSE;
+
+	public function configView() {
+		$this->view->header = TRUE;
+		$this->view->footer = TRUE;
+		$this->view->menu = FALSE;
 		$this->view->javascript = array(3);
-		$this->view->css 		= array(4);
-		
+		$this->view->css = array(4);
+
 		return $this->view;
 	}
-        
-    public function buildView($core){
 
-        $this->core = $core;	
+	public function buildView($core) {
 
-		echo'<div class="menucontainer">
+		$this->core = $core;
+
+		echo '<div class="menucontainer">
 		<div class="menubar">
 		<div class="menuhdr"><strong>Home menu</strong></div>
 		<div class="menu">
@@ -28,15 +28,17 @@ class password{
 		<a href="password">Recover lost password</a>
 		</div>
 		</div>
-		</div>'; 
+		</div>';
 
-		echo breadcrumb::generate(get_class());
+		$function = __FUNCTION__;
+		echo breadcrumb::generate(get_class(), $function);
 
-		echo'<div class="contentpadfull">
+		echo '<div class="contentpadfull">
 		<p class="title2">Recover password</p> ';
 
-		include"includes/forms/changepassword.form.php";
+		include "includes/forms/changepassword.form.php";
 
 	}
 }
+
 ?>

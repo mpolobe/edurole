@@ -1,17 +1,17 @@
 <?php
-function mailcount(){
-    
+function mailcount() {
+
 	global $conf;
 
 	imap_timeout(IMAP_READTIMEOUT, 1);
 	imap_timeout(IMAP_OPENTIMEOUT, 1);
-	$mbox = @imap_open("{".$conf['mail']['server'].":143/novalidate-cert}", $_SESSION['username'], $_SESSION['password'], OP_HALFOPEN);
+	$mbox = @imap_open("{" . $conf['mail']['server'] . ":143/novalidate-cert}", $_SESSION['username'], $_SESSION['password'], OP_HALFOPEN);
 
-	if(!$mbox){
+	if (!$mbox) {
 		return;
 	}
 
-	$status = @imap_status($mbox, "{".$conf['mail']['server']."}INBOX", SA_ALL);
+	$status = @imap_status($mbox, "{" . $conf['mail']['server'] . "}INBOX", SA_ALL);
 
 	if ($status) {
 		$out = $status->unseen;
@@ -19,7 +19,8 @@ function mailcount(){
 
 	@imap_close($mbox);
 
-	return($out);
+	return ($out);
 
 }
+
 ?>

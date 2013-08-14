@@ -4,7 +4,7 @@ include "includes/functions/showoptions.inc.php";
 $select = showUsers("100", null);
 
 
-echo'<script type="text/javascript">
+echo '<script type="text/javascript">
 	Aloha.ready( function() {
 		var $ = Aloha.jQuery;
 		$(\'.editable\').aloha();
@@ -29,7 +29,7 @@ echo'<script type="text/javascript">
                 <td><strong>Dean/Rector of school</strong></td>
                 <td>
                   <select name="dean" id="dean">
-			'. $select .'
+			' . $select . '
                   </select></td>
                 <td>Functional head of school</td>
               </tr>

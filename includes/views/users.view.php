@@ -1,70 +1,72 @@
 <?php
 class users {
 
-    public $core;
+	public $core;
 	public $view;
-	
-	public function configView(){
-		$this->view->header		= TRUE;
-		$this->view->footer		= TRUE;
-		$this->view->menu		= FALSE;
+
+	public function configView() {
+		$this->view->header = TRUE;
+		$this->view->footer = TRUE;
+		$this->view->menu = FALSE;
 		$this->view->javascript = array(3);
-		$this->view->css 		= array(4);
-		
+		$this->view->css = array(4);
+
 		return $this->view;
 	}
-        
-    public function buildView($core){
 
-        $this->core = $core;
+	public function buildView($core) {
+
+		$this->core = $core;
 
 		$uid = $this->core->cleanGet['uid'];
 		$action = $this->core->cleanGet['action'];
 
-		if($action=="add" && $this->core->role >= 100){
+		if ($action == "add" && $this->core->role >= 100) {
 
-			echo breadcrumb::generate(get_class());
+			$function = __FUNCTION__;
+			echo breadcrumb::generate(get_class(), $function);
 
-			echo'<div class="contentpadfull">
+			echo '<div class="contentpadfull">
 			<p class="title2">Add user account</p> <p><b>Please provide the needed information to create a new user account</b>';
 
-			include"includes/forms/adduser.form.php";
+			include "includes/forms/adduser.form.php";
 
-		} elseif($action=="save" && $this->core->role >= 100){
+		} elseif ($action == "save" && $this->core->role >= 100) {
 
-			echo breadcrumb::generate(get_class());
+			$function = __FUNCTION__;
+			echo breadcrumb::generate(get_class(), $function);
 
-			echo'<div class="contentpadfull">
+			echo '<div class="contentpadfull">
 			<p class="title2">Add user account</p> <p>';
 
-			include"includes/classes/adduser.inc.php";
+			include "includes/classes/adduser.inc.php";
 			$this->addUser();
 
-		} elseif($action=="delete" && isset($uid) && $access >= 100){
+		} elseif ($action == "delete" && isset($uid) && $core->role >= 100) {
 
 			$this->deleteUser($uid);
 			$this->showUserList();
 
-			echo'<script>
+			echo '<script>
 				alert("The account has been deleted");
 			</script>';
 
-		} else if($this->core->role >= 100 & $action=="students"){
+		} else if ($this->core->role >= 100 & $action == "students") {
 
 			$this->showStudentList();
 
-		} else if($action == "saveedit"){
+		} else if ($action == "saveedit") {
 
 			$this->saveEdit();
 
-		} else if($access >= 100){
-	
+		} else if ($core->role >= 100) {
+
 			$this->showUserList();
-		}	
+		}
 
 	}
 
-	function saveEdit(){
+	function saveEdit() {
 
 		$username = $this->core->cleanPost["username"];
 		$firstname = $this->core->cleanPost["firstname"];
@@ -98,19 +100,21 @@ class users {
 
 		showUserList();
 
-		echo'<script>
+		echo '<script>
 			alert("The account has been updated");
 		</script>';
 	}
 
-	function showUserList(){
+	function showUserList() {
 
-		echo breadcrumb::generate(get_class());
+		$function = __FUNCTION__;
+		$title = 'User management';
+		$description = 'Overview of all users with privileges higher than student';
 
-		echo'<div class="contentpadfull">
-		<p class="title2">User management</p> <p><b>Overview of all users with privileges higher than student</b>  |  <b><a href="?id=users&action=add">Create user account</a></b></p>';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
-		echo'<table width="768" height="" border="0" cellpadding="3" cellspacing="0">
+		echo '<table width="768" height="" border="0" cellpadding="3" cellspacing="0">
 		<tr class="tableheader">
 		<td></td>
 		<td><b> Student Name</b></td>
@@ -124,39 +128,41 @@ class users {
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($row = $run->fetch_row()) {
-		
-			$firstname 	= $row[0]; 
-			$middlename 	= $row[1];
-			$surname 	= $row[2];
-			$sex 		= $row[3];
-			$uid 		= $row[4];
-			$nrc 		= $row[5];
-			$role 		= $row[26];			
-			$status 	= $row[20];
-	
-		  	echo'<tr>
+
+			$firstname = $row[0];
+			$middlename = $row[1];
+			$surname = $row[2];
+			$sex = $row[3];
+			$uid = $row[4];
+			$nrc = $row[5];
+			$role = $row[26];
+			$status = $row[20];
+
+			echo '<tr>
 			<td><img src="templates/default/images/bullet_user.png"></td>
-			<td><a href="?id=view-information&uid='.$uid.'"><b>'.$firstname.' '.$middlename.' '.$surname.'</b></a></td>
-			<td><i>'.$role.'</i></td>
-				<td>'.$uid.'</td>
-				<td>'.$status.'</td>
-				<td><a href="?id=view-information&action=edit&uid='.$uid.'"><img src="templates/default/images/edi.png"> edit</a>  <a href="?id=users&action=delete&uid='.$uid.'" onclick="return confirm(\'Are you sure?\')"><img src="templates/default/images/del.png"> delete</a></td>
-			  	</tr>'; 
-				
+			<td><a href="?id=view-information&uid=' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
+			<td><i>' . $role . '</i></td>
+				<td>' . $uid . '</td>
+				<td>' . $status . '</td>
+				<td><a href="?id=view-information&action=edit&uid=' . $uid . '"><img src="templates/default/images/edi.png"> edit</a>  <a href="?id=users&action=delete&uid=' . $uid . '" onclick="return confirm(\'Are you sure?\')"><img src="templates/default/images/del.png"> delete</a></td>
+			  	</tr>';
+
 		}
-		
-		echo'</table>';
+
+		echo '</table>';
 
 	}
-		
-	function showStudentList(){
 
-		echo breadcrumb::generate(get_class());
+	function showStudentList() {
 
-		echo'<div class="contentpadfull">
-		<p class="title2">User management</p> <p><b>Overview of all students currently enrolled</b> </b></p>';
+		$function = __FUNCTION__;
+		$title = 'User management';
+		$description = 'Overview of all students currently enrolled';
 
-		echo'<table width="768" height="" border="0" cellpadding="3" cellspacing="0">
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
+
+		echo '<table width="768" height="" border="0" cellpadding="3" cellspacing="0">
 		<tr class="tableheader">
 		<td></td>
 		<td><b> Student Name</b></td>
@@ -164,45 +170,46 @@ class users {
 		<td><b> Status</b></td>		
 		<td><b> Options</b></td>
 		</tr>';
-	
-		$sql ="SELECT * FROM `basic-information`, `access`, `roles` WHERE `access`.`ID` = `basic-information`.`ID` AND `access`.`RoleID` = `roles`.`ID` AND `access`.`RoleID` = 10 ORDER BY Surname";
+
+		$sql = "SELECT * FROM `basic-information`, `access`, `roles` WHERE `access`.`ID` = `basic-information`.`ID` AND `access`.`RoleID` = `roles`.`ID` AND `access`.`RoleID` = 10 ORDER BY Surname";
 		$run = $this->core->database->doSelectQuery($sql);
-	
+
 		while ($row = $run->fetch_row()) {
-	
-			$firstname 	= $row[0]; 
-			$middlename 	= $row[1];
-			$surname 	= $row[2];
-			$sex 		= $row[3];
-			$uid 		= $row[4];
-			$nrc 		= $row[5];
-			$status 	= $row[20];
 
-			echo'<tr>
+			$firstname = $row[0];
+			$middlename = $row[1];
+			$surname = $row[2];
+			$sex = $row[3];
+			$uid = $row[4];
+			$nrc = $row[5];
+			$status = $row[20];
+
+			echo '<tr>
 			<td><img src="templates/default/images/bullet_user.png"></td>
-			<td><a href="?id=view-information&uid='.$uid.'"><b>'.$firstname.' '.$middlename.' '.$surname.'</b></a></td>
+			<td><a href="?id=view-information&uid=' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
 
-			<td>'.$uid.'</td>
-			<td>'.$status.'</td>
-			<td><a href="?id=view-information&action=edit&uid='.$uid.'"><img src="templates/default/images/edi.png"> edit</a>  <a href="?id=users&action=delete&uid='.$uid.'" onclick="return confirm(\'Are you sure?\')"><img src="templates/default/images/del.png"> delete</a></td>
-		  	</tr>'; 
+			<td>' . $uid . '</td>
+			<td>' . $status . '</td>
+			<td><a href="?id=view-information&action=edit&uid=' . $uid . '"><img src="templates/default/images/edi.png"> edit</a>  <a href="?id=users&action=delete&uid=' . $uid . '" onclick="return confirm(\'Are you sure?\')"><img src="templates/default/images/del.png"> delete</a></td>
+		  	</tr>';
 
 		}
 
-		echo'</table>';
+		echo '</table>';
 
 	}
-	
-	function deleteUser($id){
-	
+
+	function deleteUser($id) {
+
 		$sql = 'START TRANSACTION; 
-			DELETE FROM `basic-information`  WHERE `ID` = "'.$id.'"; 
-			DELETE FROM `access`  WHERE `ID` = "'.$id.'"; 
+			DELETE FROM `basic-information`  WHERE `ID` = "' . $id . '";
+			DELETE FROM `access`  WHERE `ID` = "' . $id . '";
 			COMMIT;';
-	
+
 		$run = $this->database->mysqli->doInsertQuery($sql);
-	
+
 	}
 
 }
+
 ?>

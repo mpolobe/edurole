@@ -1,24 +1,24 @@
 <?php
-class calendar{
+class calendar {
 
-    public $core;
+	public $core;
 	public $view;
-	
-	public function configView(){
-		$this->view->header		= TRUE;
-		$this->view->footer		= TRUE;
-		$this->view->menu		= FALSE;
-		$this->view->javascript = array(2,3,9);
-		$this->view->css 		= array(4,1,2);
-		
+
+	public function configView() {
+		$this->view->header = TRUE;
+		$this->view->footer = TRUE;
+		$this->view->menu = FALSE;
+		$this->view->javascript = array(2, 3, 9);
+		$this->view->css = array(4, 1, 2);
+
 		return $this->view;
 	}
-        
-    public function buildView($core){
 
-        $this->core = $core;
+	public function buildView($core) {
 
-	$inlinejs = "<script>
+		$this->core = $core;
+
+		$inlinejs = "<script>
 		$(document).ready(function() {
 	
 		var date = new Date();
@@ -54,41 +54,42 @@ class calendar{
 			events: [ \n";
 
 
-	$i=1;
-	$sql  = "SELECT * FROM `calendar`";
+		$i = 1;
+		$sql = "SELECT * FROM `calendar`";
 
-	$run = $this->core->database->doSelectQuery($sql);
+		$run = $this->core->database->doSelectQuery($sql);
 
-	while ($row = $run->fetch_row()) {
-		
-	$time = date('Y, m, d, h, i', $row[2]);
-	$uid  = $i++;
+		while ($row = $run->fetch_row()) {
 
-	$inlinejs .= '		{
-			id: '.$uid.',
-			title: \''.$row[4].'\',
-			start: new Date('.$time.'),
+			$time = date('Y, m, d, h, i', $row[2]);
+			$uid = $i++;
+
+			$inlinejs .= '		{
+			id: ' . $uid . ',
+			title: \'' . $row[4] . '\',
+			start: new Date(' . $time . '),
 			allDay: false
 			}';
 
-		$inlinejs .=",\n";
-	}
+			$inlinejs .= ",\n";
+		}
 
-	$inlinejs .= "		]
+		$inlinejs .= "		]
 		});
 		
 	});
 		
-	</script>"; 
+	</script>";
 
-	echo $inlinejs; 
+		echo $inlinejs;
 
-	echo breadcrumb::generate(get_class());
+		$function = __FUNCTION__;
+		echo breadcrumb::generate(get_class(), $function);
 
-	echo'<div class="contentpadfull">
-	<p class="title2">Personal study roster</p><br />
-	<div id="calendar"></div>';
+
+	echo'<div id="calendar"></div>';
 
 	}
 }
+
 ?>
