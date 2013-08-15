@@ -60,12 +60,12 @@ class schools {
 	}
 
 	function editSchool($sql) {
-
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'Edit School';
+		$description = 'Remember to save any changes you make';
 
-		echo '<div class="contentpadfull">
-        <p class="title2">Edit school</p>';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		$run = $this->core->database->doSelectQuery($sql);
 
@@ -76,10 +76,11 @@ class schools {
 
 	function addSchool() {
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'Add School';
+		$description = 'Use the following form to create new schools';
 
-		echo '<div class="contentpadfull">
-        <p class="title2">Add school</p>';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		include "includes/forms/addschool.form.php";
 	}
@@ -109,12 +110,12 @@ class schools {
 	}
 
 	function listSchools($sql) {
-
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'Overview of schools';
+		$description = 'The following schools currently exist in the system';
 
-		echo '<div class="contentpadfull">
-            <p class="title2">Overview of schools</p>';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		$run = $this->core->database->doSelectQuery($sql);
 
@@ -170,10 +171,11 @@ class schools {
 			}
 
 			$function = __FUNCTION__;
-			echo breadcrumb::generate(get_class(), $function);
+			$title = ' . $fetch[3] . ';
+			$description = 'The following attributes are saved in the school profile';
 
-			echo '<div class="contentpadfull">
-                    <p class="title2">' . $fetch[3] . '</p><br />';
+			echo component::generateBreadcrumb(get_class(), $function);
+			echo component::generateTitle($title, $description);
 
 			echo '<table width="768" border="0" cellpadding="5" cellspacing="0">
                   <tr>

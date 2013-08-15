@@ -53,10 +53,11 @@ class admission {
 
 	function admissionFlow() {
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'Admission management';
+		$description = 'Overview of all users with privileges higher than student';
 
-		echo '<div class="contentpadfull">
-		<p class="title2">Admission management</p> ';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		$this->admissionManager();
 		$this->admissionManagerDenied();
@@ -64,15 +65,15 @@ class admission {
 
 	function admissionProfile() {
 
-		$this->core->role = $_SESSION['access'];
 		$id = $_SESSION['userid'];
 		$uid = $this->core->cleanGet['uid'];
 
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'Personal admission progress';
+		$description = 'Overview of all users with privileges higher than student';
 
-		echo '<div class="contentpadfull">
-		<p class="title2">Personal admission progress</p><div class="student">';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		if ($this->core->role < 100) {
 			$sql = "SELECT * FROM `basic-information` as bi, `roles` as rl, `access` as ac WHERE ac.`ID` = '" . $id . "' AND ac.`ID` = bi.`ID` AND ac.`RoleID` = rl.`ID`";

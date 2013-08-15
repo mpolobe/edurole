@@ -31,11 +31,11 @@ class info {
 	</div>';
 
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'Overview of studies';
+		$description = 'Overview of all studies.';
 
-		echo '<div class="contentpadfull">
-	<p class="title2">Overview of studies</p>
-        <p><b>Overview of all studies.  </b>  </p>';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		$this->core->throwSuccess("PLEASE OBSERVE THE START AND END DATE FOR THE ONLINE INTAKE, ONLINE REGISTRATION WILL BE POSSIBLE BETWEEN THESE DATES ONLY.");
 

@@ -26,9 +26,11 @@ class request {
 		$program = $select->showPrograms(null, null, null);
 
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'Search student records';
+		$description = 'Please use the form below to search through the student information database';
 
-		echo '<div class="contentpadfull"><p class="title2">Search student records</p>';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		if ($this->core->role > 100) {
 			echo '<p>You can search for a single record or a group by utilizing the various search categories.</p>

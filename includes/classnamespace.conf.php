@@ -1,6 +1,6 @@
 <?php
 
-/* TODO: CREATE NAMESPACE FOR ALL VIEWS
+/* TODO: MOVE TO DATABASE LIKE MENUBUILDER
 Namespace variables for use in breadcrumbs and pagetitles 
 Migrated from local in-class variables
 */

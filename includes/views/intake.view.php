@@ -15,11 +15,7 @@ class intake {
 	}
 
 	public function buildView($core) {
-
 		$this->core = $core;
-
-		global $nomen;
-		$pagename = "Studies open for intake";
 
 		if ($nomen == FALSE) {
 
@@ -38,10 +34,11 @@ class intake {
 		}
 
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'Studies open for intake';
+		$description = 'The following studies are currently open for intake';
 
-		echo '<div class="contentpadfull">
-		<h1>' . $pagename . '</h1> ';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		if ($this->core->cleanGet['action'] == "view") {
 			$item = $this->core->cleanGet['item'];

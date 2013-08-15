@@ -87,7 +87,7 @@ class calendar {
 		echo breadcrumb::generate(get_class(), $function);
 
 
-	echo'<div id="calendar"></div>';
+		echo '<div id="calendar"></div>';
 
 	}
 }

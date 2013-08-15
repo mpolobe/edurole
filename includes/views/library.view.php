@@ -1,5 +1,5 @@
 <?php
-class library{
+class library {
 
 	public $core;
 	public $view;
@@ -139,4 +139,5 @@ class library{
 
 	}
 }
+
 ?>

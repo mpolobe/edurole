@@ -57,10 +57,11 @@ class grades {
 
 	function gradebook() {
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'Gradebook';
+		$description = 'Please enter a name for the new file to create it in the current working directory';
 
-		echo '<div class="contentpadfull">
-            <p class="title2">Gradebook</p>';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		$sql = "SELECT * FROM `grades`, `courses` WHERE `grades`.StudentID = \"" . $_SESSION['username'] . "\" AND `courses`.ID = CourseID ORDER BY Name";
 
@@ -108,12 +109,12 @@ class grades {
 	}
 
 	function viewOwn() {
-
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'Grading center';
+		$description = 'Overview of personally submitted grades';
 
-		echo '<div class="contentpadfull">
-            <p class="title2">Overview of personally submitted grades</p>';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		$sql = "SELECT * FROM `gradebook`, `courses` WHERE `courses`.ID = `gradebook`.Course AND `gradebook`.Owner = '$userid' ORDER BY `gradebook`.DateTime";
 
@@ -157,12 +158,12 @@ class grades {
 	}
 
 	function manager() {
-
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'Grade management';
+		$description = 'Overview of personally submitted grades';
 
-		echo '<div class="contentpadfull">
-            <p class="title2">Grade management</p>';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		$sql = "SELECT * FROM `gradebook`, `courses`, `basic-information` WHERE  `courses`.ID = `gradebook`.Course AND `gradebook`.Owner = `basic-information`.ID ORDER BY `gradebook`.DateTime";
 
@@ -250,20 +251,20 @@ class grades {
 
 
 	function selectCourse() {
-
 		include "includes/classes/showoptions.inc.php";
+
+		$function = __FUNCTION__;
+		$title = 'Submit grades';
+		$description = 'Overview of personally submitted grades';
+
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		$programselected = $this->core->cleanPost['program'];
 		$courseselected = $this->core->cleanPost['course'];
 		$select = new optionBuilder($this->core);
 		$program = $select->showPrograms(null, null, $programselected);
 		$courses = $select->showCourses($programselected, null);
-
-		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
-
-		echo '<div class="contentpadfull">
-	<p class="title2">Submit grades</p>';
 
 		if (!isset($courseselected)) {
 
@@ -300,10 +301,11 @@ class grades {
 
 	function gradesSubmit() {
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'Grades submitted';
+		$description = 'Overview of personally submitted grades';
 
-		echo '<div class="contentpadfull">
-	<p class="title2">Grades submitted</p><br />';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		$salt = sha1(md5(date('YmdH') . $username . $id . $role . $cleanPost['course']));
 		$sql = "START TRANSACTION;";

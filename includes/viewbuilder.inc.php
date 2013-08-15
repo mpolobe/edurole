@@ -4,18 +4,16 @@ class viewBuilder {
 	public $id, $core;
 
 	public function __construct($core) {
-
 		$this->core = $core;
 		$this->pageSwitch($this->core->route);
-
 	}
 
 	public function pageSwitch($route) {
 
-		$this->core->logEvent("Starting viewBuilder for " $route ,"3");
-		
+		$this->core->logEvent("Starting viewBuilder for " . $route, "3");
+
 		$route = explode('/', $route);
-		
+
 		if (count($route) > 0) {
 			$page = $route[0];
 		} elseif (count($route) > 1) {
@@ -46,12 +44,10 @@ class viewBuilder {
 				$this->showView("home");
 			} elseif ($page == "logout") {
 				auth::logout();
-				break;
 			} elseif ($page == "download") {
 				$filename = $this->core->cleanGet['file'];
 				include "includes/classes/files.inc.php";
 				downloadFile($filename);
-				break;
 			} elseif ($page == "template") {
 				$this->setTemplate();
 			} elseif ($page) {

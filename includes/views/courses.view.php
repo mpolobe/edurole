@@ -54,10 +54,11 @@ class courses {
 
 	function editCourse($sql) {
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'Edit course';
+		$description = 'Remember to save changes after you are done';
 
-		echo '<div class="contentpadfull">
-            <p class="title2">Edit course</p>';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		$run = $this->core->database->doSelectQuery($sql);
 
@@ -67,35 +68,33 @@ class courses {
 	}
 
 	function addCourse() {
-
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'Add course';
+		$description = 'Please enter the required fields';
 
-		echo '<div class="contentpadfull">
-            <p class="title2">Add course</p>';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		include "includes/forms/addcourse.form.php";
 
 	}
 
 	function deleteCourse($id) {
-
 		$sql = 'DELETE FROM `schools`  WHERE `ID` = "' . $id . '"';
 		$run = $this->core->database->doSelectQuery($sql);
-
 	}
 
 	function listCourses($sql) {
-
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'Overview of courses';
+		$description = 'Overview of all courses currently on offer';
 
-		echo '<div class="contentpadfull">
-            <p class="title2">Overview of courses</p>';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		$run = $this->core->database->doSelectQuery($sql);
 
-		echo '<p><b>Overview of all courses currently on offer</b>  | <a href="?id=courses&action=add">Add course</a></p>
+		echo '<p><a href="?id=courses&action=add">Add course</a></p>
             <p>
             <table width="768" height="" border="0" cellpadding="3" cellspacing="0">
             <tr class="tableheader"><td width="400"><b>Course Name</b></td>' .
@@ -103,6 +102,7 @@ class courses {
 			'<td><b>Management tools</b></td>' .
 			'</tr>';
 
+		$i = 0;
 		while ($fetch = $run->fetch_row()) {
 			if ($i == 0) {
 				$bgc = 'class="zebra"';
@@ -130,10 +130,11 @@ class courses {
 
 	function showCourse($sql) {
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'View course information';
+		$description = 'Overview of all courses currently on offer';
 
-		echo '<div class="contentpadfull">
-            <p class="title2">View course information</p><br />';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		$run = $this->core->database->doSelectQuery($sql);
 

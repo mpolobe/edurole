@@ -214,18 +214,17 @@ class programmes {
 		}
 		echo $out . $count . $rest;
 
-
-		echo '</table>
-                </p>';
+		echo '</table></p>';
 	}
 
 
 	function showProgram($sql) {
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'View program';
+		$description = 'Overview of program';
 
-		echo '<div class="contentpadfull">
-                <p class="title2">View program</p><br />';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		$run = $this->core->database->doSelectQuery($sql);
 

@@ -15,7 +15,6 @@ class password {
 	}
 
 	public function buildView($core) {
-
 		$this->core = $core;
 
 		echo '<div class="menucontainer">
@@ -31,10 +30,11 @@ class password {
 		</div>';
 
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'Recover password';
+		$description = 'Recover password your password using your email';
 
-		echo '<div class="contentpadfull">
-		<p class="title2">Recover password</p> ';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		include "includes/forms/changepassword.form.php";
 

@@ -185,7 +185,6 @@ function deleteFile() {
 }
 
 function renameFile($path) {
-
 	$at = $_GET["atat"];
 	$new = $this->core->cleanPost["new"];
 	$filename = $_GET["ren"];
@@ -198,12 +197,18 @@ function renameFile($path) {
 
 	} else {
 
-		echo '<div class="breadcrumb"><a href=".">home</a> > <a href="?id=files">file management</a> > rename file</div>
-		<div class="contentpadfull">
-		<div class="easymencontainer"><form name="rename" method="post" action="?id=files&action=rename">
-		<p class="title2">Rename file</p> <p><b>You are renaming: ' . $_GET["ren"] . '</b><input name="op" type="hidden" value=' . $path . '>
+		$function = __FUNCTION__;
+		$title = 'Rename file';
+		$description = 'You are renaming: ' . $_GET["ren"];
+
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
+
+		echo'<div class="easymencontainer"><form name="rename" method="post" action="?id=files&action=rename">
+		<input name="op" type="hidden" value=' . $path . '>
 		<input name="filend" type=hidden value="' . $filename . '">
-		<div class="padding"><div class="label">New Name</div><input type="text" name="new" class="submit"></div>
+		<div class="padding"><div class="label">New Name</div>
+		<input type="text" name="new" class="submit"></div>
 		<div class="padding"><div class="label"></div><input type="submit" name="Submit" value="Rename" class="submit"></div>
 		</form></div>';
 
@@ -257,7 +262,12 @@ function downloadFile($filename) {
 
 function editFile($filename) {
 
-	global $template;
+	$function = __FUNCTION__;
+	$title = 'Editing';
+	$description = 'Remember to click save';
+
+	echo component::generateBreadcrumb(get_class(), $function);
+	echo component::generateTitle($title, $description);
 
 	$start = TRUE;
 	$home = getcwd();

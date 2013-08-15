@@ -15,7 +15,6 @@ class users {
 	}
 
 	public function buildView($core) {
-
 		$this->core = $core;
 
 		$uid = $this->core->cleanGet['uid'];
@@ -24,20 +23,22 @@ class users {
 		if ($action == "add" && $this->core->role >= 100) {
 
 			$function = __FUNCTION__;
-			echo breadcrumb::generate(get_class(), $function);
+			$title = 'Add user account';
+			$description = 'Please provide the needed information to create a new user account';
 
-			echo '<div class="contentpadfull">
-			<p class="title2">Add user account</p> <p><b>Please provide the needed information to create a new user account</b>';
+			echo component::generateBreadcrumb(get_class(), $function);
+			echo component::generateTitle($title, $description);
 
 			include "includes/forms/adduser.form.php";
 
 		} elseif ($action == "save" && $this->core->role >= 100) {
 
 			$function = __FUNCTION__;
-			echo breadcrumb::generate(get_class(), $function);
+			$title = 'Add user account';
+			$description = 'The account information has been saved';
 
-			echo '<div class="contentpadfull">
-			<p class="title2">Add user account</p> <p>';
+			echo component::generateBreadcrumb(get_class(), $function);
+			echo component::generateTitle($title, $description);
 
 			include "includes/classes/adduser.inc.php";
 			$this->addUser();

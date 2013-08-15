@@ -41,10 +41,11 @@ class information {
 			$pagename = "Search results";
 
 			$function = __FUNCTION__;
-			echo breadcrumb::generate(get_class(), $function);
+			$title = 'Student Information';
+			$description = 'Showing results for: ' . $studentfirstname . ' ' . $studentlastname;
 
-			echo '<div class="contentpadfull">
-		<p class="title2">' . $pagename . '</p> <p><b>Showing results for: ' . $studentfirstname . ' ' . $studentlastname . '</b> </p> ';
+			echo component::generateBreadcrumb(get_class(), $function);
+			echo component::generateTitle($title, $description);
 
 			if ($listtype == "profiles") {
 				$this->showInfoProfile($run);
@@ -64,13 +65,12 @@ class information {
 
 			$run = $this->core->database->doSelectQuery($sql);
 
-			$pagename = "Search results";
-
 			$function = __FUNCTION__;
-			echo breadcrumb::generate(get_class(), $function);
+			$title = '"Search results';
+			$description = 'Showing results for: ' . $studentfirstname . ' ' . $studentlastname;
 
-			echo '<div class="contentpadfull">
-		<p class="title2">' . $pagename . '</p> <p><b>Showing results for: ' . $studentfirstname . ' ' . $studentlastname . '</b> </p> ';
+			echo component::generateBreadcrumb(get_class(), $function);
+			echo component::generateTitle($title, $description);
 
 			if ($listtype == "profiles") {
 				$this->showInfoProfile($run);
@@ -84,13 +84,12 @@ class information {
 
 		} elseif ($action == "personal") {
 
-			$pagename = "Personal information";
-
 			$function = __FUNCTION__;
-			echo breadcrumb::generate(get_class(), $function);
+			$title = 'Personal information';
+			$description = 'Showing results for: ' . $studentfirstname . ' ' . $studentlastname;
 
-			echo '<div class="contentpadfull">
-		<p class="title2">' . $pagename . '</p> ';
+			echo component::generateBreadcrumb(get_class(), $function);
+			echo component::generateTitle($title, $description);
 
 			$uid = $_SESSION['userid'];
 			$sql = "SELECT * FROM  `basic-information` as bi, `access` as ac WHERE ac.`ID` = '" . $uid . "' AND ac.`ID` = bi.`ID`";
@@ -104,13 +103,12 @@ class information {
 
 		} elseif (isset($uid) && is_numeric($uid)) {
 
-			$pagename = "Personal information";
-
 			$function = __FUNCTION__;
-			echo breadcrumb::generate(get_class(), $function);
+			$title = 'Personal information';
+			$description = 'Showing results for: ' . $studentfirstname . ' ' . $studentlastname;
 
-			echo '<div class="contentpadfull">
-		<p class="title2">' . $pagename . '</p> ';
+			echo component::generateBreadcrumb(get_class(), $function);
+			echo component::generateTitle($title, $description);
 
 			$sql = "SELECT * FROM `basic-information` WHERE `ID` = '" . $uid . "'";
 			$run = $this->core->database->doSelectQuery($sql);
@@ -447,15 +445,15 @@ class information {
 	}
 
 	function editUser($id) {
-
 		$sql = "SELECT * FROM  `basic-information` as bi, `access` as ac WHERE ac.`ID` = '" . $id . "' AND ac.`ID` = bi.`ID`";
 		$run = $this->core->database->doSelectQuery($sql);
 
-		$pagename = "Edit personal information";
-
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
-		echo '	<div class="contentpadfull"><p class="title2">' . $pagename . '</p> ';
+		$title = 'Edit personal information';
+		$description = 'Editing student information';
+
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		while ($row = $run->fetch_row()) {
 
@@ -480,12 +478,11 @@ class information {
 
 		}
 
+		include "includes/forms/edituser.form.php";
 		include "includes/classes/showoptions.inc.php";
 
 		$select = new optionBuilder($this->core);
 		$select = $select->showRoles($role);
-
-		include "includes/forms/edituser.form.php";
 
 	}
 

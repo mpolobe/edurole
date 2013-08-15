@@ -4,7 +4,6 @@
 		<ol>
 			<p class="title2">Create User Account</p>
 
-
 			<form id="form1" name="form1" method="post" action="/">
 				<table width="813" height="146" border="0" cellpadding="0" cellspacing="0">
 					<tr>

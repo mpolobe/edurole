@@ -138,7 +138,7 @@ class studies {
 
 		$run = $this->core->database->doSelectQuery($sql);
 
-		$i=0;
+		$i = 0;
 		while ($row = $run->fetch_row()) {
 
 			if ($i == 0) {
@@ -174,7 +174,7 @@ class studies {
 
 		$run = $this->core->database->doSelectQuery($sql);
 
-		$i=0;
+		$i = 0;
 		while ($fetch = $run->fetch_row()) {
 
 			if ($i == 0) {
@@ -350,4 +350,5 @@ class studies {
 	}
 
 }
+
 ?>

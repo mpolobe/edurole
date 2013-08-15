@@ -15,7 +15,6 @@ class register {
 	}
 
 	public function buildView($core) {
-
 		$this->core = $core;
 
 		if ($this->view->menu != FALSE) {
@@ -30,10 +29,11 @@ class register {
 		}
 
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function); // Automated breadcrumb creation
+		$title = 'Register for study';
+		$description = 'Please enter the complete for to be eligible for admission';
 
-		echo '<div class="contentpadfull">
-		<h1>' . $this->identifier->pagename . '</h1> ';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		$item = $core->cleanGet['item'];
 

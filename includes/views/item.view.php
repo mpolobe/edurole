@@ -15,7 +15,6 @@ class item {
 	}
 
 	public function buildView($core) {
-
 		$this->core = $core;
 
 		$action = $this->core->cleanGet['action'];
@@ -23,19 +22,17 @@ class item {
 
 		if (empty($action)) {
 
-			echo breadcrumb::generate("home");
+			$function = __FUNCTION__;
+			$title = 'News';
+			$description = 'The following stories are available';
 
-			echo '<div class="contentpadfull">';
+			echo component::generateBreadcrumb(get_class(), $function);
+			echo component::generateTitle($title, $description);
 
 			$this->showItem($item);
 			$this->showNewsOverview();
 
 		} elseif ($action == "edit" && $this->core->role > 102) {
-
-			$function = __FUNCTION__;
-			echo breadcrumb::generate(get_class(), $function);
-
-			echo '<div class="contentpadfull">';
 
 			$this->edit($item);
 
@@ -82,6 +79,12 @@ class item {
 	}
 
 	function edit($id) {
+		$function = __FUNCTION__;
+		$title = 'Edit item';
+		$description = 'Please remember to save your changes';
+
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		$sql = "SELECT * FROM `content` WHERE `ContentID` = $id";
 

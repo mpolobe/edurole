@@ -14,13 +14,14 @@ class home {
 	}
 
 	public function buildView($core) {
-
 		$this->core = $core;
 
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'Grades submitted';
+		$description = 'Overview of personally submitted grades';
 
-		echo '<div class="contentpadfull">';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		$this->infoSheet();
 

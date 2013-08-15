@@ -15,14 +15,14 @@ class correct {
 	}
 
 	public function buildView($core) {
-
 		$this->core = $core;
 
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'List of incorrectly imported student number';
+		$description = 'Your assignments currently active in your courses and programmes';
 
-		echo '<div class="contentpadfull">
-		<p class="title2">List of incorrectly imported student number</p>';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		$sql = "SELECT * FROM `basic-information` WHERE `basic-information`.ID < 20000000  OR `basic-information`.ID > 2010222117";
 

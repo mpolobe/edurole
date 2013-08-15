@@ -15,7 +15,6 @@ class changepass {
 	}
 
 	public function buildView($core) {
-
 		$this->core = $core;
 
 		$oldpass = $this->core->cleanPost["oldpass"];
@@ -23,10 +22,11 @@ class changepass {
 		$newpasscheck = $this->core->cleanPost["newpasscheck"];
 
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'Overview of personal assignments';
+		$description = 'Your assignments currently active in your courses and programmes';
 
-		echo '<div class="contentpadfull">
-            <p class="title2">' . $pagename . '</p> ';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		if (isset($newpass) && isset($oldpass)) {
 

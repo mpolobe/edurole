@@ -26,7 +26,7 @@ class error {
 		echo component::generateBreadcrumb(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		echo'<div class="errorpopup">' . $core->error . '</div></div>';
+		echo '<div class="errorpopup">' . $core->error . '</div></div>';
 	}
 
 }

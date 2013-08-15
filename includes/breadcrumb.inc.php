@@ -4,6 +4,7 @@ class breadcrumb {
 	public static function generate($classname) {
 
 		$pathArray = classNamespace::getNamespace($classname);
+		$crumb = "";
 
 		foreach ($pathArray['executionpath'] as $class => $name) {
 

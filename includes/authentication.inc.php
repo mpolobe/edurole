@@ -4,12 +4,10 @@ class auth {
 	public $core;
 
 	public function __construct($core) {
-
 		$this->core = $core;
 	}
 
 	public function login() {
-
 		$username = $this->core->cleanPost['username'];
 		$password = $this->core->cleanPost['password'];
 
@@ -19,7 +17,7 @@ class auth {
 
 				if (!$this->authenticateSQL($username, $password)) {
 
-					$this->core->throwError('<p>Please <a href=".">return to the login page</a> and try again. If you forgot your password please request a new one <a href="password.php">here</a>.</p>', $pagename);
+					$this->core->throwError('<p>Please <a href=".">return to the login page</a> and try again. If you forgot your password please request a new one <a href="password.php">here</a>.</p>', "LOGIN");
 
 				}
 
@@ -106,6 +104,7 @@ class auth {
 					$_SESSION['userid'] = $row[0];
 					$_SESSION['username'] = $username;
 					$_SESSION['password'] = $password;
+					$id = $row[0];
 					auth::role($row[2]);
 				}
 
@@ -162,14 +161,10 @@ class auth {
 		}
 
 		if (!isset($_SESSION['access'])) {
-
 			$this->core->logEvent("Unauthorized access by $username.", "3");
-			$this->core->exitError("You do not have permissions to access this system, please contact the academic office", $pagename);
-
+			$this->core->exitError("You do not have permissions to access this system, please contact the academic office", "LOGIN");
 		} else {
-
 			header("location: .");
-
 		}
 
 	}

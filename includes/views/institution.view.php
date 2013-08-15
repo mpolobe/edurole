@@ -15,14 +15,14 @@ class institution {
 	}
 
 	public function buildView($core) {
-
 		$this->core = $core;
 
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'Application Settings';
+		$description = 'Institution wide application settings';
 
-		echo '<div class="contentpadfull">';
-		echo '<p class="title2">Institution wide application settings</p> <br />';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		$this->institutionName();
 		$this->paymentTypes();

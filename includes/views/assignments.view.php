@@ -15,29 +15,15 @@ class assignments {
 	}
 
 	public function buildView($core) {
-
 		$this->core = $core;
 
 		include "includes/classes/files.inc.php";
 
-
 		if ($this->core->cleanGet["action"] == "manage" || !isset($this->core->cleanGet["action"]) && $core->role > 100) {
-
-			$function = __FUNCTION__;
-			echo breadcrumb::generate(get_class(), $function);
-
-			echo '<div class="contentpadfull">
-                <p class="title2">Overview of all assignments</p> <p><b>Manage assignments for students to view</b>';
 
 			$this->manageAssignments();
 
 		} elseif ($this->core->cleanGet["action"] == "overview" || !isset($this->core->cleanGet["action"]) || !isset($this->core->cleanGet["action"]) && $core->role >= 10) {
-
-			$function = __FUNCTION__;
-			echo breadcrumb::generate(get_class(), $function);
-
-			echo '<div class="contentpadfull">
-                <p class="title2">Overview of personal assignments</p> <p><b>Your assignments currently active in your courses and programmes</b>';
 
 			$this->allAssignments();
 
@@ -58,8 +44,12 @@ class assignments {
 
 	function allAssignments() {
 
-		global $connection;
+		$function = __FUNCTION__;
+		$title = 'Overview of personal assignments';
+		$description = 'Your assignments currently active in your courses and programmes';
 
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		$sql = "SELECT * FROM `assignments`, `courses`, `basic-information` WHERE  `courses`.ID = CourseID AND `assignments`.CreatorID = `basic-information`.ID ORDER BY DateCreated";
 
@@ -105,8 +95,12 @@ class assignments {
 
 	function manageAssignments() {
 
-		global $connection;
+		$function = __FUNCTION__;
+		$title = 'Overview of all assignments';
+		$description = 'Manage assignments for students to view';
 
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		$sql = "SELECT * FROM `assignments`, `courses`, `basic-information` WHERE  `courses`.ID = CourseID AND `assignments`.CreatorID = `basic-information`.ID ORDER BY DateCreated";
 

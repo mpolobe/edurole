@@ -30,12 +30,6 @@ class filemanager {
 
 		} elseif ($this->core->cleanGet["action"] == "edit") {
 
-			$function = __FUNCTION__;
-			echo breadcrumb::generate(get_class(), $function);
-
-			echo '<div class="contentpadfull">
-			<p class="title2">Editing ' . $filename . '</p> <p><b>Remember to click save</b>';
-
 			editFile($filename);
 
 		} elseif ($this->core->cleanGet["action"] == "saveFile") {
@@ -76,22 +70,26 @@ class filemanager {
 
 	function viewPersonalFiles($path) {
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'Overview of personal files';
+		$description = 'This directory lists your personal files';
 
-		echo '<div class="contentpadfull">
-		<p class="title2">Overview of personal files</p> <p><b>This directory lists your personal files <img src="templates/edurole/images/up.png"/> <a href="?id=files&action=upload&op=' . $current . '">upload a file</a> or <img src="templates/edurole/images/dd.gif"/> <a href="?id=files&action=new&op=' . $current . '">create an empty file</a> or <img src="templates/edurole/images/new.gif"/> <a href="?id=files&action=newdir&op=' . $current . '">new directory</a></b>';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
+
+		echo '<p><img src="templates/edurole/images/up.png"/> <a href="?id=files&action=upload&op=' . $current . '">upload a file</a> or <img src="templates/edurole/images/dd.gif"/> <a href="?id=files&action=new&op=' . $current . '">create an empty file</a> or <img src="templates/edurole/images/new.gif"/> <a href="?id=files&action=newdir&op=' . $current . '">new directory</a></b>';
 
 		overview($path);
 	}
 
 	function upload() {
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'Upload a file';
+		$description = 'Please note that executables must be compressed and the maximum file size is 50MB';
 
-		echo '<div class="contentpadfull">
-		<p class="title2">Upload a file</p> <p><b>Please note that executables must be compressed and the maximum file size is 50MB</b>
-	
-		<div class="heading">File upload</div>
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
+
+		echo '<div class="heading">File upload</div>
 
 		<form id="login" name="login" method="get" action="?id=files&action=uploadfile" enctype="multipart/form-data">
 		<input type="hidden" name="id" value="view-information">
@@ -131,12 +129,13 @@ class filemanager {
 
 	function newFileForm() {
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'New file';
+		$description = 'Please enter a name for the new file to create it in the current working directory';
 
-		echo '<div class="contentpadfull">
-        <p class="title2">New file</p> <p><b>Please enter a name for the new file to create it in the current working directory</b>
-    
-        <div class="heading">New file</div>
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
+
+		echo '<div class="heading">New file</div>
     
         <form id="login" name="login" method="get" action="?id=files&action=uploadfile" enctype="multipart/form-data">
         <input type="hidden" name="id" value="view-information">

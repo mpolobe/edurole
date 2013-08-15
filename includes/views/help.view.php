@@ -15,15 +15,16 @@ class help {
 	}
 
 	public function buildView($core) {
-
 		$this->core = $core;
 
 		include "includes/views/item.view.php";
 
 		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
+		$title = 'Grades submitted';
+		$description = 'Overview of personally submitted grades';
 
-		echo '<div class="contentpadfull">';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
 
 		function globalstatistics() {
 
