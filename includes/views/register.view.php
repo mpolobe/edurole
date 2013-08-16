@@ -43,7 +43,7 @@ class register {
 
 			$run = $this->core->database->doSelectQuery($sql);
 
-			while ($row = $run->fetch_row()) {
+			while ($fetch = $run->fetch_row()) {
 
 				echo '<form id="enroll" name="enroll" method="post" action="index.php?id=submit-registration" enctype="multipart/form-data" >
 							 <input type="hidden" name="studyid" value="' . $row['0'] . '">

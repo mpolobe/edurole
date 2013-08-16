@@ -15,7 +15,6 @@ class programmes {
 	}
 
 	public function buildView($core) {
-
 		$this->core = $core;
 
 		$action = $this->core->cleanGet['action'];
@@ -154,6 +153,8 @@ class programmes {
 
 		$count = 0;
 		$first = 1;
+		$i=0;
+		$rest=NULL;
 
 		while ($fetch = $run->fetch_row()) {
 
@@ -278,7 +279,7 @@ class programmes {
 
 			while ($fetch = $run->fetch_row()) {
 
-				echo '<li><a href="?id=courses&action=view&item=' . $fetchw[0] . '">' . $fetchw[2] . '</a></li>';
+				echo '<li><a href="?id=courses&action=view&item=' . $fetch[0] . '">' . $fetch[2] . '</a></li>';
 				$i++;
 
 			}

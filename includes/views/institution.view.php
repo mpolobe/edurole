@@ -35,6 +35,7 @@ class institution {
 		$sql = "SELECT * FROM `settings` WHERE `Name` = 'InstitutionName' OR `Name` = 'InstitutionWebsite'  ORDER BY `Name`";
 
 		$run = $this->core->database->doSelectQuery($sql);
+		$i=0;
 
 		while ($fetch = $run->fetch_row()) {
 
@@ -95,6 +96,8 @@ class institution {
 		$run = $this->core->database->doSelectQuery($sql);
 
 		$n = 1;
+		$i=0;
+
 		while ($fetch = $run->fetch_row()) {
 
 			if ($i == 0) {

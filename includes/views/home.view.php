@@ -102,7 +102,7 @@ class home {
 			echo '<tr><td>Current role</td> <td>' . $this->core->rolename . '</td></tr>';
 			echo '<tr><td>Selected template</td> <td>' . $this->core->template . '</td></tr>';
 
-			$sql = "SELECT * FROM `access` as ac, `student-study-link` as ss, `study` as st, `student-program-link` as pl WHERE ac.`ID` = '" . $userid . "' AND ss.`StudyID` = st.`ID` AND pl.`StudentID` = $nrc AND ss.`StudentID` = $nrc";
+			$sql = "SELECT * FROM `access` as ac, `student-study-link` as ss, `study` as st, `student-program-link` as pl WHERE ac.`ID` = '" . $this->core->userid . "' AND ss.`StudyID` = st.`ID` AND pl.`StudentID` = $nrc AND ss.`StudentID` = $nrc";
 
 			$run = $this->core->database->doSelectQuery($sql);
 

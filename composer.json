@@ -1,9 +1,22 @@
 {
-    "require": {
-        "components/jquery": ">=1.8"
-		"adesigns/calendar-bundle": "dev-master"
+    "type": "package",
+    "package": {
+        "name": "javascript",
+        "target-dir": "js",
+        "require": {
+            "components/jquery": "1.9.*@dev",
+            "components/jqueryui": "dev-master",
+            "hearsay/require-js-bundle": "2.0.*@dev",
+            "adesigns/calendar-bundle": "dev-master"
+        }
     },
-    "config": {
-        "component-dir": "js"
+    "type": "package",
+    "package": {
+        "name": "php",
+        "target-dir": "lib",
+        "require": {
+            "imscp/roundcube": "0.3.0.*@dev",
+            "typo3/aloha": "dev-master"
+        }
     }
 }

@@ -1,13 +1,9 @@
 <?php
-class recover(){
+class recover{
+	public	$core;
+	public $view;
 
-	public
-	$core;
-	public
-	$view;
-
-	public
-	function configView() {
+	public function configView() {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
 		$this->view->menu = FALSE;
@@ -17,9 +13,7 @@ class recover(){
 		return $this->view;
 	}
 
-	public
-	function buildView($core) {
-
+	public function buildView($core) {
 		$this->core = $core;
 
 		include_once 'lib/secureimage/securimage.php';
@@ -33,11 +27,11 @@ class recover(){
 		}
 
 		$uid = $this->core->cleanPost['uid'];
-		$sudentid = $this->core->cleanPost['studentid'];
+		$studentid = $this->core->cleanPost['studentid'];
 
 		echo $uid . $studentid;
 
-		$sql = "SELECT * FROM `basic-information` WHERE `ID` = '" . $id . "'";
+		$sql = "SELECT * FROM `basic-information` WHERE `ID` = '" . $studentid . "'";
 		$run = doSelectQuery($sql);
 
 		while ($fetch = mysql_fetch_row($run)) {

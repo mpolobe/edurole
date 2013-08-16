@@ -19,7 +19,6 @@ class grades {
 		$this->core = $core;
 
 		$action = $this->core->cleanGet['action'];
-		$access = $_SESSION['access'];
 		$item = $this->core->cleanGet['item'];
 
 		include "includes/classes/grades.inc.php";
@@ -38,7 +37,7 @@ class grades {
 
 		} elseif ($action == "entergrades") {
 
-			$this->enterGrades();
+			$this->enterGrades(NULL,NULL);
 
 		} elseif ($action == "submit") {
 
@@ -46,7 +45,7 @@ class grades {
 
 		} else {
 
-			if ($access >= 104) {
+			if ($this->core->role >= 104) {
 				$this->manager();
 			} else {
 				$this->viewOwn();
@@ -72,6 +71,7 @@ class grades {
 
 		$init = TRUE;
 
+		$prevbatch = NULL;
 		while ($fetch = $run->fetch_row()) {
 
 			$grade = $fetch[3];
@@ -116,7 +116,7 @@ class grades {
 		echo component::generateBreadcrumb(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		$sql = "SELECT * FROM `gradebook`, `courses` WHERE `courses`.ID = `gradebook`.Course AND `gradebook`.Owner = '$userid' ORDER BY `gradebook`.DateTime";
+		$sql = "SELECT * FROM `gradebook`, `courses` WHERE `courses`.ID = `gradebook`.Course AND `gradebook`.Owner = '".$this->core->userid."' ORDER BY `gradebook`.DateTime";
 
 		$run = $this->core->database->doSelectQuery($sql);
 
@@ -307,20 +307,20 @@ class grades {
 		echo component::generateBreadcrumb(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		$salt = sha1(md5(date('YmdH') . $username . $id . $role . $cleanPost['course']));
+		$salt = sha1(md5(date('YmdH') . $this->core->username . $this->core->userid . $this->core->role . $this->core->cleanPost['course']));
 		$sql = "START TRANSACTION;";
 		doInsertQuery($sql);
 
 		$output = '<table width="768" height="" border="0" cellpadding="3" cellspacing="0">
-	<tr class="tableheader">
-	<td width="400"><b>Student number</b></td>
-	<td><b>Grade submitted</b></td>
-	</tr>';
+		<tr class="tableheader">
+		<td width="400"><b>Student number</b></td>
+		<td><b>Grade submitted</b></td>
+		</tr>';
 
-		$courseid = $cleanPost['course'];
-		$validatorid = $cleanPost['validator'];
+		$courseid = $this->core->cleanPost['course'];
+		$validatorid = $this->core->cleanPost['validator'];
 
-		$sql = 'INSERT INTO `gradebook` (`ID`, `GlobalHash`, `Owner`, `Status`, `DateTime`, `Course`, `ValidatorID`) VALUES (NULL, "' . $salt . '", "' . $userid . '",  "1", NULL, "' . $courseid . '", "' . $validatorid . '");';
+		$sql = 'INSERT INTO `gradebook` (`ID`, `GlobalHash`, `Owner`, `Status`, `DateTime`, `Course`, `ValidatorID`) VALUES (NULL, "' . $salt . '", "' . $this->core->userid . '",  "1", NULL, "' . $courseid . '", "' . $validatorid . '");';
 
 		if (doInsertQuery($sql)) {
 
@@ -334,8 +334,8 @@ class grades {
 					$hash = sha1("$grade$student$grade$date$salt");
 
 					$output = $output . "<tr><td><b>" . $student . "</b></td><td><b>" . $grade . "</td></tr>";
-					$sql = "INSERT INTO grades (`ID`, `StudentID`, `CourseID`,  `Grade`, `Datestamp`, `GradeHash`, `CreatorID`, `MarkType`, `BatchID`) VALUES (NULL, '$student', '$courseid', '$grade', CURRENT_TIMESTAMP, '$hash', '$id', '1', '$batch');";
-					$this->database->doInsertQuery($sql);
+					$sql = "INSERT INTO grades (`ID`, `StudentID`, `CourseID`,  `Grade`, `Datestamp`, `GradeHash`, `CreatorID`, `MarkType`, `BatchID`) VALUES (NULL, '$student', '$courseid', '$grade', CURRENT_TIMESTAMP, '$hash', '$this->core->userid', '1', '$batch');";
+					$this->core->database->doInsertQuery($sql);
 
 				}
 			}

@@ -15,7 +15,6 @@ class filemanager {
 	}
 
 	public function buildView($core) {
-
 		$this->core = $core;
 
 		include "includes/classes/files.inc.php";
@@ -30,40 +29,40 @@ class filemanager {
 
 		} elseif ($this->core->cleanGet["action"] == "edit") {
 
-			editFile($filename);
+			$this->editFile($filename);
 
 		} elseif ($this->core->cleanGet["action"] == "saveFile") {
 
-			saveFile($path);
+			$this->saveFile($path);
 
 		} elseif ($this->core->cleanGet["action"] == "rename") {
 
-			$rename = renameFile($path);
+			$rename = $this->renameFile($path);
 
 			if ($rename) {
-				viewPersonalFiles($path);
+				$this->viewPersonalFiles($path);
 			}
 
 		} elseif ($this->core->cleanGet["action"] == "delete") {
 
-			deleteFile($path);
+			$this->deleteFile($path);
 
 		} elseif ($this->core->cleanGet["action"] == "new") {
 
-			newFileForm();
+			$this->newFileForm();
 
 		} elseif ($this->core->cleanGet["action"] == "upload") {
 
-			upload();
+			$this->upload();
 
 
 		} elseif ($this->core->cleanGet["action"] == "uploadfile") {
 
-			uploadFile();
+			$this->uploadFile();
 
 		} elseif ($this->core->cleanGet["action"] == "newFile") {
 
-			newFile($path);
+			$this->newFile($path);
 
 		}
 	}
@@ -76,7 +75,7 @@ class filemanager {
 		echo component::generateBreadcrumb(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		echo '<p><img src="templates/edurole/images/up.png"/> <a href="?id=files&action=upload&op=' . $current . '">upload a file</a> or <img src="templates/edurole/images/dd.gif"/> <a href="?id=files&action=new&op=' . $current . '">create an empty file</a> or <img src="templates/edurole/images/new.gif"/> <a href="?id=files&action=newdir&op=' . $current . '">new directory</a></b>';
+		echo '<p><img src="templates/edurole/images/up.png"/> <a href="?id=files&action=upload&op=' . $path . '">upload a file</a> or <img src="templates/edurole/images/dd.gif"/> <a href="?id=files&action=new&op=' . $path . '">create an empty file</a> or <img src="templates/edurole/images/new.gif"/> <a href="?id=files&action=newdir&op=' . $path . '">new directory</a></b>';
 
 		overview($path);
 	}

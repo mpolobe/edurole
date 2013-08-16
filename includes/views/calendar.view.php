@@ -15,7 +15,6 @@ class calendar {
 	}
 
 	public function buildView($core) {
-
 		$this->core = $core;
 
 		$inlinejs = "<script>

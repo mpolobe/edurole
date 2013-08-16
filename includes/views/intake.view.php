@@ -17,19 +17,19 @@ class intake {
 	public function buildView($core) {
 		$this->core = $core;
 
-		if ($nomen == FALSE) {
+		if ($this->view->menu == FALSE) {
 
 			echo '<div class="menucontainer">
-                    <div class="menubar">
-                    <div class="menuhdr"><strong>Home menu</strong></div>
-                    <div class="menu">
-                    <a href=".">Home</a>
-                    <a href="index.php?id=info">Overview of all studies</a>
-                    <a href="admission">Studies open for intake</a>
-                    <a href="password">Recover lost password</a>
-                    </div>
-                    </div>
-                    </div>';
+				<div class="menubar">
+				<div class="menuhdr"><strong>Home menu</strong></div>
+				<div class="menu">
+				<a href=".">Home</a>
+				<a href="index.php?id=info">Overview of all studies</a>
+				<a href="admission">Studies open for intake</a>
+				<a href="password">Recover lost password</a>
+				</div>
+				</div>
+				</div>';
 
 		}
 

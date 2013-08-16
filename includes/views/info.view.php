@@ -15,20 +15,19 @@ class info {
 	}
 
 	public function buildView($core) {
-
 		$this->core = $core;
 
 		echo '<div class="menucontainer">
-	<div class="menubar">
-	<div class="menuhdr"><strong>Home menu</strong></div>
-	<div class="menu">
-	<a href=".">Home</a>
-	<a href="index.php?id=info">Overview of all studies</a>
-	<a href="admission">Studies open for intake</a>
-	<a href="password">Recover lost password</a>
-	</div>
-	</div>
-	</div>';
+		<div class="menubar">
+		<div class="menuhdr"><strong>Home menu</strong></div>
+		<div class="menu">
+		<a href=".">Home</a>
+		<a href="index.php?id=info">Overview of all studies</a>
+		<a href="admission">Studies open for intake</a>
+		<a href="password">Recover lost password</a>
+		</div>
+		</div>
+		</div>';
 
 		$function = __FUNCTION__;
 		$title = 'Overview of studies';
@@ -48,8 +47,9 @@ class info {
 
 		$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID ORDER BY `study`.Name";
 		$run = $this->core->database->doSelectQuery($sql);
+		$i=0;
 
-		while ($row = $run->fetch_row()) {
+		while ($fetch = $run->fetch_row()) {
 
 			if ($i == 0) {
 				$bgc = 'class="zebra"';
@@ -60,8 +60,8 @@ class info {
 			}
 
 			echo '<tr ' . $bgc . '>' .
-				'<td><b>' . $row[6] . '</b></td>' .
-				'<td>' . $row[15] . '</td>' .
+				'<td><b>' . $fetch[6] . '</b></td>' .
+				'<td>' . $fetch[15] . '</td>' .
 				'<td>' . date("d-m-Y", strtotime($fetch[2])) . ' <b>until</b> ' . date("d-m-Y", strtotime($fetch[3])) . ' </td>' .
 				'</tr>';
 		}

@@ -127,6 +127,7 @@ class schools {
             <td width="170px"><b>Management tools</b></td>
             </tr>';
 
+		$i=0;
 		while ($fetch = $run->fetch_row()) {
 
 			if ($i == 0) {
@@ -160,6 +161,7 @@ class schools {
 
 		$run = $this->core->database->doSelectQuery($sql);
 
+		$i=0;
 		while ($fetch = $run->fetch_row()) {
 
 			if ($i == 0) {
