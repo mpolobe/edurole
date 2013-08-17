@@ -3,6 +3,7 @@ class studies {
 
 	public $core;
 	public $view;
+	public $item = NULL;
 
 	public function configView() {
 		$this->view->header = TRUE;
@@ -15,55 +16,28 @@ class studies {
 	}
 
 	public function buildView($core) {
-
 		$this->core = $core;
-
-		$action = $this->core->cleanGet['action'];
 		$item = $this->core->cleanGet['item'];
 
 		if (empty($this->core->action) && $this->core->role > 100) {
-
 			$sql = "SELECT `study`.ID, `study`.Name, `schools`.name, `schools`.id FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID ORDER BY `study`.Name";
 			$this->listStudies($sql);
-
 		} elseif ($this->core->action == "list" && $this->core->role > 100) {
-
 			$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID AND `study`.ID = $item ORDER BY `study`.Name";
 			$this->listStudies($sql);
-
 		} elseif ($this->core->action == "view" && $this->core->role > 100) {
-
 			$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID AND `study`.ParentID = `schools`.ID AND `study`.ID = $item";
 			$this->showStudy($sql);
-
 		} elseif ($this->core->action == "edit" && isset($item) && $this->core->role > 100) {
-
 			$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID AND `study`.ParentID = `schools`.ID AND `study`.ID = $item";
 			$this->editStudy($sql);
-
 		} elseif ($this->core->action == "add" && $this->core->role > 100) {
-
 			$this->addStudy();
-
 		} elseif ($this->core->action == "save" && $this->core->role > 100) {
-
 			$this->saveStudy();
-
-			$sql = "SELECT `study`.ID, `study`.Name, `schools`.name, `schools`.id FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID ORDER BY `study`.Name";
-			$this->listStudies($sql);
-
 		} elseif ($this->core->action == "delete" && isset($item)) {
-
 			$this->deleteStudy($item);
-
-			$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID ORDER BY `study`.Name";
-			$this->listStudies($sql);
-
-			echo '<script>
-				alert("The study has been deleted");
-			</script>';
 		}
-
 	}
 
 	function editStudy($sql) {
@@ -95,6 +69,10 @@ class studies {
 	function deleteStudy($id) {
 		$sql = 'DELETE FROM `study`  WHERE `ID` = "' . $id . '"';
 		$run = $this->database->doInsertQuery($sql);
+
+		$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID ORDER BY `study`.Name";
+		$this->listStudies($sql);
+		$this->core->showAlert("The study has been deleted");
 	}
 
 	function saveStudy() {
@@ -120,6 +98,8 @@ class studies {
 
 		$run = $this->database->doInsertQuery($sql);
 
+		$sql = "SELECT `study`.ID, `study`.Name, `schools`.name, `schools`.id FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID ORDER BY `study`.Name";
+		$this->listStudies($sql);
 	}
 
 	public function listStudies($sql) {

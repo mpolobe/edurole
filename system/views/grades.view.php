@@ -15,36 +15,24 @@ class grades {
 	}
 
 	public function buildView($core) {
-
 		$this->core = $core;
 
-		$action = $this->core->cleanGet['action'];
+		$this->core->action = $this->core->cleanGet['action'];
 		$item = $this->core->cleanGet['item'];
 
 		include $this->core->classpath . "grades.inc.php";
 
 		if ($this->core->action == "view-grades") {
-
 			$this->gradebook();
-
 		} elseif ($this->core->action == "management") {
-
 			$this->manager();
-
 		} elseif ($this->core->action == "selectcourse") {
-
 			$this->selectCourse();
-
 		} elseif ($this->core->action == "entergrades") {
-
 			$this->enterGrades(NULL,NULL);
-
 		} elseif ($this->core->action == "submit") {
-
 			$this->gradesSubmit();
-
 		} else {
-
 			if ($this->core->role >= 104) {
 				$this->manager();
 			} else {
@@ -66,8 +54,7 @@ class grades {
 
 		$run = $this->core->database->doSelectQuery($sql);
 
-		echo '<p><b>Overview of all grades submitted</b></p>
-            <p>';
+		echo '<p><b>Overview of all grades submitted</b></p><p>';
 
 		$init = TRUE;
 
@@ -136,7 +123,6 @@ class grades {
 			$date = $fetch[4];
 			$uid = $fetch[10];
 
-
 			echo '<div style="border:solid 1px #ccc; padding-left: 10px; margin-bottom: 4px;"><table width="756">' .
 				'<tr>' .
 				'<td><b>Results batch:</b></td>' .
@@ -152,8 +138,6 @@ class grades {
 				</td>' .
 				'</tr>';
 			echo '</table></div>';
-
-
 		}
 	}
 
@@ -201,52 +185,46 @@ class grades {
 				'<td>' . $date . '</td>' .
 				'<td>
 				<a href="?id=studies&action=edit&item=' . $fetch[0] . '"> <img src="templates/default/images/edi.png"> edit</a>
-                            <a href="?id=studies&action=delete&item=' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="templates/default/images/del.png"> delete </a>
-                            </td>' .
+				<a href="?id=studies&action=delete&item=' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="templates/default/images/del.png"> delete </a>
+				</td>' .
 				'</tr>';
-			echo '</table></div>';
-
-
+			echo'</table></div>';
 		}
 	}
 
 	function enterGrades($programselected, $courseselected) {
-
 		if (isset($programselected) && isset($courseselected)) {
 			$sql = "SELECT * FROM `basic-information` as bi, `student-program-link` as cc WHERE `Major` = '" . $programselected . "' AND cc.StudentID = bi.ID OR `Minor` = '" . $programselected . "' AND cc.`StudentID` = bi.`GovernmentID`  ORDER BY Surname";
 		}
 
 		$run = $this->core->database->doSelectQuery($sql);
-
 		$validator = mt_rand(100000, 9999999999999999);
 
 		echo '<p><b>Enter grades </b></p><p>
-	<form id="login" name="login" method="post" action="?id=grades&action=submit">
-	<input type="hidden" name="id" value="grades-submit">
-	<input type="hidden" name="validator" value="' . $validator . '">
-	<input type="hidden" name="course" value="' . $courseselected . '">
-	<table width="768" height="" border="0" cellpadding="0" cellspacing="0">
-	<tr class="tableheader">
-	<td width="20px"></td>
-	<td><b>Student name</b></td>
-	<td><b>Student number</b></td>
-	<td><b>Grade field</b></td>
-	</tr>';
+		<form id="login" name="login" method="post" action="?id=grades&action=submit">
+		<input type="hidden" name="id" value="grades-submit">
+		<input type="hidden" name="validator" value="' . $validator . '">
+		<input type="hidden" name="course" value="' . $courseselected . '">
+		<table width="768" height="" border="0" cellpadding="0" cellspacing="0">
+		<tr class="tableheader">
+		<td width="20px"></td>
+		<td><b>Student name</b></td>
+		<td><b>Student number</b></td>
+		<td><b>Grade field</b></td>
+		</tr>';
 
 		while ($fetch = $run->fetch_row()) {
-
 			echo '<tr>
-		<td><img src="templates/default/images/bullet_user.png"></td>
-		<td><b><a href="?id=view-information&uid=' . $fetch[4] . '">' . $fetch[0] . ' ' . $fetch[2] . '</a></b></td>' .
-				'<td>' . $fetch[4] . '</td>' .
-				'<td><input type="textbox" name="g' . $fetch[4] . '" size="5" class="submit"></td>' .
-				'</tr>';
-
+			<td><img src="templates/default/images/bullet_user.png"></td>
+			<td><b><a href="?id=view-information&uid=' . $fetch[4] . '">' . $fetch[0] . ' ' . $fetch[2] . '</a></b></td>' .
+			'<td>' . $fetch[4] . '</td>' .
+			'<td><input type="textbox" name="g' . $fetch[4] . '" size="5" class="submit"></td>' .
+			'</tr>';
 		}
 
 		echo '</table>
-	<br><hr><br><input type="submit" value="Submit grades to board of studies" />
-	</form></p>';
+		<br><hr><br><input type="submit" value="Submit grades to board of studies" />
+		</form></p>';
 	}
 
 
@@ -269,28 +247,25 @@ class grades {
 		if (!isset($courseselected)) {
 
 			echo '<p><b>Select the programme you wish to list the students from and course you are entering the grades for:</b></p>
-		<p><form id="login" name="login" method="POST" action="?id=grades&action=selectcourse">
-	
-		<div class="label">Show all students from: </div>
-		<select name="program" id="program" class="submit" width="250" style="width: 250px">
-			' . $program . '
-		</select>';
+			<p><form id="login" name="login" method="POST" action="?id=grades&action=selectcourse">
 
-			if (isset($programselected)) {
-
-				echo '<br />
-			<div class="label">And submit grades for: </div>
-			<select name="course" id="course" class="submit" width="250" style="width: 250px">
-				' . $courses . '
+			<div class="label">Show all students from: </div>
+			<select name="program" id="program" class="submit" width="250" style="width: 250px">
+				' . $program . '
 			</select>';
 
+			if (isset($programselected)) {
+				echo '<br />
+				<div class="label">And submit grades for: </div>
+				<select name="course" id="course" class="submit" width="250" style="width: 250px">
+					' . $courses . '
+				</select>';
 			}
 
 			echo '<br />
-		<div class="label"> </div>
-		<input type="button" value="Reset" class="submit" name="reset" onclick="history.back(-1)" /> <input type="submit" value="Next step" class="submit" />
-		</form></p>';
-
+			<div class="label"> </div>
+			<input type="button" value="Reset" class="submit" name="reset" onclick="history.back(-1)" /> <input type="submit" value="Next step" class="submit" />
+			</form></p>';
 		}
 
 		if (isset($programselected) && isset($courseselected)) {
@@ -327,10 +302,8 @@ class grades {
 			foreach ($_POST as $student => $grade) {
 
 				if ($grade != "" && $grade != "grades-submit" && $student != "course" && $student != "validator") {
-
 					$student = ltrim($student, 'g');
 					$date = date('YmdH');
-
 					$hash = sha1("$grade$student$grade$date$salt");
 
 					$output = $output . "<tr><td><b>" . $student . "</b></td><td><b>" . $grade . "</td></tr>";
@@ -343,21 +316,14 @@ class grades {
 			$sql = "COMMIT;";
 
 			if ($this->database->doInsertQuery($sql)) {
-
 				echo $output . "</table><p><b>All grades have been submitted for approval.</b></p>";
-
 			} else {
-
 				throwerror("ERROR UNKNOWN");
-
 			}
 
 		} else {
-
 			throwerror("Please continue home");
-
 		}
-
 	}
 
 }

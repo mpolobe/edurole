@@ -37,13 +37,12 @@ $conf['css'][2] = '<link href="lib/fullcalendar/fullcalendar.print.css" rel="sty
 $conf['css'][5] = '<link href="lib/aloha/css/aloha.css" rel="stylesheet" type="text/css" />';
 
 //Javascript available to the system, 0 is included on every page
-$conf['javascript'][0] = '<script src="js/jquery.js"></script>';
-$conf['javascript'][2] = '<script src="js/jquery.ui.core.js"></script>';
-$conf['javascript'][3] = '<script src="js/jquery.dropdown.js"></script>';
-$conf['javascript'][4] = '<script src="js/jquery.ui.widget.js"></script>';
-$conf['javascript'][5] = '<script src="js/jquery.ui.datepicker.js"></script>';
-$conf['javascript'][6] = '<script src="js/require.js"></script>';
-$conf['javascript'][8] = '<script src="js/prototype.js"></script>';
+$conf['javascript'][0] = '<script src="lib/jquery/jquery.js"></script>';
+$conf['javascript'][2] = '<script src="lib/jquery/jquery.ui.core.js"></script>';
+$conf['javascript'][3] = '<script src="lib/jquery/jquery.dropdown.js"></script>';
+$conf['javascript'][4] = '<script src="lib/jquery/jquery.ui.widget.js"></script>';
+$conf['javascript'][5] = '<script src="lib/jquery/jquery.ui.datepicker.js"></script>';
+$conf['javascript'][6] = '<script src="lib/requirejs/require.js"></script>';
 $conf['javascript'][7] = '<script src="lib/aloha/lib/aloha.js" data-aloha-plugins="common/ui,  common/format, common/list, common/link, common/highlighteditables"></script>';
 $conf['javascript'][9] = '<script src="lib/fullcalendar/fullcalendar.min.js"></script>';
 ?>

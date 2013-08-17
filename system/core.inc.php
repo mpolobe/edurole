@@ -1,7 +1,7 @@
 <?php
 class eduroleCore {
 
-	public $page, $action, $conf, $username, $userid, $template, $database, $role, $rolename, $cleanPost, $log, $cleanGet, $route, $classPath, $viewPath, $templatePath;
+	public $conf, $page, $action, $item, $username, $userID, $template, $database, $role, $roleName, $cleanPost, $log, $cleanGet, $route, $classPath, $viewPath, $templatePath;
 
 	public function __construct($conf) {
 		$this->conf = $conf;
@@ -44,9 +44,11 @@ class eduroleCore {
 		$this->route = explode('/', $this->route);
 
 		if (count($this->route) > 0) {
-			$this->core->page = $this->route[0];
+			$this->page = $this->route[0];
 		} elseif (count($this->route) > 1) {
-			$this->core->action = $this->route[1];
+			$this->action = $this->route[1];
+		} elseif (count($this->route) > 2) {
+			$this->item = $this->route[2];
 		}
 	}
 

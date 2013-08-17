@@ -17,7 +17,6 @@ class item {
 	public function buildView($core) {
 		$this->core = $core;
 
-		$action = $this->core->cleanGet['action'];
 		$item = $this->core->cleanGet['item'];
 
 		if (empty($this->core->action)) {

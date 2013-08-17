@@ -3,6 +3,7 @@ class schools {
 
 	public $core;
 	public $view;
+	public $item = NULL;
 
 	public function configView() {
 		$this->view->header = TRUE;
@@ -15,48 +16,24 @@ class schools {
 	}
 
 	public function buildView($core) {
-
 		$this->core = $core;
-
-		$action = $this->core->cleanGet['action'];
-		$access = $_SESSION['access'];
 		$item = $this->core->cleanGet['item'];
 
-		if (empty($this->core->action) && $access > 2) {
-
+		if (empty($this->core->action) && $this->core->role > 2) {
 			$sql = "SELECT * FROM `schools`,`access`,`basic-information` WHERE Dean = `access`.ID AND `access`.ID = `basic-information`.ID ORDER BY Name";
 			$this->listSchools($sql);
-
 		} elseif ($this->core->action == "view") {
-
 			$this->showSchool();
-
-		} elseif ($this->core->action == "edit" && isset($item) && $access > 5) {
-
+		} elseif ($this->core->action == "edit" && isset($item) && $this->core->role > 5) {
 			$sql = "SELECT * FROM `schools` WHERE ID = $item";
 			$this->editSchool($sql);
-
-		} elseif ($this->core->action == "add" && $access > 5) {
-
-			addSchool();
-
-		} elseif ($this->core->action == "save" && $access > 5) {
-
-			saveSchool();
-			$sql = "SELECT * FROM `schools`,`access`,`basic-information` WHERE Dean = `access`.ID AND `access`.ID = `basic-information`.ID ORDER BY Name";
-			$this->listSchools($sql);
-
-		} elseif ($this->core->action == "delete" && isset($item) && $access > 5) {
-
-			deleteSchool($item);
-
-			$sql = "SELECT * FROM `schools`,`access`,`basic-information` WHERE Dean = `access`.ID AND `access`.ID = `basic-information`.ID ORDER BY Name";
-			$this->listSchools($sql);
-			echo '<script>
-                            alert("The school has been deleted");
-                    </script>';
+		} elseif ($this->core->action == "add" && $this->core->role > 5) {
+			$this->addSchool();
+		} elseif ($this->core->action == "save" && $this->core->role > 5) {
+			$this->saveSchool();
+		} elseif ($this->core->action == "delete" && isset($item) && $this->core->role > 5) {
+			$this->deleteSchool($item);
 		}
-
 	}
 
 	function editSchool($sql) {
@@ -86,14 +63,15 @@ class schools {
 	}
 
 	function deleteSchool($id) {
-
 		$sql = 'DELETE FROM `schools`  WHERE `ID` = "' . $id . '"';
 		$run = $this->database->doInsertQuery($sql);
 
+		$sql = "SELECT * FROM `schools`,`access`,`basic-information` WHERE Dean = `access`.ID AND `access`.ID = `basic-information`.ID ORDER BY Name";
+		$this->listSchools($sql);
+		$this->core->showAlert("The school has been deleted");
 	}
 
 	function saveSchool() {
-
 		$item = $this->core->cleanPost['item'];
 		$name = $this->core->cleanPost['name'];
 		$dean = $this->core->cleanPost['dean'];
@@ -107,6 +85,8 @@ class schools {
 
 		$run = $this->database->doInsertQuery($sql);
 
+		$sql = "SELECT * FROM `schools`,`access`,`basic-information` WHERE Dean = `access`.ID AND `access`.ID = `basic-information`.ID ORDER BY Name";
+		$this->listSchools($sql);
 	}
 
 	function listSchools($sql) {

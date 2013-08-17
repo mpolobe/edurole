@@ -3,6 +3,7 @@ class assignments {
 
 	public $core;
 	public $view;
+	public $item = NULL;
 
 	public function configView() {
 		$this->view->header = TRUE;

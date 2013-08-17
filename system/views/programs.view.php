@@ -16,59 +16,29 @@ class programmes {
 
 	public function buildView($core) {
 		$this->core = $core;
-
-		$action = $this->core->cleanGet['action'];
-		$access = $_SESSION['access'];
 		$item = $this->core->cleanGet['item'];
 
 		$sql = "(SELECT `programmes`.ID, ProgramName, ProgramCoordinator, ProgramType FROM `programmes`) UNION ALL (SELECT `programmes`.ID, ProgramName, ProgramCoordinator, ProgramType FROM `programmes`, `program-course-link` WHERE ProgramID = programmes.ID) ORDER BY ID ";
 
-		if ($this->core->cleanGet['action'] == "list" && isset($item) && $access > 100) {
-
+		if ($this->core->action == "list" && isset($item) && $this->core->role > 100) {
 			$sql = "SELECT * FROM `programmes`, `program-course-link`, `studies`, WHERE `programmes`.ParentID = `studies`.ID AND `studies`.ID = $item ORDER BY `studies`.Name";
 			$this->listProgrammes($sql);
-
-		} elseif ($this->core->cleanGet['action'] == "view") {
-
+		} elseif ($this->core->action == "view") {
 			$sql = "SELECT `programmes`.ID, ProgramName, ProgramCoordinator, ProgramType, `basic-information`.ID, FirstName, Surname FROM `programmes`, `basic-information` WHERE `programmes`.ID = $item AND ProgramCoordinator = `basic-information`.ID";
 			$this->showProgram($sql);
-
-		} elseif ($this->core->action == "edit" && isset($item) && $access > 100) {
-
+		} elseif ($this->core->action == "edit" && isset($item) && $this->core->role > 100) {
 			$sql = "SELECT `programmes`.ID, ProgramName, ProgramCoordinator, ProgramType, `basic-information`.ID, FirstName, Surname FROM `programmes`, `basic-information` WHERE `programmes`.ID = $item AND ProgramCoordinator = `basic-information`.ID";
 			$this->editProgram($sql);
-
-		} elseif ($this->core->action == "add" && $access > 100) {
-
+		} elseif ($this->core->action == "add" && $this->core->role > 100) {
 			$this->addProgram();
-
-		} elseif ($this->core->action == "savecourses" && $access > 100) {
-
-			$this->saveProgram();
-			$item = $this->core->cleanPost['item'];
-			$sql = "SELECT `programmes`.ID, ProgramName, ProgramCoordinator, ProgramType, `basic-information`.ID, FirstName, Surname FROM `programmes`, `basic-information` WHERE `programmes`.ID = $item AND ProgramCoordinator = `basic-information`.ID";
-			$this->listProgrammes($sql);
-
-		} elseif ($this->core->action == "save" && $access > 100) {
-
+		} elseif ($this->core->action == "save" && $this->core->role > 100) {
 			$this->saveProgram();
 			$this->listProgrammes($sql);
-
-		} elseif ($this->core->action == "delete" && isset($item) && $access > 100) {
-
+		} elseif ($this->core->action == "delete" && isset($item) && $this->core->role > 100) {
 			$this->deleteProgram($item);
-			$this->listProgrammes($sql);
-
-			echo '<script>
-                        alert("The account has been deleted");
-                </script>';
-
 		} else {
-
 			$this->listProgrammes($sql);
-
 		}
-
 	}
 
 	function editProgram($sql) {
@@ -101,6 +71,9 @@ class programmes {
 	function deleteProgram($id) {
 		$sql = 'DELETE FROM `programmes`  WHERE `ID` = "' . $id . '"';
 		$run = $this->database->doInsertQuery($sql);
+
+		$this->listProgrammes($sql);
+		$this->core->showAlert("The programme has been deleted");
 	}
 
 	function saveProgram() {
@@ -195,14 +168,15 @@ class programmes {
 				}
 
 				$out = '<tr ' . $bgc . '>
-                                <td><b><a href="?id=programmes&action=view&item=' . $fetch[0] . '"> ' . $fetch[1] . '</a></b></td>
-                                <td>';
+						<td><b><a href="?id=programmes&action=view&item=' . $fetch[0] . '"> ' . $fetch[1] . '</a></b></td>
+						<td>';
+
 				$rest = ' </td><td> ' . $type . ' </td>
-                                <td>
-                                <a href="?id=programmes&action=edit&item=' . $fetch[0] . '"> <img src="templates/default/images/edi.png"> edit</a>
-                                <a href="?id=programmes&action=delete&item=' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="templates/default/images/del.png"> delete </a>
-                                </td>
-                                </tr>';
+						<td>
+						<a href="?id=programmes&action=edit&item=' . $fetch[0] . '"> <img src="templates/default/images/edi.png"> edit</a>
+						<a href="?id=programmes&action=delete&item=' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="templates/default/images/del.png"> delete </a>
+						</td>
+						</tr>';
 
 				$first = 3;
 				$count = 0;
@@ -232,26 +206,23 @@ class programmes {
 		while ($fetch = $run->fetch_row()) {
 
 			echo '<table width="768" border="0" cellpadding="5" cellspacing="0">
-                      <tr>
-                        <td width="205" height="28" bgcolor="#EEEEEE"><strong>Information</strong></td>
-                        <td bgcolor="#EEEEEE"></td>
-                        <td  bgcolor="#EEEEEE"></td>
-                      </tr>
-
-                    <tr>
-                    <td width="150"><b>Name of Programme</b></td>
-                    <td><b>' . $fetch[1] . '</b></td>
-                    <td></td>
-                    </tr>
-
-                <tr>
-                <td width="150"><b>Programme Coordinator</b></td>
-                <td><a href="?id=view-information&uid=' . $fetch[4] . '">' . $fetch[5] . ' ' . $fetch[6] . '</b></td>
-                <td></td>
-                </tr>
-
-                <tr><td>Programme Type</td>
-                <td>';
+				  <tr>
+					<td width="205" height="28" bgcolor="#EEEEEE"><strong>Information</strong></td>
+					<td bgcolor="#EEEEEE"></td>
+					<td  bgcolor="#EEEEEE"></td>
+				  </tr>
+					<tr>
+					<td width="150"><b>Name of Programme</b></td>
+					<td><b>' . $fetch[1] . '</b></td>
+					<td></td>
+					</tr>
+					<tr>
+					<td width="150"><b>Programme Coordinator</b></td>
+					<td><a href="?id=view-information&uid=' . $fetch[4] . '">' . $fetch[5] . ' ' . $fetch[6] . '</b></td>
+					<td></td>
+					</tr>
+					<tr><td>Programme Type</td>
+					<td>';
 
 			if ($fetch[3] == "0") {
 				echo 'No type selected';

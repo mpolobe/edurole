@@ -3,6 +3,7 @@ class users {
 
 	public $core;
 	public $view;
+	public $item = NULL;
 
 	public function configView() {
 		$this->view->header = TRUE;
@@ -19,50 +20,39 @@ class users {
 		$uid = $this->core->cleanGet['uid'];
 
 		if ($this->core->action == "add" && $this->core->role >= 100) {
-
-			$function = __FUNCTION__;
-			$title = 'Add user account';
-			$description = 'Please provide the needed information to create a new user account';
-
-			echo component::generateBreadcrumb(get_class(), $function);
-			echo component::generateTitle($title, $description);
-
-			include $this->core->formPath . "adduser.form.php";
-
-		} elseif ($this->core->action == "save" && $this->core->role >= 100) {
-
-			$function = __FUNCTION__;
-			$title = 'Add user account';
-			$description = 'The account information has been saved';
-
-			echo component::generateBreadcrumb(get_class(), $function);
-			echo component::generateTitle($title, $description);
-
-			include $this->core->classPath . "adduser.inc.php";
 			$this->addUser();
-
+		} elseif ($this->core->action == "save" && $this->core->role >= 100) {
+			$this->saveUser();
 		} elseif ($this->core->action == "delete" && isset($uid) && $core->role >= 100) {
-
 			$this->deleteUser($uid);
-			$this->showUserList();
-
-			echo '<script>
-				alert("The account has been deleted");
-			</script>';
-
 		} else if ($this->core->role >= 100 & $this->core->action == "students") {
-
 			$this->showStudentList();
-
 		} else if ($this->core->action == "saveedit") {
-
 			$this->saveEdit();
-
 		} else if ($core->role >= 100) {
-
 			$this->showUserList();
 		}
+	}
 
+	function saveUser(){
+		$function = __FUNCTION__;
+		$title = 'Add user account';
+		$description = 'The account information has been saved';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
+
+		include $this->core->classPath . "adduser.inc.php";
+		$this->addUser();
+	}
+
+	function addUser(){
+		$function = __FUNCTION__;
+		$title = 'Add user account';
+		$description = 'Please provide the needed information to create a new user account';
+		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateTitle($title, $description);
+
+		include $this->core->formPath . "adduser.form.php";
 	}
 
 	function saveEdit() {
@@ -99,9 +89,7 @@ class users {
 
 		showUserList();
 
-		echo '<script>
-			alert("The account has been updated");
-		</script>';
+		$this->core->showAlert("The account has been updated");
 	}
 
 	function showUserList() {
@@ -195,11 +183,9 @@ class users {
 		}
 
 		echo '</table>';
-
 	}
 
 	function deleteUser($id) {
-
 		$sql = 'START TRANSACTION; 
 			DELETE FROM `basic-information`  WHERE `ID` = "' . $id . '";
 			DELETE FROM `access`  WHERE `ID` = "' . $id . '";
@@ -207,8 +193,9 @@ class users {
 
 		$run = $this->database->mysqli->doInsertQuery($sql);
 
+		$this->showUserList();
+		$this->core->showAlert("The account has been deleted");
 	}
-
 }
 
 ?>

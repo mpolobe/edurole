@@ -17,6 +17,12 @@ class institution {
 	public function buildView($core) {
 		$this->core = $core;
 
+		if (empty($this->core->action) || $this->core->action == "manage") {
+			$this->manageInstitution();
+		}
+	}
+
+	function manageInstitution() {
 		$function = __FUNCTION__;
 		$title = 'Application Settings';
 		$description = 'Institution wide application settings';
@@ -27,11 +33,9 @@ class institution {
 		$this->institutionName();
 		$this->paymentTypes();
 		$this->admissionFlow();
-
 	}
 
 	function institutionName() {
-
 		$sql = "SELECT * FROM `settings` WHERE `Name` = 'InstitutionName' OR `Name` = 'InstitutionWebsite'  ORDER BY `Name`";
 
 		$run = $this->core->database->doSelectQuery($sql);

@@ -52,7 +52,7 @@ if ($this->core->database->doInsertQuery($sql)) {
 
 	while ($fetch = mysql_fetch_row($dms)) {
 
-		$userid = $fetch[4];
+		$userID = $fetch[4];
 
 		// Emergency contact
 		if (isset($this->core->cleanPost["econtact"])) {
@@ -84,7 +84,7 @@ if ($this->core->database->doInsertQuery($sql)) {
 					$file = $_FILES["education"];
 
 					$home = getcwd();
-					$path = $home . "/datastore/userhomes/" . $userid . "/education-history";
+					$path = $home . "/datastore/userhomes/" . $userID . "/education-history";
 
 					if (!is_dir($path)) {
 						mkdir($path, 0755, true);
@@ -137,14 +137,14 @@ if ($this->core->database->doInsertQuery($sql)) {
 		$this->core->database->doInsertQuery($sql);
 		$this->core->logEvent("Query executed: $sql", "3");
 
-		$sql = "INSERT INTO `student-study-link` (`ID` ,`StudentID` ,`StudyID`, `Status`) VALUES (NULL , '$userid', '$studyid', '1')";
+		$sql = "INSERT INTO `student-study-link` (`ID` ,`StudentID` ,`StudyID`, `Status`) VALUES (NULL , '$userID', '$studyid', '1')";
 		$this->core->database->doInsertQuery($sql);
 		$this->core->logEvent("Query executed: $sql", "3");
 
 		$password = password(6);
-		$passenc = sha512($password . $this->core->conf['conf']['hash'] . $userid);
+		$passenc = sha512($password . $this->core->conf['conf']['hash'] . $userID);
 
-		$sql = "INSERT INTO `access` (`ID`, `Username`, `RoleID`, `Password`) VALUES ('$userid', '$userid', '1', '$passenc');";
+		$sql = "INSERT INTO `access` (`ID`, `Username`, `RoleID`, `Password`) VALUES ('$userID', '$userID', '1', '$passenc');";
 		$this->core->database->doInsertQuery($sql);
 		$this->core->logEvent("Query executed: $sql", "3");
 

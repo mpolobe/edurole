@@ -15,10 +15,8 @@ class information {
 	}
 
 	public function buildView($core) {
-
 		$this->core = $core;
 
-		$action = $this->core->cleanGet['action'];
 		$listtype = $this->core->cleanGet['listtype'];
 		$uid = $this->core->cleanGet['uid'];
 		$studentfirstname = $this->core->cleanGet['studentfirstname'];

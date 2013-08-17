@@ -3,6 +3,7 @@ class courses {
 
 	public $core;
 	public $view;
+	public $item = NULL;
 
 	public function configView() {
 		$this->view->header = TRUE;
@@ -16,7 +17,7 @@ class courses {
 
 	public function buildView($core) {
 		$this->core = $core;
-		$item = $this->core->cleanGet['item'];
+		$this->item = $this->core->cleanGet['item'];
 
 		if ($this->core->action == "list") {
 			$sql = "SELECT * FROM `programmes`,`studies` WHERE `programmes`.ParentID = `studies`.ID AND `studies`.ID = $item ORDER BY `studies`.Name";
@@ -31,13 +32,8 @@ class courses {
 			$this->addCourse();
 		} elseif ($this->core->action == "save" && $this->core->role > 3) {
 			$this->saveCourse();
-			$sql = "SELECT * FROM `programmes`,`studies` WHERE `programmes`.ParentID = `studies`.ID AND `studies`.ID = $item ORDER BY `studies`.Name";
-			$this->listCourses($sql);
 		} elseif ($this->core->action == "delete" && isset($item) && $this->core->role > 3) {
 			$this->deleteCourse($item);
-			$sql = "SELECT * FROM `programmes`,`studies` WHERE `programmes`.ParentID = `studies`.ID AND `studies`.ID = $item ORDER BY `studies`.Name";
-			$this->listCourses($sql);
-			$this->core->showAlert("The course has been deleted");
 		} else {
 			$sql = "SELECT * FROM `courses`, `basic-information` WHERE `courses`.CourseCoordinator = `basic-information`.ID ORDER BY `courses`.Name";
 			$this->listCourses($sql);
@@ -74,6 +70,27 @@ class courses {
 	function deleteCourse($id) {
 		$sql = 'DELETE FROM `schools`  WHERE `ID` = "' . $id . '"';
 		$run = $this->core->database->doSelectQuery($sql);
+
+		$sql = "SELECT * FROM `programmes`,`studies` WHERE `programmes`.ParentID = `studies`.ID AND `studies`.ID = $this->item ORDER BY `studies`.Name";
+		$this->listCourses($sql);
+		$this->core->showAlert("The course has been deleted");
+	}
+
+	function saveCourse() {
+		$name = $this->core->cleanPost['name'];
+		$dean = $this->core->cleanPost['dean'];
+		$description = $this->core->cleanPost['description'];
+
+		if (isset($this->item)) {
+			$sql = "UPDATE `courses` SET `Description` = '$description', `Name` = '$name', `Dean` = '$dean' WHERE `ID` = $this->item;";
+		} else {
+			$sql = "INSERT INTO `courses` (`ID`, `ParentID`, `Established`, `Name`, `Description`, `Dean`) VALUES (NULL, '0', CURRENT_DATE(), '$name', '$description', '$dean');";
+		}
+
+		$run = $this->database->doInsertQuery($sql);
+
+		$sql = "SELECT * FROM `courses`, `programmes`,`access`,`basic-information` WHERE Dean = `access`.ID AND `access`.ID = `basic-information`.ID ORDER BY Name";
+		$this->listSchools($sql);
 	}
 
 	function listCourses($sql) {

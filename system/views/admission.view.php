@@ -3,6 +3,7 @@ class admission {
 
 	public $core;
 	public $view;
+	public $item = NULL;
 
 	public function configView() {
 		$this->view->header = TRUE;
@@ -48,7 +49,6 @@ class admission {
 
 	function admissionProfile() {
 
-		$id = $_SESSION['userid'];
 		$uid = $this->core->cleanGet['uid'];
 
 		$function = __FUNCTION__;
@@ -59,7 +59,7 @@ class admission {
 		echo component::generateTitle($title, $description);
 
 		if ($this->core->role < 100) {
-			$sql = "SELECT * FROM `basic-information` as bi, `roles` as rl, `access` as ac WHERE ac.`ID` = '" . $id . "' AND ac.`ID` = bi.`ID` AND ac.`RoleID` = rl.`ID`";
+			$sql = "SELECT * FROM `basic-information` as bi, `roles` as rl, `access` as ac WHERE ac.`ID` = '" . $this->core->userid . "' AND ac.`ID` = bi.`ID` AND ac.`RoleID` = rl.`ID`";
 		} else {
 			$sql = "SELECT * FROM `basic-information` as bi, `roles` as rl, `access` as ac WHERE ac.`ID` = '" . $uid . "' AND ac.`ID` = bi.`ID` AND ac.`RoleID` = rl.`ID`";
 		}
