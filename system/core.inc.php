@@ -1,10 +1,14 @@
 <?php
 class eduroleCore {
 
-	public $id, $conf, $username, $userid, $template, $database, $role, $rolename, $cleanPost, $log, $cleanGet, $route;
+	public $id, $conf, $username, $userid, $template, $database, $role, $rolename, $cleanPost, $log, $cleanGet, $route, $classPath, $viewPath, $templatePath;
 
 	public function __construct($conf) {
 		$this->conf = $conf;
+
+		$this->classPath = "system/classes/";
+		$this->viewPath = "system/views/";
+		$this->templatePath = "templates/";
 
 		$this->database = new database($this);
 		$this->database->connectDatabase();
@@ -56,7 +60,7 @@ class eduroleCore {
 		$out = "";
 
 		foreach ($this->conf['conf']['templates'] as $template) {
-			$out = $out . '<option value="' . $count . '">' . $template . '</option>';
+			$out .= '<option value="' . $count . '">' . $template . '</option>';
 			$count++;
 		}
 

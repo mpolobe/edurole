@@ -46,7 +46,7 @@ class viewBuilder {
 				auth::logout();
 			} elseif ($page == "download") {
 				$filename = $this->core->cleanGet['file'];
-				include "includes/classes/files.inc.php";
+				include $this->core->classPath . "files.inc.php";
 				downloadFile($filename);
 			} elseif ($page == "template") {
 				$this->setTemplate();
@@ -58,7 +58,7 @@ class viewBuilder {
 
 	public function showView($view) {
 
-		$viewinclude = "includes/views/" . $view . ".view.php";
+		$viewinclude = $this->core->viewPath . $view . ".view.php";
 
 		if (file_exists($viewinclude)) {
 			$this->core->logEvent("Initializing view $view", "3");
@@ -113,14 +113,14 @@ class viewBuilder {
 	}
 
 	public function viewPageHeader($template) {
-		require_once "templates/" . $template . "/header.inc.php";
+		require_once $this->core->templatePath . $template . "/header.inc.php";
 	}
 
 	public function viewPageFooter($template) {
 		if ($this->core->conf['conf']['debugging'] == TRUE) {
 			$this->core->showDebugger();
 		}
-		include "templates/" . $template . "/footer.inc.php";
+		include $this->core->templatePath . $template . "/footer.inc.php";
 	}
 }
 

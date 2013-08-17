@@ -1,22 +1,23 @@
 {
-    "type": "package",
-    "package": {
-        "name": "javascript",
-        "target-dir": "js",
-        "require": {
-            "components/jquery": "1.9.*@dev",
-            "components/jqueryui": "dev-master",
-            "hearsay/require-js-bundle": "2.0.*@dev",
-            "adesigns/calendar-bundle": "dev-master"
-        }
+    "name": "edurole/edurole",
+    "description": "Edurole Student Information system",
+    "require": {
+        "components/jquery": "1.9.*@dev",
+        "components/jqueryui": "dev-master",
+        "hearsay/require-js-bundle": "2.0.*@dev",
+        "adesigns/calendar-bundle": "dev-master",
+        "imscp/roundcube": "0.3.0.*@dev",
+        "typo3/aloha": "dev-master"
     },
-    "type": "package",
-    "package": {
-        "name": "php",
-        "target-dir": "lib",
-        "require": {
-            "imscp/roundcube": "0.3.0.*@dev",
-            "typo3/aloha": "dev-master"
+    "target-dir": "lib",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rowan J. Vos",
+            "email": "r.j.vos@northit.nl"
         }
-    }
+    ],
+    "minimum-stability": "dev"
 }
+
+

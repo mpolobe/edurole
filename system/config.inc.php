@@ -9,7 +9,7 @@ $conf['conf']['hash'] = "2#FCLWJEFO2j3@K#LKF"; //CHANGE THIS TO SOMETHING UNIQUE
 //MYSQL server information
 $conf['mysql']['server'] = "localhost";
 $conf['mysql']['user'] = "root";
-$conf['mysql']['password'] = "PASSWORD";
+$conf['mysql']['password'] = "nox33509";
 $conf['mysql']['db'] = "edurole";
 
 //LDAP server information (EXAMPLE UNIVERSITY TEST DATA)
