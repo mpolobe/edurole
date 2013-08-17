@@ -22,31 +22,31 @@ class schools {
 		$access = $_SESSION['access'];
 		$item = $this->core->cleanGet['item'];
 
-		if (empty($action) && $access > 2) {
+		if (empty($this->core->action) && $access > 2) {
 
 			$sql = "SELECT * FROM `schools`,`access`,`basic-information` WHERE Dean = `access`.ID AND `access`.ID = `basic-information`.ID ORDER BY Name";
 			$this->listSchools($sql);
 
-		} elseif ($action == "view") {
+		} elseif ($this->core->action == "view") {
 
 			$this->showSchool();
 
-		} elseif ($action == "edit" && isset($item) && $access > 5) {
+		} elseif ($this->core->action == "edit" && isset($item) && $access > 5) {
 
 			$sql = "SELECT * FROM `schools` WHERE ID = $item";
 			$this->editSchool($sql);
 
-		} elseif ($action == "add" && $access > 5) {
+		} elseif ($this->core->action == "add" && $access > 5) {
 
 			addSchool();
 
-		} elseif ($action == "save" && $access > 5) {
+		} elseif ($this->core->action == "save" && $access > 5) {
 
 			saveSchool();
 			$sql = "SELECT * FROM `schools`,`access`,`basic-information` WHERE Dean = `access`.ID AND `access`.ID = `basic-information`.ID ORDER BY Name";
 			$this->listSchools($sql);
 
-		} elseif ($action == "delete" && isset($item) && $access > 5) {
+		} elseif ($this->core->action == "delete" && isset($item) && $access > 5) {
 
 			deleteSchool($item);
 

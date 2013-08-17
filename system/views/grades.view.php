@@ -23,23 +23,23 @@ class grades {
 
 		include $this->core->classpath . "grades.inc.php";
 
-		if ($action == "view-grades") {
+		if ($this->core->action == "view-grades") {
 
 			$this->gradebook();
 
-		} elseif ($action == "management") {
+		} elseif ($this->core->action == "management") {
 
 			$this->manager();
 
-		} elseif ($action == "selectcourse") {
+		} elseif ($this->core->action == "selectcourse") {
 
 			$this->selectCourse();
 
-		} elseif ($action == "entergrades") {
+		} elseif ($this->core->action == "entergrades") {
 
 			$this->enterGrades(NULL,NULL);
 
-		} elseif ($action == "submit") {
+		} elseif ($this->core->action == "submit") {
 
 			$this->gradesSubmit();
 

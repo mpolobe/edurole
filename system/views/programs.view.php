@@ -33,28 +33,28 @@ class programmes {
 			$sql = "SELECT `programmes`.ID, ProgramName, ProgramCoordinator, ProgramType, `basic-information`.ID, FirstName, Surname FROM `programmes`, `basic-information` WHERE `programmes`.ID = $item AND ProgramCoordinator = `basic-information`.ID";
 			$this->showProgram($sql);
 
-		} elseif ($action == "edit" && isset($item) && $access > 100) {
+		} elseif ($this->core->action == "edit" && isset($item) && $access > 100) {
 
 			$sql = "SELECT `programmes`.ID, ProgramName, ProgramCoordinator, ProgramType, `basic-information`.ID, FirstName, Surname FROM `programmes`, `basic-information` WHERE `programmes`.ID = $item AND ProgramCoordinator = `basic-information`.ID";
 			$this->editProgram($sql);
 
-		} elseif ($action == "add" && $access > 100) {
+		} elseif ($this->core->action == "add" && $access > 100) {
 
 			$this->addProgram();
 
-		} elseif ($action == "savecourses" && $access > 100) {
+		} elseif ($this->core->action == "savecourses" && $access > 100) {
 
 			$this->saveProgram();
 			$item = $this->core->cleanPost['item'];
 			$sql = "SELECT `programmes`.ID, ProgramName, ProgramCoordinator, ProgramType, `basic-information`.ID, FirstName, Surname FROM `programmes`, `basic-information` WHERE `programmes`.ID = $item AND ProgramCoordinator = `basic-information`.ID";
 			$this->listProgrammes($sql);
 
-		} elseif ($action == "save" && $access > 100) {
+		} elseif ($this->core->action == "save" && $access > 100) {
 
 			$this->saveProgram();
 			$this->listProgrammes($sql);
 
-		} elseif ($action == "delete" && isset($item) && $access > 100) {
+		} elseif ($this->core->action == "delete" && isset($item) && $access > 100) {
 
 			$this->deleteProgram($item);
 			$this->listProgrammes($sql);

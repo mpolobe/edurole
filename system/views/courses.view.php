@@ -15,41 +15,33 @@ class courses {
 	}
 
 	public function buildView($core) {
-
 		$this->core = $core;
-
-		$action = $this->core->cleanGet['action'];
 		$item = $this->core->cleanGet['item'];
 
-		if ($action == "list") {
+		if ($this->core->action == "list") {
 			$sql = "SELECT * FROM `programmes`,`studies` WHERE `programmes`.ParentID = `studies`.ID AND `studies`.ID = $item ORDER BY `studies`.Name";
 			$this->listCourses($sql);
-		} elseif ($action == "view") {
+		} elseif ($this->core->action == "view") {
 			$sql = "SELECT * FROM `courses`, `basic-information` WHERE `courses`.ID = $item AND `courses`.CourseCoordinator = `basic-information`.ID";
 			$this->showCourse($sql);
-		} elseif ($action == "edit" && isset($item) && $this->core->role > 3) {
+		} elseif ($this->core->action == "edit" && isset($item) && $this->core->role > 3) {
 			$sql = "SELECT * FROM `courses` WHERE `courses`.ID = $item";
 			$this->editCourse($sql);
-		} elseif ($action == "add" && $this->core->role > 3) {
+		} elseif ($this->core->action == "add" && $this->core->role > 3) {
 			$this->addCourse();
-		} elseif ($action == "save" && $this->core->role > 3) {
+		} elseif ($this->core->action == "save" && $this->core->role > 3) {
 			$this->saveCourse();
 			$sql = "SELECT * FROM `programmes`,`studies` WHERE `programmes`.ParentID = `studies`.ID AND `studies`.ID = $item ORDER BY `studies`.Name";
 			$this->listCourses($sql);
-		} elseif ($action == "delete" && isset($item) && $this->core->role > 3) {
+		} elseif ($this->core->action == "delete" && isset($item) && $this->core->role > 3) {
 			$this->deleteCourse($item);
-
 			$sql = "SELECT * FROM `programmes`,`studies` WHERE `programmes`.ParentID = `studies`.ID AND `studies`.ID = $item ORDER BY `studies`.Name";
 			$this->listCourses($sql);
-
-			echo '<script>
-                        alert("The course has been deleted");
-                </script>';
+			$this->core->showAlert("The course has been deleted");
 		} else {
 			$sql = "SELECT * FROM `courses`, `basic-information` WHERE `courses`.CourseCoordinator = `basic-information`.ID ORDER BY `courses`.Name";
 			$this->listCourses($sql);
 		}
-
 	}
 
 	function editCourse($sql) {

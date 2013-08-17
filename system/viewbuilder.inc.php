@@ -5,27 +5,18 @@ class viewBuilder {
 
 	public function __construct($core) {
 		$this->core = $core;
-		$this->pageSwitch($this->core->route);
+		$this->pageSwitch($this->core->page);
 	}
 
-	public function pageSwitch($route) {
+	public function pageSwitch($page) {
 
-		$this->core->logEvent("Starting viewBuilder for " . $route, "3");
-
-		$route = explode('/', $route);
-
-		if (count($route) > 0) {
-			$page = $route[0];
-		} elseif (count($route) > 1) {
-			$action = $route[1];
-		}
-
+		$this->core->logEvent("Starting view builder for page: " . $this->core->page ." action: ". $this->core->action, "3");
 
 		if (!isset($this->core->role)) {
-
 			// User is not authenticated
+			// CUSTOM PAGES AVAILABLE WITHOUT AUTHORISATION
 
-			if ($page == "") {
+			if (empty($page)) {
 				$this->showView("login");
 			} elseif ($page == "login") {
 				$auth = new auth($this->core);
@@ -37,10 +28,10 @@ class viewBuilder {
 			}
 
 		} else {
-
 			// User is authenticated
+			// CUSTOM PAGES AVAILABLE WITH AUTHORISATION
 
-			if ($page == "") {
+			if (empty($page)) {
 				$this->showView("home");
 			} elseif ($page == "logout") {
 				auth::logout();
@@ -58,45 +49,44 @@ class viewBuilder {
 
 	public function showView($view) {
 
-		$viewinclude = $this->core->viewPath . $view . ".view.php";
+		$viewInclude = $this->core->viewPath . $view . ".view.php";
 
-		if (file_exists($viewinclude)) {
+		if (file_exists($viewInclude)) {
 			$this->core->logEvent("Initializing view $view", "3");
 
-			require_once $viewinclude;
+			require_once $viewInclude;
 
 			$this->view = new $view();
-			$viewconfig = $this->view->configView();
-
+			$viewConfig = $this->view->configView();
 		} else {
-			$this->core->throwError("Required view missing $viewinclude");
+			$this->core->throwError("Required view missing $viewInclude");
 		}
 
 		$this->jsFiles = $this->core->conf['javascript'][0] . "\n"; //include default JS
 
-		foreach ($viewconfig->javascript as $file) {
+		foreach ($viewConfig->javascript as $file) {
 			$this->jsFiles .= $this->core->conf['javascript'][$file]; //include JS files required by page
 		}
 
 		$this->cssFiles = $this->core->conf['css'][0] . "\n"; //include default CSS
 
-		foreach ($viewconfig->css as $file) {
+		foreach ($viewConfig->css as $file) {
 			$this->cssFiles .= $this->core->conf['css'][$file] . "\n"; //include CSS required by page
 		}
 
 		$this->cssFiles = str_replace("%TEMPLATE%", $this->core->template, $this->cssFiles);
 
-		if ($viewconfig->header == TRUE) {
+		if ($viewConfig->header == TRUE) {
 			$this->viewPageHeader($this->core->template);
 		}
 
-		if (isset($this->core->role) && $viewconfig->menu != TRUE) {
+		if (isset($this->core->role) && $viewConfig->menu != TRUE) {
 			$this->viewMenu();
 		}
 
 		$this->view->buildview($this->core);
 
-		if ($viewconfig->footer == TRUE) {
+		if ($viewConfig->footer == TRUE) {
 			$this->viewPageFooter($this->core->template);
 		}
 
@@ -123,5 +113,4 @@ class viewBuilder {
 		include $this->core->templatePath . $template . "/footer.inc.php";
 	}
 }
-
 ?>

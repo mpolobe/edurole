@@ -16,11 +16,9 @@ class users {
 
 	public function buildView($core) {
 		$this->core = $core;
-
 		$uid = $this->core->cleanGet['uid'];
-		$action = $this->core->cleanGet['action'];
 
-		if ($action == "add" && $this->core->role >= 100) {
+		if ($this->core->action == "add" && $this->core->role >= 100) {
 
 			$function = __FUNCTION__;
 			$title = 'Add user account';
@@ -31,7 +29,7 @@ class users {
 
 			include $this->core->formPath . "adduser.form.php";
 
-		} elseif ($action == "save" && $this->core->role >= 100) {
+		} elseif ($this->core->action == "save" && $this->core->role >= 100) {
 
 			$function = __FUNCTION__;
 			$title = 'Add user account';
@@ -43,7 +41,7 @@ class users {
 			include $this->core->classPath . "adduser.inc.php";
 			$this->addUser();
 
-		} elseif ($action == "delete" && isset($uid) && $core->role >= 100) {
+		} elseif ($this->core->action == "delete" && isset($uid) && $core->role >= 100) {
 
 			$this->deleteUser($uid);
 			$this->showUserList();
@@ -52,11 +50,11 @@ class users {
 				alert("The account has been deleted");
 			</script>';
 
-		} else if ($this->core->role >= 100 & $action == "students") {
+		} else if ($this->core->role >= 100 & $this->core->action == "students") {
 
 			$this->showStudentList();
 
-		} else if ($action == "saveedit") {
+		} else if ($this->core->action == "saveedit") {
 
 			$this->saveEdit();
 

@@ -21,38 +21,38 @@ class studies {
 		$action = $this->core->cleanGet['action'];
 		$item = $this->core->cleanGet['item'];
 
-		if (empty($action) && $this->core->role > 100) {
+		if (empty($this->core->action) && $this->core->role > 100) {
 
 			$sql = "SELECT `study`.ID, `study`.Name, `schools`.name, `schools`.id FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID ORDER BY `study`.Name";
 			$this->listStudies($sql);
 
-		} elseif ($action == "list" && $this->core->role > 100) {
+		} elseif ($this->core->action == "list" && $this->core->role > 100) {
 
 			$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID AND `study`.ID = $item ORDER BY `study`.Name";
 			$this->listStudies($sql);
 
-		} elseif ($action == "view" && $this->core->role > 100) {
+		} elseif ($this->core->action == "view" && $this->core->role > 100) {
 
 			$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID AND `study`.ParentID = `schools`.ID AND `study`.ID = $item";
 			$this->showStudy($sql);
 
-		} elseif ($action == "edit" && isset($item) && $this->core->role > 100) {
+		} elseif ($this->core->action == "edit" && isset($item) && $this->core->role > 100) {
 
 			$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID AND `study`.ParentID = `schools`.ID AND `study`.ID = $item";
 			$this->editStudy($sql);
 
-		} elseif ($action == "add" && $this->core->role > 100) {
+		} elseif ($this->core->action == "add" && $this->core->role > 100) {
 
 			$this->addStudy();
 
-		} elseif ($action == "save" && $this->core->role > 100) {
+		} elseif ($this->core->action == "save" && $this->core->role > 100) {
 
 			$this->saveStudy();
 
 			$sql = "SELECT `study`.ID, `study`.Name, `schools`.name, `schools`.id FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID ORDER BY `study`.Name";
 			$this->listStudies($sql);
 
-		} elseif ($action == "delete" && isset($item)) {
+		} elseif ($this->core->action == "delete" && isset($item)) {
 
 			$this->deleteStudy($item);
 

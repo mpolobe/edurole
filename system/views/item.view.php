@@ -20,7 +20,7 @@ class item {
 		$action = $this->core->cleanGet['action'];
 		$item = $this->core->cleanGet['item'];
 
-		if (empty($action)) {
+		if (empty($this->core->action)) {
 
 			$function = __FUNCTION__;
 			$title = 'News';
@@ -32,11 +32,11 @@ class item {
 			$this->showItem($item);
 			$this->showNewsOverview();
 
-		} elseif ($action == "edit" && $this->core->role > 102) {
+		} elseif ($this->core->action == "edit" && $this->core->role > 102) {
 
 			$this->edit($item);
 
-		} elseif ($action == "save" && $this->core->role > 102) {
+		} elseif ($this->core->action == "save" && $this->core->role > 102) {
 
 			$this->editsave($item);
 

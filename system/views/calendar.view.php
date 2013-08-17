@@ -17,14 +17,20 @@ class calendar {
 	public function buildView($core) {
 		$this->core = $core;
 
+		if (empty($this->core->action) || $this->core->action == "view" && $core->role > 10) {
+			$this->buildCalendar();
+		}
+	}
+
+	public function buildCalendar(){
 		$inlinejs = "<script>
 		$(document).ready(function() {
-	
+
 		var date = new Date();
 		var d = date.getDate();
 		var m = date.getMonth();
 		var y = date.getFullYear();
-		
+
 		var calendar = $('#calendar').fullCalendar({
 			header: {
 				left: 'prev,next today',
@@ -75,9 +81,9 @@ class calendar {
 
 		$inlinejs .= "		]
 		});
-		
+
 	});
-		
+
 	</script>";
 
 		echo $inlinejs;

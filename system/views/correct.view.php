@@ -17,6 +17,12 @@ class correct {
 	public function buildView($core) {
 		$this->core = $core;
 
+		if ($this->core->action == "correct" && $core->role >= 100) {
+			$this->correctInformations();
+		}
+	}
+
+	public function correctInformation(){
 		$function = __FUNCTION__;
 		$title = 'List of incorrectly imported student number';
 		$description = 'Your assignments currently active in your courses and programmes';
@@ -33,7 +39,7 @@ class correct {
 			<tr >
 			<td  style="padding:5px"bgcolor="#EEEEEE" <b> Student Name</b></td>
 			<td style="padding:5px" bgcolor="#EEEEEE"><b> <b>National ID</b></td>
-			<td style="padding:5px" bgcolor="#EEEEEE"><b> Incorrect student number</b></td>		
+			<td style="padding:5px" bgcolor="#EEEEEE"><b> Incorrect student number</b></td>
 			</tr>';
 
 		$run = $this->core->database->doSelectQuery($sql);

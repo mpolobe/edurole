@@ -18,7 +18,7 @@ class components {
 		}
 
 		$crumbstart = '<div class="breadcrumb">';
-		$crumbend = '</div>';
+		$crumbend   = '</div>';
 
 		$currentClass = $pathArray['functionalname'];
 
@@ -27,14 +27,15 @@ class components {
 		return ($completecrumb);
 	}
 
-	public static function generateTitle($title, $description) {
-		$title = '<div class="contentpadfull">' .
-			'<p class="title">' . $title . '</p>' .
-			'<p><b>' . $description . '</b> </b></p>';
+	public static function generateTitle($title, $description = NULL) {
+		$title = '<div class="contentpadfull"> <p class="title">' . $title . '</p>';
+
+		if(!empty($description)){
+			$title .= '<p><b>' . $description . '</b> </b></p>';
+		}
 
 		return ($title);
 	}
 
 }
-
 ?>

@@ -16,34 +16,28 @@ class assignments {
 
 	public function buildView($core) {
 		$this->core = $core;
-
 		include $this->core->classPath . "files.inc.php";
 
-		if ($this->core->cleanGet["action"] == "manage" || !isset($this->core->cleanGet["action"]) && $core->role > 100) {
-
+		if ($this->core->action == "manage" || !isset($this->core->action) && $core->role > 100) {
 			$this->manageAssignments();
-
-		} elseif ($this->core->cleanGet["action"] == "overview" || !isset($this->core->cleanGet["action"]) || !isset($this->core->cleanGet["action"]) && $core->role >= 10) {
-
+		} elseif ($this->core->action == "overview" || !isset($this->core->action) || !isset($this->core->action) && $core->role >= 10) {
 			$this->allAssignments();
-
-		} elseif ($this->core->cleanGet["action"] == "edit") {
+		} elseif ($this->core->action == "edit") {
 			$this->editFile();
-		} elseif ($this->core->cleanGet["action"] == "saveFile") {
+		} elseif ($this->core->action == "saveFile") {
 			$this->saveFile();
-		} elseif ($this->core->cleanGet["action"] == "renameFile") {
+		} elseif ($this->core->action == "renameFile") {
 			$this->renameFile();
-		} elseif ($this->core->cleanGet["action"] == "delete") {
+		} elseif ($this->core->action == "delete") {
 			$this->deleteFile();
-		} elseif ($this->core->cleanGet["action"] == "uploadFile") {
+		} elseif ($this->core->action == "uploadFile") {
 			$this->uploadFile();
-		} elseif ($this->core->cleanGet["action"] == "newFile") {
+		} elseif ($this->core->action == "newFile") {
 			$this->newFile();
 		}
 	}
 
 	function allAssignments() {
-
 		$function = __FUNCTION__;
 		$title = 'Overview of personal assignments';
 		$description = 'Your assignments currently active in your courses and programmes';

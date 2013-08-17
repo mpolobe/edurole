@@ -20,11 +20,11 @@ class library {
 		$access = $_SESSION['access'];
 		include $this->core->classPath . "files.inc.php";
 
-		if ($this->core->cleanGet["action"] == "manage" || !isset($this->core->cleanGet["action"]) && $access > 100) {
+		if ($this->core->action == "manage" || !isset($this->core->action) && $access > 100) {
 
 			$this->manageBooks();
 
-		} elseif ($this->core->cleanGet["action"] == "overview" || !isset($this->core->cleanGet["action"]) || !isset($this->core->cleanGet["action"]) && $access >= 10) {
+		} elseif ($this->core->action == "overview" || !isset($this->core->action) || !isset($this->core->action) && $access >= 10) {
 			$function = __FUNCTION__;
 			$title = 'Overview of personal assignments';
 			$description = 'View your books on loan from the library';

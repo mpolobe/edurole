@@ -17,11 +17,10 @@ class home {
 		$this->core = $core;
 
 		$function = __FUNCTION__;
-		$title = 'Grades submitted';
-		$description = 'Overview of personally submitted grades';
+		$title = 'Welcome to Edurole';
 
 		echo component::generateBreadcrumb(get_class(), $function);
-		echo component::generateTitle($title, $description);
+		echo component::generateTitle($title, NULL);
 
 		$this->infoSheet();
 

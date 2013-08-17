@@ -15,40 +15,23 @@ class admission {
 
 	public function buildView($core) {
 		$this->core = $core;
-
-		$action = $this->core->cleanGet['action'];
 		$uid = $this->core->cleanGet['uid'];
 
-		if (empty($action) && $this->core->role < 100 || $action == "profile" && isset($uid)) {
-
+		if (empty($this->core->action) && $this->core->role < 100 || $this->core->action == "profile" && isset($uid)) {
 			$this->admissionProfile();
-
-		} elseif ($action == "promote" && $this->core->role >= 103 && isset($uid)) {
-
+		} elseif ($this->core->action == "promote" && $this->core->role >= 103 && isset($uid)) {
 			$this->promote();
-
-		} elseif ($action == "reject" && $this->core->role >= 103 && isset($uid)) {
-
+		} elseif ($this->core->action == "reject" && $this->core->role >= 103 && isset($uid)) {
 			$this->reject();
-
-		} elseif ($action == "continue" && $this->core->role >= 103 && isset($uid)) {
-
+		} elseif ($this->core->action == "continue" && $this->core->role >= 103 && isset($uid)) {
 			$this->continued();
-
-		} elseif ($action == "delete" && $this->core->role >= 103 && isset($uid)) {
-
+		} elseif ($this->core->action == "delete" && $this->core->role >= 103 && isset($uid)) {
 			$this->delete();
-
-		} elseif ($action == "complete" && $this->core->role >= 103 && isset($uid)) {
-
+		} elseif ($this->core->action == "complete" && $this->core->role >= 103 && isset($uid)) {
 			$this->complete();
-
-		} elseif (empty($action) && $this->core->role >= 103) {
-
+		} elseif (empty($this->core->action) && $this->core->role >= 103) {
 			$this->admissionFlow();
-
 		}
-
 	}
 
 	function admissionFlow() {

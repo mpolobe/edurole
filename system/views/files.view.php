@@ -1,5 +1,5 @@
 <?php
-class filemanager {
+class files {
 
 	public $core;
 	public $view;
@@ -19,51 +19,30 @@ class filemanager {
 
 		include $this->core->classPath . "files.inc.php";
 
-		$path = getcwd() . "/datastore/userhomes/" . $this->username;
-		$filename = $this->core->cleanGet['edi'];
-		$current = $this->core->cleanGet['op'];
+		$userHome = $this->core->dataStorePath . $this->username;
+		$filename = $this->core->cleanGet['filename'];
 
-		if ($this->core->cleanGet["action"] == "overview" || !isset($this->core->cleanGet["action"])) {
-
-			$this->viewPersonalFiles($path);
-
-		} elseif ($this->core->cleanGet["action"] == "edit") {
-
+		if ($this->core->action == "overview" || !isset($this->core->action)) {
+			$this->viewPersonalFiles($userHome);
+		} elseif ($this->core->action == "edit") {
 			$this->editFile($filename);
-
-		} elseif ($this->core->cleanGet["action"] == "saveFile") {
-
-			$this->saveFile($path);
-
-		} elseif ($this->core->cleanGet["action"] == "rename") {
-
-			$rename = $this->renameFile($path);
-
-			if ($rename) {
-				$this->viewPersonalFiles($path);
+		} elseif ($this->core->action == "saveFile") {
+			$this->saveFile($userHome);
+		} elseif ($this->core->action == "rename") {
+			$rename = $this->renameFile($userHome);
+			if($rename) {
+				$this->viewPersonalFiles($userHome);
 			}
-
-		} elseif ($this->core->cleanGet["action"] == "delete") {
-
-			$this->deleteFile($path);
-
-		} elseif ($this->core->cleanGet["action"] == "new") {
-
+		} elseif ($this->core->action == "delete") {
+			$this->deleteFile($userHome);
+		} elseif ($this->core->action == "new") {
 			$this->newFileForm();
-
-		} elseif ($this->core->cleanGet["action"] == "upload") {
-
+		} elseif ($this->core->action == "upload") {
 			$this->upload();
-
-
-		} elseif ($this->core->cleanGet["action"] == "uploadfile") {
-
+		} elseif ($this->core->action == "uploadfile") {
 			$this->uploadFile();
-
-		} elseif ($this->core->cleanGet["action"] == "newFile") {
-
-			$this->newFile($path);
-
+		} elseif ($this->core->action == "newFile") {
+			$this->newFile($userHome);
 		}
 	}
 

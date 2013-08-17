@@ -78,11 +78,11 @@ class information {
 				$this->showInfoList($run);
 			}
 
-		} elseif ($action == "edit" && !isset($uid)) {
+		} elseif ($this->core->action == "edit" && !isset($uid)) {
 
 			$this->editUser($this->userid);
 
-		} elseif ($action == "personal") {
+		} elseif ($this->core->action == "personal") {
 
 			$function = __FUNCTION__;
 			$title = 'Personal information';
@@ -97,7 +97,7 @@ class information {
 
 			$this->showInfoProfile($run);
 
-		} elseif ($action == "edit" && isset($uid)) {
+		} elseif ($this->core->action == "edit" && isset($uid)) {
 
 			$this->editUser($uid);
 

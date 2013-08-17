@@ -1,14 +1,16 @@
 <?php
 class eduroleCore {
 
-	public $id, $conf, $username, $userid, $template, $database, $role, $rolename, $cleanPost, $log, $cleanGet, $route, $classPath, $viewPath, $templatePath;
+	public $page, $action, $conf, $username, $userid, $template, $database, $role, $rolename, $cleanPost, $log, $cleanGet, $route, $classPath, $viewPath, $templatePath;
 
 	public function __construct($conf) {
 		$this->conf = $conf;
 
-		$this->classPath = "system/classes/";	// Location for classes
-		$this->viewPath = "system/views/";		// Location for viewbuilders
-		$this->templatePath = "templates/";		// Location for templates
+		$this->classPath = "system/classes/";					// Location for classes
+		$this->viewPath = "system/views/";						// Location for viewbuilders
+		$this->formPath = "system/forms/";						// Location for forms
+		$this->templatePath = "templates/";						// Location for templates
+		$this->dataStorePath = getcwd() . "/datastore/home/";	// Location for datastore (userhomes, identities, etc.)
 
 		$this->database = new database($this);
 		$this->database->connectDatabase();
@@ -39,6 +41,13 @@ class eduroleCore {
 		}
 
 		$this->route = $this->cleanGet['id'];
+		$this->route = explode('/', $this->route);
+
+		if (count($this->route) > 0) {
+			$this->core->page = $this->route[0];
+		} elseif (count($this->route) > 1) {
+			$this->core->action = $this->route[1];
+		}
 	}
 
 	public function template() {
@@ -84,6 +93,12 @@ class eduroleCore {
 		} elseif ($level == 3) {
 			$this->log .= "INFO: " . $message . "<br>\n";
 		}
+	}
+
+	public function showAlert($message){
+		echo '<script>
+                        alert("'.$message.'");
+              </script>';
 	}
 
 	public function throwError($error) {
