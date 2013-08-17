@@ -478,8 +478,8 @@ class information {
 
 		}
 
-		include "includes/forms/edituser.form.php";
-		include "includes/classes/showoptions.inc.php";
+		include $this->core->formPath . "edituser.form.php";
+		include $this->core->classPath . "showoptions.inc.php";
 
 		$select = new optionBuilder($this->core);
 		$select = $select->showRoles($role);

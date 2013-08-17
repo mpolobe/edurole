@@ -63,7 +63,7 @@ class courses {
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($fetch = $run->fetch_row()) {
-			include "includes/forms/editcourse.form.php";
+			include $this->core->classpath . "editcourse.form.php";
 		}
 	}
 
@@ -75,7 +75,7 @@ class courses {
 		echo component::generateBreadcrumb(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		include "includes/forms/addcourse.form.php";
+		include $this->core->formPath . "addcourse.form.php";
 
 	}
 

@@ -29,7 +29,7 @@ class users {
 			echo component::generateBreadcrumb(get_class(), $function);
 			echo component::generateTitle($title, $description);
 
-			include "includes/forms/adduser.form.php";
+			include $this->core->formPath . "adduser.form.php";
 
 		} elseif ($action == "save" && $this->core->role >= 100) {
 
@@ -40,7 +40,7 @@ class users {
 			echo component::generateBreadcrumb(get_class(), $function);
 			echo component::generateTitle($title, $description);
 
-			include "includes/classes/adduser.inc.php";
+			include $this->core->classPath . "adduser.inc.php";
 			$this->addUser();
 
 		} elseif ($action == "delete" && isset($uid) && $core->role >= 100) {

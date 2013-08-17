@@ -49,7 +49,7 @@ class register {
 							 <input type="hidden" name="studyid" value="' . $row['0'] . '">
 							 <p>You are requesting admission to the following study: <b> ' . $row[1] . ' </b> <br>Please complete the following form entirely to successfully complete your request for admission.</p>';
 
-				include "includes/classes/showoptions.inc.php";
+				include $this->core->classPath . "showoptions.inc.php";
 
 				$study = $fetch[0];
 
@@ -60,7 +60,7 @@ class register {
 				$major = $optionBuilder->showPrograms($study, 1, null);
 				$minor = $optionBuilder->showPrograms($study, 2, null);
 
-				include "includes/forms/register.form.php";
+				include $this->core->formPath . "register.form.php";
 
 			}
 

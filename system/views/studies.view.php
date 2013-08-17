@@ -77,7 +77,7 @@ class studies {
 		$run = $this->database->doInsertQuery($sql);
 
 		while ($fetch = $run->fetch_row()) {
-			include "includes/forms/editstudy.form.php";
+			include $this->core->formPath . "editstudy.form.php";
 		}
 	}
 
@@ -89,7 +89,7 @@ class studies {
 		echo component::generateBreadcrumb(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		include "includes/forms/addstudy.form.php";
+		include $this->core->formPath . "addstudy.form.php";
 	}
 
 	function deleteStudy($id) {

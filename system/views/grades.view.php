@@ -21,7 +21,7 @@ class grades {
 		$action = $this->core->cleanGet['action'];
 		$item = $this->core->cleanGet['item'];
 
-		include "includes/classes/grades.inc.php";
+		include $this->core->classpath . "grades.inc.php";
 
 		if ($action == "view-grades") {
 
@@ -251,7 +251,7 @@ class grades {
 
 
 	function selectCourse() {
-		include "includes/classes/showoptions.inc.php";
+		include $this->core->classPath . "showoptions.inc.php";
 
 		$function = __FUNCTION__;
 		$title = 'Submit grades';

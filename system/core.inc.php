@@ -6,9 +6,9 @@ class eduroleCore {
 	public function __construct($conf) {
 		$this->conf = $conf;
 
-		$this->classPath = "system/classes/";
-		$this->viewPath = "system/views/";
-		$this->templatePath = "templates/";
+		$this->classPath = "system/classes/";	// Location for classes
+		$this->viewPath = "system/views/";		// Location for viewbuilders
+		$this->templatePath = "templates/";		// Location for templates
 
 		$this->database = new database($this);
 		$this->database->connectDatabase();

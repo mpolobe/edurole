@@ -70,7 +70,7 @@ class schools {
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($fetch = $run->fetch_row()) {
-			include "includes/forms/editschool.form.php";
+			include $this->core->formPath . "editschool.form.php";
 		}
 	}
 
@@ -82,7 +82,7 @@ class schools {
 		echo component::generateBreadcrumb(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		include "includes/forms/addschool.form.php";
+		include $this->core->formPath . "addschool.form.php";
 	}
 
 	function deleteSchool($id) {

@@ -19,7 +19,7 @@ class login {
 
 		$this->core->logEvent("Initializing login view", "3");
 
-		include "includes/forms/login.form.php";
+		include $this->core->formPath . "login.form.php";
 
 	}
 }

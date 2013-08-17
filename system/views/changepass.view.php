@@ -47,7 +47,7 @@ class changepass {
 		} else {
 
 			echo "<p>Please remember to enter all fields!</p>";
-			include "includes/forms/changepass.form.php";
+			include $this->core->formPath . "changepass.form.php";
 
 		}
 	}

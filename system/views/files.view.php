@@ -17,7 +17,7 @@ class filemanager {
 	public function buildView($core) {
 		$this->core = $core;
 
-		include "includes/classes/files.inc.php";
+		include $this->core->classPath . "files.inc.php";
 
 		$path = getcwd() . "/datastore/userhomes/" . $this->username;
 		$filename = $this->core->cleanGet['edi'];

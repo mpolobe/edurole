@@ -18,7 +18,7 @@ class library {
 
 		$this->core = $core;
 		$access = $_SESSION['access'];
-		include "includes/functions/files.inc.php";
+		include $this->core->classPath . "files.inc.php";
 
 		if ($this->core->cleanGet["action"] == "manage" || !isset($this->core->cleanGet["action"]) && $access > 100) {
 

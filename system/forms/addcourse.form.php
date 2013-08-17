@@ -1,5 +1,5 @@
 <?php
-include "includes/functions/showoptions.inc.php";
+include $this->core->classPath . "showoptions.inc.php";
 
 $select = showUsers("100", null);
 

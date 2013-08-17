@@ -36,7 +36,7 @@ class password {
 		echo component::generateBreadcrumb(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		include "includes/forms/changepassword.form.php";
+		include $this->core->classPath . "changepassword.form.php";
 
 	}
 }

@@ -30,6 +30,7 @@ class menuConstruct {
 		ORDER BY `page-segment`.`SegmentName`";
 
 		$run = $this->core->database->doSelectQuery($sql);
+		$currentSegment = NULL;
 
 		while ($fetch = $run->fetch_row()) {
 
@@ -61,12 +62,13 @@ class menuConstruct {
 
 			if ($segmentName == "Virtual Learning Environment") {
 
+				$study = NULL;
 				while ($_SESSION['saobjects']) {
-					$program = $row[2];
+					$program = $fetch[2];
 
-					if ($study != $row[1]) {
-						$study = $row[1];
-						$school = $row[3];
+					if ($study != $fetch[1]) {
+						$study = $fetch[1];
+						$school = $fetch[3];
 
 						echo '<div class="menu"><a href="?id=vle&view=school&id=1"> ' . $school . '</a></div>
 							<div class="menu"><a href="?id=vle&view=school&id=1"><img src="templates/default/images/expand.gif"> ' . $study . '</a></div>';
@@ -77,9 +79,9 @@ class menuConstruct {
 
 			} else if ($pageName == "Mail") {
 
-				if ($core->$conf['conf']['mailenabled'] == TRUE) {
+				if ($this->core->conf['conf']['mailenabled'] == TRUE) {
 
-					include "includes/classes/mailcount.inc.php";
+					include $this->core->classPath . "mailcount.inc.php";
 					$mail = new mail();
 					$mailcount = $mail->mailcount();
 
@@ -107,5 +109,4 @@ class menuConstruct {
 	}
 
 }
-
 ?>

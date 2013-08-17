@@ -18,7 +18,7 @@ class request {
 
 		$this->core = $core;
 
-		include "includes/classes/showoptions.inc.php";
+		include $this->core->classPath . "showoptions.inc.php";
 
 		$select = new optionBuilder($core);
 
@@ -36,7 +36,7 @@ class request {
 			echo '<p>You can search for a single record or a group by utilizing the various search categories.</p>
 			<div class="heading">Search by student number</div>';
 
-			include "includes/forms/searchform.form.php";
+			include $this->core->formPath . "searchform.form.php";
 		} else {
 			$this->core->throwError("You do not have the authority to do system wide searches");
 		}

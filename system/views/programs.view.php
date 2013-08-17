@@ -82,7 +82,7 @@ class programmes {
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($fetch = $run->fetch_row()) {
-			include "includes/forms/editprogramme.form.php";
+			include $this->core->formPath . "editprogramme.form.php";
 		}
 
 	}
@@ -95,7 +95,7 @@ class programmes {
 		echo component::generateBreadcrumb(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		include "includes/forms/addprogramme.form.php";
+		include $this->core->formPath . "addprogramme.form.php";
 	}
 
 	function deleteProgram($id) {
