@@ -64,7 +64,7 @@ class auth {
 
 	private function authenticateSQL($username, $password) {
 
-		$password = sha512($password . $this->core->conf['conf']['hash'] . $username);
+		$password =  hash('sha512',$password . $this->core->conf['conf']['hash'] . $username);
 
 		$sql = "SELECT ID FROM `access` WHERE `username` = '$username' AND `password` = '$password'";
 		$run = $this->core->database->doSelectQuery($sql);
@@ -84,7 +84,7 @@ class auth {
 
 	public function authorize($username, $password) {
 
-		$passwordHashed = sha512($password . $this->core->conf['conf']['hash'] . $username);
+		$passwordHashed =  hash('sha512',$password . $this->core->conf['conf']['hash'] . $username);
 
 		if (is_numeric($username)) {
 
@@ -238,5 +238,4 @@ class auth {
 		header("location: .");
 	}
 }
-
 ?>

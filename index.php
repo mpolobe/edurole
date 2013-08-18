@@ -3,7 +3,7 @@ session_start();
 
 /*
 	The application system are separated in the following directories:
-	system/			(core components, authentication, template-constructor, database connectors)
+	system/				(core components, authentication, template-constructor, database connectors)
 	system/forms		(input forms)
 	system/views		(generated output)
 	system/classes		(functions)
@@ -23,6 +23,7 @@ require_once "system/namespace.inc.php";
 require_once "system/breadcrumb.inc.php";
 require_once "system/viewbuilder.inc.php";
 require_once "system/menu.inc.php";
+require_once "system/components.inc.php";
 
 /*
 	Initialize core which holds core functions and variables

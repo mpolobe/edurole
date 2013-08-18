@@ -18,7 +18,7 @@ class home {
 
 		$function = __FUNCTION__;
 		$title = 'Welcome to Edurole';
-
+		require_once "system/components.inc.php";
 		echo component::generateBreadcrumb(get_class(), $function);
 		echo component::generateTitle($title, NULL);
 
@@ -32,7 +32,6 @@ class home {
 
 		$this->showItem(1);
 		$this->newsoverview();
-
 	}
 
 	function globalStatistics() {

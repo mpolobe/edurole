@@ -18,7 +18,7 @@ class grades {
 		$this->core = $core;
 
 		$this->core->action = $this->core->cleanGet['action'];
-		$item = $this->core->cleanGet['item'];
+		$this->item = $this->core->cleanGet['item'];
 
 		include $this->core->classpath . "grades.inc.php";
 

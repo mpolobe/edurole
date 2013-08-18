@@ -1,5 +1,5 @@
 <?php
-class components {
+class component {
 
 	public static function generateBreadcrumb($classname, $functionname) {
 

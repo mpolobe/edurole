@@ -40,7 +40,6 @@ function password($length, $charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmno
 	return $str;
 }
 
-// REPLACE WITH PREPARED STATEMENTS
 $sql = "INSERT INTO `basic-information` (`FirstName`, `MiddleName`, `Surname`, `Sex`, `ID`, `GovernmentID`, `DateOfBirth`, `PlaceOfBirth`, `Nationality`, `StreetName`, `PostalCode`, `Town`, `Country`, `HomePhone`, `MobilePhone`, `Disability`, `DissabilityType`, `PrivateEmail`, `MaritalStatus`, `StudyType`, `Status`) VALUES ('$firstname', '$middlename', '$surname', '$sex', NULL, '$id', '$year-$month-$day', '$pob', '$nationality', '$streetname', '$postalcode', '$town', '$country', '$homephone', '$celphone', '$dissability', '$disytype', '$email', '$mstatus', '$studytype', 'Requesting');";
 
 eduroleCore::throwError("An error occurred with the information you have entered. Possible causes are:<br> - You already have a student account at this institution<br> - The ID number you have entered is incorrect");
@@ -127,7 +126,6 @@ if ($this->core->database->doInsertQuery($sql)) {
 			}
 		}
 
-		// Program
 		$major = $this->core->$cleanPost["major"];
 		$minor = $this->core->$cleanPost["minor"];
 		$dateofenrollment = date("Y-m-d");
@@ -142,7 +140,7 @@ if ($this->core->database->doInsertQuery($sql)) {
 		$this->core->logEvent("Query executed: $sql", "3");
 
 		$password = password(6);
-		$passenc = sha512($password . $this->core->conf['conf']['hash'] . $userID);
+		$passenc =  hash('sha512',$password . $this->core->conf['conf']['hash'] . $username);
 
 		$sql = "INSERT INTO `access` (`ID`, `Username`, `RoleID`, `Password`) VALUES ('$userID', '$userID', '1', '$passenc');";
 		$this->core->database->doInsertQuery($sql);
@@ -151,12 +149,9 @@ if ($this->core->database->doInsertQuery($sql)) {
 		echo '<h2>Student record registration completed</h2>
 		<div class="successpopup">Your request for admission has been submitted to the registrar. You are able to monitor your enrollment progress with the following login information. WRITE THIS INFORMATION DOWN OR REMEMBER IT!</div>
 		<div class="successpopup">Username:  <b>' . $fetch[4] . '</b><br>Password:  <b>' . $password . '</b></div> <p>You can log in on the <a href=".">home page</a> to view your admission status</p>';
-
 	}
 
 } else {
-
 	throwError('An error occurred with the information you have entered. Please return to the form and verify your information. <a a href="javascript:" onclick="history.go(-1); return false">Go back</a>');
-
 }
 ?>
