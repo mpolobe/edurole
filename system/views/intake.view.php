@@ -37,7 +37,7 @@ class intake {
 		$title = 'Studies open for intake';
 		$description = 'The following studies are currently open for intake';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		if ($this->core->cleanGet['action'] == "view") {

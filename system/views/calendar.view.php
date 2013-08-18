@@ -22,7 +22,7 @@ class calendar {
 		}
 	}
 
-	public function buildCalendar(){
+	public function buildCalendar() {
 		$inlinejs = "<script>
 		$(document).ready(function() {
 

@@ -19,11 +19,11 @@ require_once "system/config.inc.php";
 require_once "system/core.inc.php";
 require_once "system/database.inc.php";
 require_once "system/authentication.inc.php";
-require_once "system/namespace.inc.php";
 require_once "system/breadcrumb.inc.php";
-require_once "system/viewbuilder.inc.php";
 require_once "system/menu.inc.php";
 require_once "system/components.inc.php";
+require_once "system/viewBuilder.inc.php";
+require_once "system/serviceBuilder.inc.php";
 
 /*
 	Initialize core which holds core functions and variables
@@ -31,5 +31,9 @@ require_once "system/components.inc.php";
 */
 $core = new eduroleCore($conf);
 
-new viewBuilder($core);
+if($page != "api"){
+	new viewBuilder($core);			// All views are processed in the view builder
+}else {
+	new serviceBuilder($core);		// All service calls are processed in the service builder
+}
 ?>

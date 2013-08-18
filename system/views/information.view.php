@@ -17,108 +17,152 @@ class information {
 	public function buildView($core) {
 		$this->core = $core;
 
-		$listtype = $this->core->cleanGet['listtype'];
+		$listType = $this->core->cleanGet['listtype'];
 		$uid = $this->core->cleanGet['uid'];
-		$studentfirstname = $this->core->cleanGet['studentfirstname'];
-		$studentlastname = $this->core->cleanGet['studentlastname'];
+		$firstName = $this->core->cleanGet['studentfirstname'];
+		$lastName = $this->core->cleanGet['studentlastname'];
 		$study = $this->core->cleanGet['studies'];
 		$program = $this->core->cleanGet['program'];
 
-		if (isset($studentlastname) || isset($studentfirstname)) {
-
-			if ($studentfirstname == "") {
-				$studentfirstname = "%";
-			}
-			if ($studentlastname == "") {
-				$studentlastname = "%";
-			}
-
-			$sql = "SELECT * FROM `basic-information` WHERE `Surname` LIKE '" . $studentlastname . "' AND `Firstname` LIKE '" . $studentfirstname . "'";
-			$run = $this->core->database->doSelectQuery($sql);
-
-			$pagename = "Search results";
-
-			$function = __FUNCTION__;
-			$title = 'Student Information';
-			$description = 'Showing results for: ' . $studentfirstname . ' ' . $studentlastname;
-
-			echo component::generateBreadcrumb(get_class(), $function);
-			echo component::generateTitle($title, $description);
-
-			if ($listtype == "profiles") {
-				$this->showInfoProfile($run);
-			} elseif ($listtype == "list") {
-				$this->showInfoList($run);
-			}
-
-
-		} else if (isset($study) || isset($program)) {
-
-			if ($study != "" && is_numeric($study)) {
-				$sql = "SELECT * FROM `basic-information`, `student-study-link` WHERE `student-study-link`.StudentID = `basic-information`.ID AND StudyID = '" . $study . "'";
-			}
-			if ($program != "" && is_numeric($program)) {
-				$sql = "SELECT * FROM `basic-information`, `student-program-link` WHERE `student-program-link`.StudentID = `basic-information`.GovernmentID AND Major = '" . $program . "' OR `student-program-link`.StudentID = `basic-information`.ID AND Minor = '" . $program . "'";
-			}
-
-			$run = $this->core->database->doSelectQuery($sql);
-
-			$function = __FUNCTION__;
-			$title = '"Search results';
-			$description = 'Showing results for: ' . $studentfirstname . ' ' . $studentlastname;
-
-			echo component::generateBreadcrumb(get_class(), $function);
-			echo component::generateTitle($title, $description);
-
-			if ($listtype == "profiles") {
-				$this->showInfoProfile($run);
-			} elseif ($listtype == "list") {
-				$this->showInfoList($run);
-			}
-
+		if (empty($this->core->item)) {
+			$this->searchInformation();
+		} else if (isset($lastName) || isset($firstName)) {
+			$this->searchByNamme($firstName, $lastName, $listType);
+		} else if (isset($study)) {
+			$this->searchByStudy($study, $listType);
+		} else if (isset($program)) {
+			$this->searchByProgram($program, $listType);
 		} elseif ($this->core->action == "edit" && !isset($uid)) {
-
 			$this->editUser($this->userid);
-
 		} elseif ($this->core->action == "personal") {
-
-			$function = __FUNCTION__;
-			$title = 'Personal information';
-			$description = 'Showing results for: ' . $studentfirstname . ' ' . $studentlastname;
-
-			echo component::generateBreadcrumb(get_class(), $function);
-			echo component::generateTitle($title, $description);
-
-			$uid = $_SESSION['userid'];
-			$sql = "SELECT * FROM  `basic-information` as bi, `access` as ac WHERE ac.`ID` = '" . $uid . "' AND ac.`ID` = bi.`ID`";
-			$run = $this->core->database->doSelectQuery($sql);
-
-			$this->showInfoProfile($run);
-
+			$this->getProfile();
 		} elseif ($this->core->action == "edit" && isset($uid)) {
-
 			$this->editUser($uid);
-
 		} elseif (isset($uid) && is_numeric($uid)) {
+			$this->getStudentProfile($uid);
+		}
+	}
 
-			$function = __FUNCTION__;
-			$title = 'Personal information';
-			$description = 'Showing results for: ' . $studentfirstname . ' ' . $studentlastname;
+	function searchInformation() {
+		include $this->core->classPath . "showoptions.inc.php";
 
-			echo component::generateBreadcrumb(get_class(), $function);
-			echo component::generateTitle($title, $description);
+		$select = new optionBuilder($core);
 
-			$sql = "SELECT * FROM `basic-information` WHERE `ID` = '" . $uid . "'";
-			$run = $this->core->database->doSelectQuery($sql);
+		$study = $select->showStudies(null);
+		$program = $select->showPrograms(null, null, null);
+
+		$function = __FUNCTION__;
+		$title = 'Search student records';
+		$description = 'Please use the form below to search through the student information database';
+
+		echo $this->core->breadcrumb->generate(get_class(), $function);
+		echo component::generateTitle($title, $description);
+
+		if ($this->core->role > 100) {
+			echo '<p>You can search for a single record or a group by utilizing the various search categories.</p>
+			<div class="heading">Search by student number</div>';
+
+			include $this->core->formPath . "searchform.form.php";
+		} else {
+			$this->core->throwError("You do not have the authority to do system wide searches");
+		}
+	}
+
+	function getProfile() {
+		$function = __FUNCTION__;
+		$title = 'Personal information';
+		$description = 'Showing personal profile';
+
+		echo $this->core->breadcrumb->generate(get_class(), $function);
+		echo component::generateTitle($title, $description);
+
+		$sql = "SELECT * FROM  `basic-information` as bi, `access` as ac WHERE ac.`ID` = '" . $this->core->userid . "' AND ac.`ID` = bi.`ID`";
+		$run = $this->core->database->doSelectQuery($sql);
+		$this->showInfoProfile($run);
+	}
+
+	function searchByName($firstName, $lastName, $listType = NULL) {
+		if (empty($firstName)) {
+			$firstName = "%";
+		}
+		if (empty($lastName)) {
+			$lastName = "%";
+		}
+
+		$sql = "SELECT * FROM `basic-information` WHERE `Surname` LIKE '" . $lastName . "' AND `Firstname` LIKE '" . $firstName . "'";
+		$run = $this->core->database->doSelectQuery($sql);
+
+		$function = __FUNCTION__;
+		$title = 'Search results';
+		$description = 'Showing results for: ' . $firstName . ' ' . $lastName;
+
+		echo $this->core->breadcrumb->generate(get_class(), $function);
+		echo component::generateTitle($title, $description);
+
+		if ($listType == "profiles") {
 			$this->showInfoProfile($run);
+		} elseif ($listType == "list") {
+			$this->showInfoList($run);
+		}
+	}
 
+	function searchByStudy($study, $listType) {
+		if ($study != "" && is_numeric($study)) {
+			$sql = "SELECT * FROM `basic-information`, `student-study-link` WHERE `student-study-link`.StudentID = `basic-information`.ID AND StudyID = '" . $study . "'";
+		}
+
+		$run = $this->core->database->doSelectQuery($sql);
+
+		$function = __FUNCTION__;
+		$title = '"Search results';
+		$description = 'Showing results for: ' . $study;
+
+		echo $this->core->breadcrumb->generate(get_class(), $function);
+		echo component::generateTitle($title, $description);
+
+		if ($listType == "profiles") {
+			$this->showInfoProfile($run);
+		} elseif ($listType == "list") {
+			$this->showInfoList($run);
+		}
+	}
+
+	function getStudentProfile($uid) {
+		$function = __FUNCTION__;
+		$title = 'Personal information';
+		$description = 'Showing student profile:' . $uid;
+
+		echo $this->core->breadcrumb->generate(get_class(), $function);
+		echo component::generateTitle($title, $description);
+
+		$sql = "SELECT * FROM `basic-information` WHERE `ID` = '" . $uid . "'";
+		$run = $this->core->database->doSelectQuery($sql);
+		$this->showInfoProfile($run);
+	}
+
+	function searchByProgram($program, $listType) {
+		if ($program != "" && is_numeric($program)) {
+			$sql = "SELECT * FROM `basic-information`, `student-program-link` WHERE `student-program-link`.StudentID = `basic-information`.GovernmentID AND Major = '" . $program . "' OR `student-program-link`.StudentID = `basic-information`.ID AND Minor = '" . $program . "'";
+		}
+
+		$run = $this->core->database->doSelectQuery($sql);
+
+		$function = __FUNCTION__;
+		$title = '"Search results';
+		$description = 'Showing results for: ' . $program;
+
+		echo $this->core->breadcrumb->generate(get_class(), $function);
+		echo component::generateTitle($title, $description);
+
+		if ($listType == "profiles") {
+			$this->showInfoProfile($run);
+		} elseif ($listType == "list") {
+			$this->showInfoList($run);
 		}
 	}
 
 	function showInfoProfile($run) {
-
 		while ($row = $run->fetch_row()) {
-
 			$results = TRUE;
 			$firstname = $row[0];
 			$middlename = $row[1];
@@ -246,58 +290,58 @@ class information {
 			}
 
 			echo '<p><div class="segment"><strong>Contact information</strong></div></p>
-	<table width="400" height="" border="0" cellpadding="0" cellspacing="0">
-	  <tr>
-		<td width="200">Streetname</td>
-		<td width="">' . $streetname . '</td>
-	  </tr>';
+			<table width="400" height="" border="0" cellpadding="0" cellspacing="0">
+			  <tr>
+				<td width="200">Streetname</td>
+				<td width="">' . $streetname . '</td>
+			  </tr>';
 
 			if ($postalcode != "") {
 				echo '<tr>
-		<td>Postal code</td>
-		<td>' . $postalcode . '</td>
-	  </tr>';
+				<td>Postal code</td>
+				<td>' . $postalcode . '</td>
+			 	</tr>';
 			}
 
 			if ($town != "") {
 				echo '<tr>
-		<td>Town</td>
-		<td>' . $town . '</td>
-	  </tr>';
+				<td>Town</td>
+				<td>' . $town . '</td>
+			 	</tr>';
 			}
 
 			if ($country != "") {
 				echo '<tr>
-		<td>Country</td>
-		<td>' . $country . '</td>
-	  </tr>';
+				<td>Country</td>
+				<td>' . $country . '</td>
+			  	</tr>';
 			}
 
 			echo '<tr>
-	<td>&nbsp;</td>
-	<td>&nbsp;</td>
-	</tr>';
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			</tr>';
 
 			if ($homephone != "" && $homephone != "0") {
 				echo '<tr>
-		<td>Home Phone</td>
-		<td>' . $homephone . '</td>
-	  </tr>';
+				<td>Home Phone</td>
+				<td>' . $homephone . '</td>
+	 			</tr>';
 			}
 
 			if ($mobilephone != "" && $mobilephone != "0") {
 				echo '<tr>
-		<td>Mobile Phone</td>
-		<td>' . $mobilephone . '</td>
-	  </tr>';
+				<td>Mobile Phone</td>
+				<td>' . $mobilephone . '</td>
+				</tr>';
 			}
 
 			if ($email != "") {
 				echo '<tr>
-		<td>Private Email</td>
-		<td><a href="mailto:' . $email . '">' . $email . '</td>
-	  </tr>
-	</table>';
+				<td>Private Email</td>
+				<td><a href="mailto:' . $email . '">' . $email . '</td>
+				</tr>
+				</table>';
 			}
 
 
@@ -314,21 +358,23 @@ class information {
 				$postalcode = $fetch[7];
 
 				echo '<p><div class="segment"><strong>Student emergency information</strong></div></p>
-			<table width="500" height="" border="0" cellpadding="0" cellspacing="0">
-			  <tr>
-				<td width="200">Full Name</td>
-				<td width="">' . $fullname . '</td>
-			  </tr>
-			  <tr>
-				<td>Relationship</td>
-				<td>' . $relationship . '</td>
-			  </tr>';
+				<table width="500" height="" border="0" cellpadding="0" cellspacing="0">
+				  <tr>
+					<td width="200">Full Name</td>
+					<td width="">' . $fullname . '</td>
+				  </tr>
+				  <tr>
+					<td>Relationship</td>
+					<td>' . $relationship . '</td>
+				  </tr>';
+
 				if ($phonenumber != "" && $phonenumber != "0") {
 					echo '<tr>
-				<td>Phonenumber</td>
-				<td>' . $phonenumber . '</td>
-			  </tr>';
+					<td>Phonenumber</td>
+					<td>' . $phonenumber . '</td>
+					</tr>';
 				}
+
 				echo '<tr>
 				<td>Street</td>
 				<td>' . $street . '</td>
@@ -379,37 +425,30 @@ class information {
 
 				if ($filename != "") {
 					echo '<tr>
-				<td>Image of certificate</td>
-				<td><a href="?id=download&file=education-history/' . $filename . '"><b>View file</b></a></td>
-			  </tr>';
+					<td>Image of certificate</td>
+					<td><a href="?id=download&file=education-history/' . $filename . '"><b>View file</b></a></td>
+			 		</tr>';
 				}
-
 				echo '</table>';
-
 			}
-
-
 			echo "</div>";
-
 		}
 
 		if ($results != TRUE) {
 			$this->core->throwError('Your search did not return any results');
 		}
-
 	}
 
 	function showInfoList($run) {
-
 		echo '<br/> <table width="768" height="" border="0" cellpadding="5" cellspacing="0">
-	<tr>
-	<td bgcolor="#EEEEEE"></td>
-	<td bgcolor="#EEEEEE"><b> Student Name</b></td>
-	<td bgcolor="#EEEEEE"><b> Student ID</b></td>
-	<td bgcolor="#EEEEEE"><b> National ID</b></td>
-	<td bgcolor="#EEEEEE"><b> Date of Birth</b></td>		
-	<td bgcolor="#EEEEEE"><b> Status</b></td>
-	</tr>';
+		<tr>
+		<td bgcolor="#EEEEEE"></td>
+		<td bgcolor="#EEEEEE"><b> Student Name</b></td>
+		<td bgcolor="#EEEEEE"><b> Student ID</b></td>
+		<td bgcolor="#EEEEEE"><b> National ID</b></td>
+		<td bgcolor="#EEEEEE"><b> Date of Birth</b></td>
+		<td bgcolor="#EEEEEE"><b> Status</b></td>
+		</tr>';
 
 		while ($row = $run->fetch_row()) {
 
@@ -424,13 +463,13 @@ class information {
 			$studentstatus = $row[20];
 
 			echo '<tr>
-		<td><img src="templates/default/images/bullet_user.png"></td>
-		<td><a href="?id=view-information&uid=' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
-		<td><i>' . $uid . '</i></td>
-		<td>' . $nrc . '</td>
-		<td>' . $dob . '</td>
-		<td>' . $studentstatus . '</td>
-	  	</tr>';
+			<td><img src="templates/default/images/bullet_user.png"></td>
+			<td><a href="?id=view-information&uid=' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
+			<td><i>' . $uid . '</i></td>
+			<td>' . $nrc . '</td>
+			<td>' . $dob . '</td>
+			<td>' . $studentstatus . '</td>
+			</tr>';
 
 		}
 
@@ -439,7 +478,6 @@ class information {
 		if ($results != TRUE) {
 			$this->core->throwError('Your search did not return any results');
 		}
-
 	}
 
 	function editUser($id) {
@@ -450,7 +488,7 @@ class information {
 		$title = 'Edit personal information';
 		$description = 'Editing student information';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		while ($row = $run->fetch_row()) {
@@ -483,8 +521,6 @@ class information {
 		$select = $select->showRoles($role);
 
 	}
-
-
 }
 
 ?>

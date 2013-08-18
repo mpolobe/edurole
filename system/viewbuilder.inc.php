@@ -5,34 +5,37 @@ class viewBuilder {
 
 	public function __construct($core) {
 		$this->core = $core;
-		$this->pageSwitch($this->core->page);
+		$this->viewBuilder($this->core->page);
 	}
 
-	public function pageSwitch($page) {
-
-		$this->core->logEvent("Starting view builder for page: " . $this->core->page ." action: ". $this->core->action, "3");
+	public function viewBuilder($page) {
+		$this->core->logEvent("Starting view builder for page: " . $this->core->page . " action: " . $this->core->action, "3");
 
 		if (!isset($this->core->role)) {
-			// User is not authenticated
-			// CUSTOM PAGES AVAILABLE WITHOUT AUTHORISATION
+			/*
+			 * User is not authenticated
+			 * Services available without authorization are listed here
+			 */
 
 			if (empty($page)) {
-				$this->showView("login");
+				$this->initView("login");
 			} elseif ($page == "login") {
 				$auth = new auth($this->core);
 				$auth->login();
 			} elseif ($page == "template") {
 				$this->setTemplate();
 			} elseif ($page) {
-				$this->showView($page);
+				$this->initView($page);
 			}
 
 		} else {
-			// User is authenticated
-			// CUSTOM PAGES AVAILABLE WITH AUTHORISATION
+			/*
+			 * User is authenticated
+			 * Services available with authorization are listed here
+			 */
 
 			if (empty($page)) {
-				$this->showView("home");
+				$this->initView("home");
 			} elseif ($page == "logout") {
 				auth::logout();
 			} elseif ($page == "download") {
@@ -42,13 +45,12 @@ class viewBuilder {
 			} elseif ($page == "template") {
 				$this->setTemplate();
 			} elseif ($page) {
-				$this->showView($page);
+				$this->initView($page);
 			}
 		}
 	}
 
-	public function showView($view) {
-
+	public function initView($view) {
 		$viewInclude = $this->core->viewPath . $view . ".view.php";
 
 		if (file_exists($viewInclude)) {
@@ -75,6 +77,7 @@ class viewBuilder {
 		}
 
 		$this->cssFiles = str_replace("%TEMPLATE%", $this->core->template, $this->cssFiles);
+		$this->cssFiles = str_replace("%BASE%", $this->core->conf['path'], $this->cssFiles);
 
 		if ($viewConfig->header == TRUE) {
 			$this->viewPageHeader($this->core->template);
@@ -89,7 +92,6 @@ class viewBuilder {
 		if ($viewConfig->footer == TRUE) {
 			$this->viewPageFooter($this->core->template);
 		}
-
 	}
 
 	public function viewMenu() {
@@ -113,4 +115,5 @@ class viewBuilder {
 		include $this->core->templatePath . $template . "/footer.inc.php";
 	}
 }
+
 ?>

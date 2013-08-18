@@ -46,7 +46,7 @@ class programmes {
 		$title = 'Programme management';
 		$description = 'Edit Programme';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		$run = $this->core->database->doSelectQuery($sql);
@@ -62,7 +62,8 @@ class programmes {
 		$title = 'Programme management';
 		$description = 'Add Programme';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo component::generateBreadcrumb();
+
 		echo component::generateTitle($title, $description);
 
 		include $this->core->formPath . "addprogramme.form.php";
@@ -109,7 +110,7 @@ class programmes {
 		$title = 'Programme management';
 		$description = 'Overview of programmes';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		$run = $this->core->database->doSelectQuery($sql);
@@ -126,8 +127,8 @@ class programmes {
 
 		$count = 0;
 		$first = 1;
-		$i=0;
-		$rest=NULL;
+		$i = 0;
+		$rest = NULL;
 
 		while ($fetch = $run->fetch_row()) {
 
@@ -198,7 +199,7 @@ class programmes {
 		$title = 'View program';
 		$description = 'Overview of program';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		$run = $this->core->database->doSelectQuery($sql);

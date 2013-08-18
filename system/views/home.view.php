@@ -17,10 +17,8 @@ class home {
 		$this->core = $core;
 
 		$function = __FUNCTION__;
-		$title = 'Welcome to Edurole';
 		require_once "system/components.inc.php";
-		echo component::generateBreadcrumb(get_class(), $function);
-		echo component::generateTitle($title, NULL);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 
 		$this->infoSheet();
 

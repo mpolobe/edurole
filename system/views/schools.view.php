@@ -41,7 +41,7 @@ class schools {
 		$title = 'Edit School';
 		$description = 'Remember to save any changes you make';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		$run = $this->core->database->doSelectQuery($sql);
@@ -56,7 +56,7 @@ class schools {
 		$title = 'Add School';
 		$description = 'Use the following form to create new schools';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		include $this->core->formPath . "addschool.form.php";
@@ -94,7 +94,7 @@ class schools {
 		$title = 'Overview of schools';
 		$description = 'The following schools currently exist in the system';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		$run = $this->core->database->doSelectQuery($sql);
@@ -107,7 +107,7 @@ class schools {
             <td width="170px"><b>Management tools</b></td>
             </tr>';
 
-		$i=0;
+		$i = 0;
 		while ($fetch = $run->fetch_row()) {
 
 			if ($i == 0) {
@@ -141,7 +141,7 @@ class schools {
 
 		$run = $this->core->database->doSelectQuery($sql);
 
-		$i=0;
+		$i = 0;
 		while ($fetch = $run->fetch_row()) {
 
 			if ($i == 0) {
@@ -156,7 +156,7 @@ class schools {
 			$title = ' . $fetch[3] . ';
 			$description = 'The following attributes are saved in the school profile';
 
-			echo component::generateBreadcrumb(get_class(), $function);
+			echo $this->core->breadcrumb->generate(get_class(), $function);
 			echo component::generateTitle($title, $description);
 
 			echo '<table width="768" border="0" cellpadding="5" cellspacing="0">

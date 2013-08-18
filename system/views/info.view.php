@@ -33,7 +33,7 @@ class info {
 		$title = 'Overview of studies';
 		$description = 'Overview of all studies.';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		$this->core->throwSuccess("PLEASE OBSERVE THE START AND END DATE FOR THE ONLINE INTAKE, ONLINE REGISTRATION WILL BE POSSIBLE BETWEEN THESE DATES ONLY.");
@@ -47,7 +47,7 @@ class info {
 
 		$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID ORDER BY `study`.Name";
 		$run = $this->core->database->doSelectQuery($sql);
-		$i=0;
+		$i = 0;
 
 		while ($fetch = $run->fetch_row()) {
 

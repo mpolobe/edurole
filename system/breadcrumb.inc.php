@@ -1,15 +1,18 @@
 <?php
 class breadcrumb {
+	public function __construct($core) {
+		$this->core = $core;
+	}
 
-	public static function generate($classname) {
+	public function generate($classname) {
 
-		$pathArray = classNamespace::getNamespace($classname);
+		$pathArray = $this->core->getNamespace($classname);
 		$crumb = "";
 
 		foreach ($pathArray['executionpath'] as $class => $name) {
 
 			if (!$name == "home") {
-				$functionalName = classNamespace::getNamespace($name);
+				$functionalName = getNamespace($name);
 			} else {
 				$functionalName['functionalname'] = "home";
 			}

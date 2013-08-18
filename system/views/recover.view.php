@@ -1,6 +1,6 @@
 <?php
-class recover{
-	public	$core;
+class recover {
+	public $core;
 	public $view;
 
 	public function configView() {
@@ -46,4 +46,5 @@ class recover{
 		}
 	}
 }
+
 ?>

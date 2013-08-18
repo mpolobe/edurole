@@ -19,12 +19,12 @@ class password {
 
 		if ($this->core->action == "recover") {
 			$this->recoverPassword();
-		}elseif ($this->core->action == "change" && $core->role > 0) {
+		} elseif ($this->core->action == "change" && $core->role > 0) {
 			$this->changePassword();
 		}
 	}
 
-	public function recoverPassword(){
+	public function recoverPassword() {
 		echo '<div class="menucontainer">
 		<div class="menubar">
 		<div class="menuhdr"><strong>Home menu</strong></div>
@@ -41,13 +41,13 @@ class password {
 		$title = 'Recover password';
 		$description = 'Recover password your password using your email';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		include $this->core->classPath . "changepassword.form.php";
 	}
 
-	public function changePassword(){
+	public function changePassword() {
 		$function = __FUNCTION__;
 
 		$oldpass = $this->core->cleanPost["oldpass"];
@@ -57,7 +57,7 @@ class password {
 		$title = 'Overview of personal assignments';
 		$description = 'Your assignments currently active in your courses and programmes';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		if (isset($newpass) && isset($oldpass)) {

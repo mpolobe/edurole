@@ -32,7 +32,7 @@ class register {
 		$title = 'Register for study';
 		$description = 'Please enter the complete for to be eligible for admission';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		$item = $core->cleanGet['item'];

@@ -6,13 +6,15 @@ class eduroleCore {
 	public function __construct($conf) {
 		$this->conf = $conf;
 
-		$this->classPath = "system/classes/";					// Location for classes
-		$this->viewPath = "system/views/";						// Location for viewbuilders
-		$this->formPath = "system/forms/";						// Location for forms
-		$this->templatePath = "templates/";						// Location for templates
-		$this->dataStorePath = getcwd() . "/datastore/home/";	// Location for datastore (userhomes, identities, etc.)
+		$this->classPath = "system/classes/"; // Location for classes
+		$this->viewPath = "system/views/"; // Location for viewbuilders
+		$this->formPath = "system/forms/"; // Location for forms
+		$this->templatePath = "templates/"; // Location for templates
+		$this->dataStorePath = getcwd() . "/datastore/home/"; // Location for datastore (userhomes, identities, etc.)
 
 		$this->database = new database($this);
+		$this->breadcrumb = new breadcrumb($this);
+
 		$this->database->connectDatabase();
 
 		$this->logEvent("Initializing EduRole core", "3");
@@ -66,6 +68,23 @@ class eduroleCore {
 		return ($template);
 	}
 
+	public function getNamespace($className) {
+
+		$sql = 'SELECT * FROM `pages` WHERE `PageRoute` = "' . $className . '"';
+		$run = $this->database->doSelectQuery($sql);
+
+		while ($fetch = $run->fetch_assoc()) {
+
+			$route = $fetch['PageRoute'];
+			$path = explode('/', $route);
+
+			$namespace = array("functionalname" => $fetch['PageName'], "executionpath" => $path);
+		}
+
+		return ($namespace);
+
+	}
+
 	public function showTemplate() {
 		$count = 0;
 		$out = "";
@@ -97,9 +116,9 @@ class eduroleCore {
 		}
 	}
 
-	public function showAlert($message){
+	public function showAlert($message) {
 		echo '<script>
-                        alert("'.$message.'");
+                        alert("' . $message . '");
               </script>';
 	}
 

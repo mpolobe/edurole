@@ -18,7 +18,7 @@ class component {
 		}
 
 		$crumbstart = '<div class="breadcrumb">';
-		$crumbend   = '</div>';
+		$crumbend = '</div>';
 
 		$currentClass = $pathArray['functionalname'];
 
@@ -30,12 +30,12 @@ class component {
 	public static function generateTitle($title, $description = NULL) {
 		$title = '<div class="contentpadfull"> <p class="title">' . $title . '</p>';
 
-		if(!empty($description)){
+		if (!empty($description)) {
 			$title .= '<p><b>' . $description . '</b> </b></p>';
 		}
 
 		return ($title);
 	}
-
 }
+
 ?>

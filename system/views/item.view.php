@@ -25,7 +25,7 @@ class item {
 			$title = 'News';
 			$description = 'The following stories are available';
 
-			echo component::generateBreadcrumb(get_class(), $function);
+			echo $this->core->breadcrumb->generate(get_class(), $function);
 			echo component::generateTitle($title, $description);
 
 			$this->showItem($item);
@@ -82,7 +82,7 @@ class item {
 		$title = 'Edit item';
 		$description = 'Please remember to save your changes';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		$sql = "SELECT * FROM `content` WHERE `ContentID` = $id";

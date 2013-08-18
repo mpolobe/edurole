@@ -45,7 +45,7 @@ class courses {
 		$title = 'Edit course';
 		$description = 'Remember to save changes after you are done';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		$run = $this->core->database->doSelectQuery($sql);
@@ -60,7 +60,7 @@ class courses {
 		$title = 'Add course';
 		$description = 'Please enter the required fields';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		include $this->core->formPath . "addcourse.form.php";
@@ -98,7 +98,7 @@ class courses {
 		$title = 'Overview of courses';
 		$description = 'Overview of all courses currently on offer';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		$run = $this->core->database->doSelectQuery($sql);
@@ -142,7 +142,7 @@ class courses {
 		$title = 'View course information';
 		$description = 'Overview of all courses currently on offer';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		$run = $this->core->database->doSelectQuery($sql);

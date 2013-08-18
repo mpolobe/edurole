@@ -29,7 +29,7 @@ class grades {
 		} elseif ($this->core->action == "selectcourse") {
 			$this->selectCourse();
 		} elseif ($this->core->action == "entergrades") {
-			$this->enterGrades(NULL,NULL);
+			$this->enterGrades(NULL, NULL);
 		} elseif ($this->core->action == "submit") {
 			$this->gradesSubmit();
 		} else {
@@ -47,7 +47,7 @@ class grades {
 		$title = 'Gradebook';
 		$description = 'Please enter a name for the new file to create it in the current working directory';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		$sql = "SELECT * FROM `grades`, `courses` WHERE `grades`.StudentID = \"" . $_SESSION['username'] . "\" AND `courses`.ID = CourseID ORDER BY Name";
@@ -100,10 +100,10 @@ class grades {
 		$title = 'Grading center';
 		$description = 'Overview of personally submitted grades';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		$sql = "SELECT * FROM `gradebook`, `courses` WHERE `courses`.ID = `gradebook`.Course AND `gradebook`.Owner = '".$this->core->userid."' ORDER BY `gradebook`.DateTime";
+		$sql = "SELECT * FROM `gradebook`, `courses` WHERE `courses`.ID = `gradebook`.Course AND `gradebook`.Owner = '" . $this->core->userid . "' ORDER BY `gradebook`.DateTime";
 
 		$run = $this->core->database->doSelectQuery($sql);
 
@@ -146,7 +146,7 @@ class grades {
 		$title = 'Grade management';
 		$description = 'Overview of personally submitted grades';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		$sql = "SELECT * FROM `gradebook`, `courses`, `basic-information` WHERE  `courses`.ID = `gradebook`.Course AND `gradebook`.Owner = `basic-information`.ID ORDER BY `gradebook`.DateTime";
@@ -188,7 +188,7 @@ class grades {
 				<a href="?id=studies&action=delete&item=' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="templates/default/images/del.png"> delete </a>
 				</td>' .
 				'</tr>';
-			echo'</table></div>';
+			echo '</table></div>';
 		}
 	}
 
@@ -217,9 +217,9 @@ class grades {
 			echo '<tr>
 			<td><img src="templates/default/images/bullet_user.png"></td>
 			<td><b><a href="?id=view-information&uid=' . $fetch[4] . '">' . $fetch[0] . ' ' . $fetch[2] . '</a></b></td>' .
-			'<td>' . $fetch[4] . '</td>' .
-			'<td><input type="textbox" name="g' . $fetch[4] . '" size="5" class="submit"></td>' .
-			'</tr>';
+				'<td>' . $fetch[4] . '</td>' .
+				'<td><input type="textbox" name="g' . $fetch[4] . '" size="5" class="submit"></td>' .
+				'</tr>';
 		}
 
 		echo '</table>
@@ -235,7 +235,7 @@ class grades {
 		$title = 'Submit grades';
 		$description = 'Overview of personally submitted grades';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		$programselected = $this->core->cleanPost['program'];
@@ -279,7 +279,7 @@ class grades {
 		$title = 'Grades submitted';
 		$description = 'Overview of personally submitted grades';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		$salt = sha1(md5(date('YmdH') . $this->core->username . $this->core->userid . $this->core->role . $this->core->cleanPost['course']));

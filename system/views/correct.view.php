@@ -22,12 +22,12 @@ class correct {
 		}
 	}
 
-	public function correctInformation(){
+	public function correctInformation() {
 		$function = __FUNCTION__;
 		$title = 'List of incorrectly imported student number';
 		$description = 'Your assignments currently active in your courses and programmes';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		$sql = "SELECT * FROM `basic-information` WHERE `basic-information`.ID < 20000000  OR `basic-information`.ID > 2010222117";

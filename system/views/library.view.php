@@ -29,7 +29,7 @@ class library {
 			$title = 'Overview of personal assignments';
 			$description = 'View your books on loan from the library';
 
-			echo component::generateBreadcrumb(get_class(), $function);
+			echo $this->core->breadcrumb->generate(get_class(), $function);
 			echo component::generateTitle($title, $description);
 
 			$this->viewLoans();
@@ -93,7 +93,7 @@ class library {
 		$title = 'Overview of all assignments';
 		$description = 'Manage assignments for students to view';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		$sql = "SELECT * FROM `assignments`, `courses`, `basic-information` WHERE  `courses`.ID = CourseID AND `assignments`.CreatorID = `basic-information`.ID ORDER BY DateCreated";

@@ -45,7 +45,7 @@ class studies {
 		$title = 'Edit study';
 		$description = 'Overview of all studies';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		$run = $this->database->doInsertQuery($sql);
@@ -60,7 +60,7 @@ class studies {
 		$title = 'Add study';
 		$description = 'Overview of all studies';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		include $this->core->formPath . "addstudy.form.php";
@@ -107,7 +107,7 @@ class studies {
 		$title = 'Overview of studiest';
 		$description = 'Overview of all studies';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		echo '  | <a href="?id=studies&action=add">Add study</a></p><p>' .
@@ -149,7 +149,7 @@ class studies {
 		$title = 'Study information';
 		$description = 'Information about study';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		$run = $this->core->database->doSelectQuery($sql);

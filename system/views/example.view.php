@@ -19,37 +19,37 @@ class example {
 
 		if (empty($this->core->action) || $this->core->action == "one") {
 			$this->actionFunctionOne();
-		}else if ($this->core->action == "two" && $core->role > 1) {
+		} else if ($this->core->action == "two" && $core->role > 1) {
 			$this->actionFunctionOne();
-		}else if ($this->core->action == "two" && $core->role = 1000) {
+		} else if ($this->core->action == "two" && $core->role = 1000) {
 			$this->actionFunctionThree();
 		}
 	}
 
-	public function actionFunctionOne(){
+	public function actionFunctionOne() {
 		echo "<h1> Hello World! <h1>";
 		echo "<p>This is the default example.</p>
 		 	Try opening the individual action pages by:
 		 		<ul>
-		 			<li>http://".$_SERVER['HTTP_HOST']."/example/one</li>
-		 			<li>http://".$_SERVER['HTTP_HOST']."/example/two</li>
-		 			<li>http://".$_SERVER['HTTP_HOST']."/example/three</li>
+		 			<li>http://" . $_SERVER['HTTP_HOST'] . "/example/one</li>
+		 			<li>http://" . $_SERVER['HTTP_HOST'] . "/example/two</li>
+		 			<li>http://" . $_SERVER['HTTP_HOST'] . "/example/three</li>
 		 		</ul>";
 	}
 
-	public function actionFunctionTwo(){
+	public function actionFunctionTwo() {
 		$function = __FUNCTION__;
 		$title = 'Custom Action Page Title';
 		$description = 'Custom description subtext.';
 
-		echo component::generateBreadcrumb(get_class(), $function);		// Generate breadcrumb
-		echo component::generateTitle($title, $description);			// Generate Title/Description pagehead
+		echo $this->core->breadcrumb->generate(get_class(), $function); // Generate breadcrumb
+		echo component::generateTitle($title, $description); // Generate Title/Description pagehead
 
-		echo"Load some content here! Try including a file and calling up functions from the class to do whatever.";
+		echo "Load some content here! Try including a file and calling up functions from the class to do whatever.";
 	}
 
-	public function actionFunctionThree(){
-		echo"You must be an administrator";
+	public function actionFunctionThree() {
+		echo "You must be an administrator";
 	}
 }
 

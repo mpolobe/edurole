@@ -140,7 +140,7 @@ if ($this->core->database->doInsertQuery($sql)) {
 		$this->core->logEvent("Query executed: $sql", "3");
 
 		$password = password(6);
-		$passenc =  hash('sha512',$password . $this->core->conf['conf']['hash'] . $username);
+		$passenc = hash('sha512', $password . $this->core->conf['conf']['hash'] . $username);
 
 		$sql = "INSERT INTO `access` (`ID`, `Username`, `RoleID`, `Password`) VALUES ('$userID', '$userID', '1', '$passenc');";
 		$this->core->database->doInsertQuery($sql);

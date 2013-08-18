@@ -34,22 +34,22 @@ class users {
 		}
 	}
 
-	function saveUser(){
+	function saveUser() {
 		$function = __FUNCTION__;
 		$title = 'Add user account';
 		$description = 'The account information has been saved';
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		include $this->core->classPath . "adduser.inc.php";
 		$this->addUser();
 	}
 
-	function addUser(){
+	function addUser() {
 		$function = __FUNCTION__;
 		$title = 'Add user account';
 		$description = 'Please provide the needed information to create a new user account';
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		include $this->core->formPath . "adduser.form.php";
@@ -98,7 +98,7 @@ class users {
 		$title = 'User management';
 		$description = 'Overview of all users with privileges higher than student';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		echo '<table width="768" height="" border="0" cellpadding="3" cellspacing="0">
@@ -146,7 +146,7 @@ class users {
 		$title = 'User management';
 		$description = 'Overview of all students currently enrolled';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		echo '<table width="768" height="" border="0" cellpadding="3" cellspacing="0">

@@ -3,6 +3,6 @@ RewriteEngine on
 RewriteRule	^password$  index.php?id=password [L]
 RewriteRule	^admission$ index.php?id=admission [L]
 RewriteRule	^templates/(.*)$ - [NC,L]
-RewriteRule	^js/.* - [NC,L]
 RewriteRule	^lib/.* - [NC,L]
+RewriteRule	^system/api.php - [NC,L]
 RewriteRule (.*)		index.php?id=$1  [QSA,L]

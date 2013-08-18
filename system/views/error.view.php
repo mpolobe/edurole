@@ -21,10 +21,11 @@ class error {
 		$title = 'System or User error';
 		$description = 'Please try something else!';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		$this->core->throwError("The following page does not exist!");
 	}
 }
+
 ?>

@@ -201,10 +201,10 @@ function renameFile($path) {
 		$title = 'Rename file';
 		$description = 'You are renaming: ' . $_GET["ren"];
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		echo'<div class="easymencontainer"><form name="rename" method="post" action="?id=files&action=rename">
+		echo '<div class="easymencontainer"><form name="rename" method="post" action="?id=files&action=rename">
 		<input name="op" type="hidden" value=' . $path . '>
 		<input name="filend" type=hidden value="' . $filename . '">
 		<div class="padding"><div class="label">New Name</div>
@@ -266,7 +266,7 @@ function editFile($filename) {
 	$title = 'Editing';
 	$description = 'Remember to click save';
 
-	echo component::generateBreadcrumb(get_class(), $function);
+	echo $this->core->breadcrumb->generate(get_class(), $function);
 	echo component::generateTitle($title, $description);
 
 	$start = TRUE;

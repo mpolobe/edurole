@@ -40,7 +40,7 @@ class admission {
 		$title = 'Admission management';
 		$description = 'Overview of all users with privileges higher than student';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		$this->admissionManager();
@@ -55,7 +55,7 @@ class admission {
 		$title = 'Personal admission progress';
 		$description = 'Overview of all users with privileges higher than student';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		if ($this->core->role < 100) {

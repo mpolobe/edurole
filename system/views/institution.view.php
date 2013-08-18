@@ -27,7 +27,7 @@ class institution {
 		$title = 'Application Settings';
 		$description = 'Institution wide application settings';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		$this->institutionName();
@@ -39,7 +39,7 @@ class institution {
 		$sql = "SELECT * FROM `settings` WHERE `Name` = 'InstitutionName' OR `Name` = 'InstitutionWebsite'  ORDER BY `Name`";
 
 		$run = $this->core->database->doSelectQuery($sql);
-		$i=0;
+		$i = 0;
 
 		while ($fetch = $run->fetch_row()) {
 
@@ -100,7 +100,7 @@ class institution {
 		$run = $this->core->database->doSelectQuery($sql);
 
 		$n = 1;
-		$i=0;
+		$i = 0;
 
 		while ($fetch = $run->fetch_row()) {
 

@@ -30,7 +30,7 @@ class files {
 			$this->saveFile($userHome);
 		} elseif ($this->core->action == "rename") {
 			$rename = $this->renameFile($userHome);
-			if($rename) {
+			if ($rename) {
 				$this->viewPersonalFiles($userHome);
 			}
 		} elseif ($this->core->action == "delete") {
@@ -51,7 +51,7 @@ class files {
 		$title = 'Overview of personal files';
 		$description = 'This directory lists your personal files';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		echo '<p><img src="templates/edurole/images/up.png"/> <a href="?id=files&action=upload&op=' . $path . '">upload a file</a> or <img src="templates/edurole/images/dd.gif"/> <a href="?id=files&action=new&op=' . $path . '">create an empty file</a> or <img src="templates/edurole/images/new.gif"/> <a href="?id=files&action=newdir&op=' . $path . '">new directory</a></b>';
@@ -64,7 +64,7 @@ class files {
 		$title = 'Upload a file';
 		$description = 'Please note that executables must be compressed and the maximum file size is 50MB';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		echo '<div class="heading">File upload</div>
@@ -110,7 +110,7 @@ class files {
 		$title = 'New file';
 		$description = 'Please enter a name for the new file to create it in the current working directory';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		echo '<div class="heading">New file</div>

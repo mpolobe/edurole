@@ -23,7 +23,7 @@ class help {
 		$title = 'Grades submitted';
 		$description = 'Overview of personally submitted grades';
 
-		echo component::generateBreadcrumb(get_class(), $function);
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		function globalstatistics() {
