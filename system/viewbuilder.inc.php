@@ -40,7 +40,7 @@ class viewBuilder {
 				auth::logout();
 			} elseif ($page == "download") {
 				$filename = $this->core->cleanGet['file'];
-				include $this->core->classPath . "files.inc.php";
+				include $this->core->conf['conf']['classPath'] . "files.inc.php";
 				downloadFile($filename);
 			} elseif ($page == "template") {
 				$this->setTemplate();
@@ -51,7 +51,7 @@ class viewBuilder {
 	}
 
 	public function initView($view) {
-		$viewInclude = $this->core->viewPath . $view . ".view.php";
+		$viewInclude = $this->core->conf['conf']['viewPath'] . $view . ".view.php";
 
 		if (file_exists($viewInclude)) {
 			$this->core->logEvent("Initializing view $view", "3");
@@ -64,20 +64,21 @@ class viewBuilder {
 			$this->core->throwError("Required view missing $viewInclude");
 		}
 
-		$this->jsFiles = $this->core->conf['javascript'][0] . "\n"; //include default JS
+		$this->jsFiles = $this->core->conf['javascript'][0] . "\n"; 	//include default JS
 
 		foreach ($viewConfig->javascript as $file) {
-			$this->jsFiles .= $this->core->conf['javascript'][$file]; //include JS files required by page
+			$this->jsFiles .= $this->core->conf['javascript'][$file]; 	//include JS files required by page
 		}
 
-		$this->cssFiles = $this->core->conf['css'][0] . "\n"; //include default CSS
+		$this->cssFiles = $this->core->conf['css'][0] . "\n"; 			//include default CSS
 
 		foreach ($viewConfig->css as $file) {
-			$this->cssFiles .= $this->core->conf['css'][$file] . "\n"; //include CSS required by page
+			$this->cssFiles .= $this->core->conf['css'][$file] . "\n"; 	//include CSS required by page
 		}
 
-		$this->cssFiles = str_replace("%TEMPLATE%", $this->core->template, $this->cssFiles);
 		$this->cssFiles = str_replace("%BASE%", $this->core->conf['path'], $this->cssFiles);
+		$this->jsFiles = str_replace("%BASE%", $this->core->conf['path'], $this->jsFiles);
+		$this->cssFiles = str_replace("%TEMPLATE%", $this->core->template, $this->cssFiles);
 
 		if ($viewConfig->header == TRUE) {
 			$this->viewPageHeader($this->core->template);
@@ -105,15 +106,14 @@ class viewBuilder {
 	}
 
 	public function viewPageHeader($template) {
-		require_once $this->core->templatePath . $template . "/header.inc.php";
+		require_once $this->core->conf['conf']['viewPath'] . $template . "/header.inc.php";
 	}
 
 	public function viewPageFooter($template) {
 		if ($this->core->conf['conf']['debugging'] == TRUE) {
 			$this->core->showDebugger();
 		}
-		include $this->core->templatePath . $template . "/footer.inc.php";
+		include $this->core->conf['conf']['templatePath'] . $template . "/footer.inc.php";
 	}
 }
-
 ?>

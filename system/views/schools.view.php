@@ -47,7 +47,7 @@ class schools {
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($fetch = $run->fetch_row()) {
-			include $this->core->formPath . "editschool.form.php";
+			include $this->core->conf['conf']['formPath'] . "editschool.form.php";
 		}
 	}
 
@@ -59,7 +59,7 @@ class schools {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		include $this->core->formPath . "addschool.form.php";
+		include $this->core->conf['conf']['formPath'] . "addschool.form.php";
 	}
 
 	function deleteSchool($id) {

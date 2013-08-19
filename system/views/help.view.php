@@ -17,7 +17,7 @@ class help {
 	public function buildView($core) {
 		$this->core = $core;
 
-		include $this->core->viewPath . "item.view.php";
+		include $this->core->conf['conf']['viewPath'] . "item.view.php";
 
 		$function = __FUNCTION__;
 		$title = 'Grades submitted';

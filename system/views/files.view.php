@@ -17,9 +17,9 @@ class files {
 	public function buildView($core) {
 		$this->core = $core;
 
-		include $this->core->classPath . "files.inc.php";
+		include $this->core->conf['conf']['classPath'] . "files.inc.php";
 
-		$userHome = $this->core->dataStorePath . $this->username;
+		$userHome = $this->core->conf['conf']['dataStorePath'] . $this->username;
 		$filename = $this->core->cleanGet['filename'];
 
 		if ($this->core->action == "overview" || !isset($this->core->action)) {

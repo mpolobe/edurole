@@ -1,47 +1,33 @@
 <?php
 class eduroleCore {
 
-	public $conf, $page, $action, $item, $username, $userID, $template, $database, $role, $roleName, $cleanPost, $log, $cleanGet, $route, $classPath, $viewPath, $templatePath;
+	public $conf, $page, $action, $item, $username, $userID, $template, $database, $role, $roleName, $cleanPost, $log, $cleanGet, $route;
 
 	public function __construct($conf) {
 		$this->conf = $conf;
 
-		$this->classPath = "system/classes/"; // Location for classes
-		$this->viewPath = "system/views/"; // Location for viewbuilders
-		$this->formPath = "system/forms/"; // Location for forms
-		$this->templatePath = "templates/"; // Location for templates
-		$this->dataStorePath = getcwd() . "/datastore/home/"; // Location for datastore (userhomes, identities, etc.)
+		$this->logEvent("Initializing EduRole core", "3");
 
 		$this->database = new database($this);
 		$this->breadcrumb = new breadcrumb($this);
 
-		$this->database->connectDatabase();
+		$this->setTemplate();
+		$this->processRoute();
+		$this->getSessions();
+		$this->cleanInput();
 
-		$this->logEvent("Initializing EduRole core", "3");
+		$this->initializer();
+	}
 
-		foreach (array_keys($_POST) as $key) {
-			$this->cleanPost[$key] = $this->database->mysqli->real_escape_string($_POST[$key]);
+	public function initializer(){
+		if($this->page == "api"){
+			new serviceBuilder($this);		// All service calls are processed in the service builder
+		}else {
+			new viewBuilder($this);			// All views are processed in the view builder
 		}
+	}
 
-		foreach (array_keys($_GET) as $key) {
-			$this->cleanGet[$key] = $this->database->mysqli->real_escape_string($_GET[$key]);
-		}
-
-		$this->template = $this->template();
-
-		if (isset($_SESSION['username'])) {
-			$this->username = $_SESSION['username'];
-		}
-		if (isset($_SESSION['rolename'])) {
-			$this->rolename = $_SESSION['rolename'];
-		}
-		if (isset($_SESSION['access'])) {
-			$this->role = $_SESSION['access'];
-		}
-		if (isset($_SESSION['userid'])) {
-			$this->userid = $_SESSION['userid'];
-		}
-
+	public function processRoute(){
 		$this->route = $this->cleanGet['id'];
 		$this->route = explode('/', $this->route);
 
@@ -54,7 +40,32 @@ class eduroleCore {
 		}
 	}
 
-	public function template() {
+	private function cleanInput(){
+		foreach (array_keys($_POST) as $key) {
+			$this->cleanPost[$key] = $this->database->mysqli->real_escape_string($_POST[$key]);
+		}
+
+		foreach (array_keys($_GET) as $key) {
+			$this->cleanGet[$key] = $this->database->mysqli->real_escape_string($_GET[$key]);
+		}
+	}
+
+	public function getSessions(){
+		if (isset($_SESSION['username'])) {
+			$this->username = $_SESSION['username'];
+		}
+		if (isset($_SESSION['rolename'])) {
+			$this->rolename = $_SESSION['rolename'];
+		}
+		if (isset($_SESSION['access'])) {
+			$this->role = $_SESSION['access'];
+		}
+		if (isset($_SESSION['userid'])) {
+			$this->userid = $_SESSION['userid'];
+		}
+	}
+
+	public function setTemplate() {
 		if (isset($_SESSION['template'])) {
 			$template = $_SESSION['template'];
 		}
@@ -65,7 +76,7 @@ class eduroleCore {
 
 		$template = $this->conf['conf']['templates'][$template];
 
-		return ($template);
+		$this->template = $template;
 	}
 
 	public function getNamespace($className) {
@@ -128,10 +139,6 @@ class eduroleCore {
 
 	public function throwSuccess($error) {
 		echo '<div class="successpopup">' . $error . '</div>';
-	}
-
-	public function exitError($error, $pagename) {
-		$this->showView("error", "1", "1", array(1, 4), array(1, 3));
 	}
 
 	function getUsername() {

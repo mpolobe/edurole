@@ -44,7 +44,7 @@ class password {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		include $this->core->classPath . "changepassword.form.php";
+		include $this->core->conf['conf']['classPath'] . "changepassword.form.php";
 	}
 
 	public function changePassword() {
@@ -79,7 +79,7 @@ class password {
 		} else {
 
 			echo "<p>Please remember to enter all fields!</p>";
-			include $this->core->formPath . "changepass.form.php";
+			include $this->core->conf['conf']['formPath'] . "changepass.form.php";
 
 		}
 	}

@@ -5,6 +5,7 @@ class database {
 
 	function __construct($core) {
 		$this->core = $core;
+		$this->connectDatabase();
 	}
 
 	function connectDatabase() {

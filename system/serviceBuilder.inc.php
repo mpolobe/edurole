@@ -1,5 +1,5 @@
 <?php
-class viewBuilder {
+class serviceBuilder {
 
 	public $id, $core;
 
@@ -38,7 +38,7 @@ class viewBuilder {
 	}
 
 	public function initService($service) {
-		$serviceInclude = $this->core->viewPath . $service . ".inc.php";
+		$serviceInclude = $this->core->conf['conf']['servicePath'] . $service . ".inc.php";
 
 		if (file_exists($serviceInclude)) {
 			$this->core->logEvent("Initializing service $service", "3");

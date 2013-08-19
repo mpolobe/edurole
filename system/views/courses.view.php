@@ -20,10 +20,10 @@ class courses {
 		$this->item = $this->core->cleanGet['item'];
 
 		if ($this->core->action == "list") {
-			$sql = "SELECT * FROM `programmes`,`studies` WHERE `programmes`.ParentID = `studies`.ID AND `studies`.ID = $item ORDER BY `studies`.Name";
+			$sql = "SELECT * FROM `programmes`,`studies` WHERE `programmes`.ParentID = `studies`.ID AND `studies`.ID = $this->item ORDER BY `studies`.Name";
 			$this->listCourses($sql);
 		} elseif ($this->core->action == "view") {
-			$sql = "SELECT * FROM `courses`, `basic-information` WHERE `courses`.ID = $item AND `courses`.CourseCoordinator = `basic-information`.ID";
+			$sql = "SELECT * FROM `courses`, `basic-information` WHERE `courses`.ID = $this->item AND `courses`.CourseCoordinator = `basic-information`.ID";
 			$this->showCourse($sql);
 		} elseif ($this->core->action == "edit" && isset($item) && $this->core->role > 3) {
 			$sql = "SELECT * FROM `courses` WHERE `courses`.ID = $item";
@@ -51,7 +51,7 @@ class courses {
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($fetch = $run->fetch_row()) {
-			include $this->core->classpath . "editcourse.form.php";
+			include $this->core->conf['conf']['classPath'] . "editcourse.form.php";
 		}
 	}
 
@@ -63,7 +63,7 @@ class courses {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		include $this->core->formPath . "addcourse.form.php";
+		include $this->core->conf['conf']['formPath'] . "addcourse.form.php";
 
 	}
 

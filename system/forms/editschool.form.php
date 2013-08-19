@@ -1,7 +1,7 @@
 <?php
 $dean = $fetch[5];
 
-include $this->core->classPath . "showoptions.inc.php";
+include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
 
 $select = new optionBuilder($core);
 $select->showUsers("4", $dean);

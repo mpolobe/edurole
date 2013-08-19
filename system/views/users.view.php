@@ -41,7 +41,7 @@ class users {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		include $this->core->classPath . "adduser.inc.php";
+		include $this->core->conf['conf']['classPath'] . "adduser.inc.php";
 		$this->addUser();
 	}
 
@@ -52,7 +52,7 @@ class users {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		include $this->core->formPath . "adduser.form.php";
+		include $this->core->conf['conf']['formPath'] . "adduser.form.php";
 	}
 
 	function saveEdit() {

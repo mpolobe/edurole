@@ -81,7 +81,7 @@ class menuConstruct {
 
 				if ($this->core->conf['conf']['mailenabled'] == TRUE) {
 
-					include $this->core->classPath . "mailcount.inc.php";
+					include $this->core->conf['conf']['classPath'] . "mailcount.inc.php";
 					$mail = new mail();
 					$mailcount = $mail->mailcount();
 

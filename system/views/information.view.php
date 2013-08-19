@@ -44,9 +44,9 @@ class information {
 	}
 
 	function searchInformation() {
-		include $this->core->classPath . "showoptions.inc.php";
+		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
 
-		$select = new optionBuilder($core);
+		$select = new optionBuilder($this->core);
 
 		$study = $select->showStudies(null);
 		$program = $select->showPrograms(null, null, null);
@@ -62,7 +62,7 @@ class information {
 			echo '<p>You can search for a single record or a group by utilizing the various search categories.</p>
 			<div class="heading">Search by student number</div>';
 
-			include $this->core->formPath . "searchform.form.php";
+			include $this->core->conf['conf']['formPath'] . "searchform.form.php";
 		} else {
 			$this->core->throwError("You do not have the authority to do system wide searches");
 		}
@@ -514,8 +514,8 @@ class information {
 
 		}
 
-		include $this->core->formPath . "edituser.form.php";
-		include $this->core->classPath . "showoptions.inc.php";
+		include $this->core->conf['conf']['formPath'] . "edituser.form.php";
+		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
 
 		$select = new optionBuilder($this->core);
 		$select = $select->showRoles($role);

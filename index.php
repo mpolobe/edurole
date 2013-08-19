@@ -30,10 +30,4 @@ require_once "system/serviceBuilder.inc.php";
 	Start view builder/page loader
 */
 $core = new eduroleCore($conf);
-
-if($page != "api"){
-	new viewBuilder($core);			// All views are processed in the view builder
-}else {
-	new serviceBuilder($core);		// All service calls are processed in the service builder
-}
 ?>

@@ -17,7 +17,7 @@ class assignments {
 
 	public function buildView($core) {
 		$this->core = $core;
-		include $this->core->classPath . "files.inc.php";
+		include $this->core->conf['conf']['classPath'] . "files.inc.php";
 
 		if ($this->core->action == "manage" || !isset($this->core->action) && $core->role > 100) {
 			$this->manageAssignments();

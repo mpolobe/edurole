@@ -51,7 +51,7 @@ class studies {
 		$run = $this->database->doInsertQuery($sql);
 
 		while ($fetch = $run->fetch_row()) {
-			include $this->core->formPath . "editstudy.form.php";
+			include $this->core->conf['conf']['formPath'] . "editstudy.form.php";
 		}
 	}
 
@@ -63,7 +63,7 @@ class studies {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		include $this->core->formPath . "addstudy.form.php";
+		include $this->core->conf['conf']['formPath'] . "addstudy.form.php";
 	}
 
 	function deleteStudy($id) {

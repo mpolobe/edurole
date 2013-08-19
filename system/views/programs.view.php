@@ -52,7 +52,7 @@ class programmes {
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($fetch = $run->fetch_row()) {
-			include $this->core->formPath . "editprogramme.form.php";
+			include $this->core->conf['conf']['formPath'] . "editprogramme.form.php";
 		}
 
 	}
@@ -66,7 +66,7 @@ class programmes {
 
 		echo component::generateTitle($title, $description);
 
-		include $this->core->formPath . "addprogramme.form.php";
+		include $this->core->conf['conf']['formPath'] . "addprogramme.form.php";
 	}
 
 	function deleteProgram($id) {
