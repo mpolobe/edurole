@@ -23,7 +23,7 @@ class viewBuilder {
 				$auth = new auth($this->core);
 				$auth->login();
 			} elseif ($page == "template") {
-				$this->setTemplate();
+				$this->core->setTemplate();
 			} elseif ($page) {
 				$this->initView($page);
 			}
@@ -43,7 +43,7 @@ class viewBuilder {
 				include $this->core->conf['conf']['classPath'] . "files.inc.php";
 				downloadFile($filename);
 			} elseif ($page == "template") {
-				$this->setTemplate();
+				$this->core->setTemplate();
 			} elseif ($page) {
 				$this->initView($page);
 			}
@@ -76,8 +76,8 @@ class viewBuilder {
 			$this->cssFiles .= $this->core->conf['css'][$file] . "\n"; 	//include CSS required by page
 		}
 
-		$this->cssFiles = str_replace("%BASE%", $this->core->conf['path'], $this->cssFiles);
-		$this->jsFiles = str_replace("%BASE%", $this->core->conf['path'], $this->jsFiles);
+		$this->cssFiles = str_replace("%BASE%", $this->core->conf['conf']['path'], $this->cssFiles);
+		$this->jsFiles = str_replace("%BASE%", $this->core->conf['conf']['path'], $this->jsFiles);
 		$this->cssFiles = str_replace("%TEMPLATE%", $this->core->template, $this->cssFiles);
 
 		if ($viewConfig->header == TRUE) {
@@ -85,34 +85,26 @@ class viewBuilder {
 		}
 
 		if (isset($this->core->role) && $viewConfig->menu != TRUE) {
-			$this->viewMenu();
+			$menu = new menuConstruct($this->core);
+			$menu->buildMainMenu();
 		}
 
 		$this->view->buildview($this->core);
+
+		if ($this->core->conf['conf']['debugging'] == TRUE) {
+			$this->core->showDebugger();
+		}
 
 		if ($viewConfig->footer == TRUE) {
 			$this->viewPageFooter($this->core->template);
 		}
 	}
 
-	public function viewMenu() {
-		$menu = new menuConstruct($this->core);
-		$menu->buildMainMenu();
-	}
-
-	public function setTemplate() {
-		$_SESSION['template'] = $this->core->cleanPost['template'];
-		header('Location: .'); // Reload page
-	}
-
 	public function viewPageHeader($template) {
-		require_once $this->core->conf['conf']['viewPath'] . $template . "/header.inc.php";
+		require_once $this->core->conf['conf']['templatePath'] . $template . "/header.inc.php";
 	}
 
 	public function viewPageFooter($template) {
-		if ($this->core->conf['conf']['debugging'] == TRUE) {
-			$this->core->showDebugger();
-		}
 		include $this->core->conf['conf']['templatePath'] . $template . "/footer.inc.php";
 	}
 }

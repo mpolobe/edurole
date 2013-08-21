@@ -28,7 +28,7 @@ class component {
 	}
 
 	public static function generateTitle($title, $description = NULL) {
-		$title = '<div class="contentpadfull"> <p class="title">' . $title . '</p>';
+		$title = '<p class="title">' . $title . '</p>';
 
 		if (!empty($description)) {
 			$title .= '<p><b>' . $description . '</b> </b></p>';

@@ -14,13 +14,9 @@ class login {
 	}
 
 	public function buildView($core) {
-
 		$this->core = $core;
 
-		$this->core->logEvent("Initializing login view", "3");
-
 		include $this->core->conf['conf']['formPath'] . "login.form.php";
-
 	}
 }
 

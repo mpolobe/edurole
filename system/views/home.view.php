@@ -187,18 +187,15 @@ class home {
 
 		if ($this->core->role >= 10) {
 			echo '<div class="easymencontainer">
-                 <div class="easymen"><a href="mail"><img src="templates/' . $this->core->template . '/images/mail.png"> <br>  Email</a></div>
-                 <div class="easymen"><a href="grades"><img src="templates/' . $this->core->template . '/images/chart.png"> <br> Grades</a></div>
-                 <div class="easymen"><a href="calendar"><img src="templates/' . $this->core->template . '/images/calendar.png"> <br> Calendar</a></div>
-                 <div class="easymen"><a href="books"><img src="templates/' . $this->core->template . '/images/books.png"> <br> Books</a></div>
-                <div class="easymen"><a href="files"><img src="templates/' . $this->core->template . '/images/box.png"> <br>  Files</a></div>
-                 <div class="easymen"><a href="assignments"><img src="templates/' . $this->core->template . '/images/clipboard.png">  <br> Assignments</a></div>
-                 <div class="easymen"><a href="help"><img src="templates/' . $this->core->template . '/images/info.png">  <br> Help</a></div>
+                 <div class="easymen"><a href="'. $this->core->conf['path'] .'/mail"><img src="'. $this->core->fullTemplatePath .'/images/mail.png"> <br>  Email</a></div>
+                 <div class="easymen"><a href="'. $this->core->conf['path'] .'/grades"><img src="'. $this->core->fullTemplatePath .'/images/chart.png"> <br> Grades</a></div>
+                 <div class="easymen"><a href="'. $this->core->conf['path'] .'/calendar"><img src="'. $this->core->fullTemplatePath .'/images/calendar.png"> <br> Calendar</a></div>
+                 <div class="easymen"><a href="'. $this->core->conf['path'] .'/books"><img src="'. $this->core->fullTemplatePath .'/images/books.png"> <br> Books</a></div>
+				 <div class="easymen"><a href="'. $this->core->conf['path'] .'/files"><img src="'. $this->core->fullTemplatePath .'/images/box.png"> <br>  Files</a></div>
+                 <div class="easymen"><a href="'. $this->core->conf['path'] .'/assignments"><img src="'. $this->core->fullTemplatePath .'/images/clipboard.png">  <br> Assignments</a></div>
+                 <div class="easymen"><a href="'. $this->core->conf['path'] .'/help"><img src="'. $this->core->fullTemplatePath .'/images/info.png">  <br> Help</a></div>
                 </div>';
 		}
-
 	}
-
 }
-
 ?>

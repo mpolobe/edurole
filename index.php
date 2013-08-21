@@ -9,7 +9,7 @@ session_start();
 	system/classes		(functions)
 
 	General administrator configurable system options
-	EDIT THE system/CONFIG.INC.PHP FILE FOR GENERAL SYSTEM SETTINGS
+	EDIT THE "./system/config.inc.php" FILE FOR GENERAL SYSTEM SETTINGS
 */
 require_once "system/config.inc.php";
 

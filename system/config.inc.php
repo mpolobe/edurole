@@ -6,14 +6,13 @@
 $conf['conf']['debugging'] = FALSE;									// Set TRUE to enable debugging
 $conf['conf']['domain'] = "edurole.com";							// Domain on which the pages will be served
 $conf['conf']['mailenabled'] = TRUE;								// Whether to enable in-system mailclient
-$conf['conf']['path'] = "edurole"; 									// Change to path to path to Edurole on webserver (example: www.example.com/pathtosystem) would be pathtosystem.
 $conf['conf']['hash'] = "2#FCLWJEFO2j3@K#LKF"; 						// Change this to a unique random set of characters
 $conf['conf']['titleName'] = "EduRole Student Information System";	// Default Page Title
 
 /*
  * System paths
- * change these only if you know what you are doing.
  */
+$conf['conf']['path'] = "/edurole-git"; 							// Change to path to path to Edurole on webserver (example: www.example.com/pathtosystem) would be /pathtosystem.
 $conf['conf']['classPath'] = "system/classes/";						// Location for classes
 $conf['conf']['viewPath'] = "system/views/";						// Location for views
 $conf['conf']['formPath'] = "system/forms/";						// Location for forms
@@ -47,7 +46,7 @@ $conf['mail']['port'] = "389"; 										// IMAP port
 /*
  * Enabled templates, default is first template listed
  */
-$conf['conf']['templates'] = array("edurole", "silver", "opus");	// Template names in array form
+$conf['conf']['templates'] = array("edurole");	// Template names in array form
 
 /*
  * CSS available to the system, 0 is included on every page

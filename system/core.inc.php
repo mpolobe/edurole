@@ -1,7 +1,7 @@
 <?php
 class eduroleCore {
 
-	public $conf, $page, $action, $item, $username, $userID, $template, $database, $role, $roleName, $cleanPost, $log, $cleanGet, $route;
+	public $conf, $page, $action, $item, $username, $userID, $template, $database, $role, $roleName, $cleanPost, $log, $cleanGet, $route, $fullTemplatePath;
 
 	public function __construct($conf) {
 		$this->conf = $conf;
@@ -12,9 +12,9 @@ class eduroleCore {
 		$this->breadcrumb = new breadcrumb($this);
 
 		$this->setTemplate();
-		$this->processRoute();
 		$this->getSessions();
 		$this->cleanInput();
+		$this->processRoute();
 
 		$this->initializer();
 	}
@@ -29,6 +29,9 @@ class eduroleCore {
 
 	public function processRoute(){
 		$this->route = $this->cleanGet['id'];
+
+		$this->logEvent("Processing route: $this->route", "3");
+
 		$this->route = explode('/', $this->route);
 
 		if (count($this->route) > 0) {
@@ -66,6 +69,11 @@ class eduroleCore {
 	}
 
 	public function setTemplate() {
+		if(isset($this->core->cleanPost['template'])){
+			$_SESSION['template'] = $this->core->cleanPost['template'];
+			header('Location: .'); // Reload page
+		}
+
 		if (isset($_SESSION['template'])) {
 			$template = $_SESSION['template'];
 		}
@@ -77,6 +85,8 @@ class eduroleCore {
 		$template = $this->conf['conf']['templates'][$template];
 
 		$this->template = $template;
+		$this->fullTemplatePath = $this->conf['conf']['path'] .'/'. $this->conf['conf']['templatePath'] . $this->template;
+
 	}
 
 	public function getNamespace($className) {
@@ -135,6 +145,7 @@ class eduroleCore {
 
 	public function throwError($error) {
 		echo '<div class="errorpopup">' . $error . '</div>';
+		$this->core->logEvent("ERROR: $error", "1");
 	}
 
 	public function throwSuccess($error) {

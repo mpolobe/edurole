@@ -10,7 +10,7 @@
 		</div>
 	</div>
 
-	<form name="login" action="?id=login" method="POST">
+	<form name="login" action="login" method="POST">
 		<div class="hr">
 			<div class="homeboxr">
 				<table border="0" cellpadding="0" cellspacing="0">

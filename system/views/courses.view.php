@@ -127,8 +127,8 @@ class courses {
                     <a href="?id=view-information&uid=' . $fetch[3] . '">' . $fetch[4] . ' ' . $fetch[6] . '</a>
                     </td>
                     <td>
-                    <a href="?id=courses&action=edit&item=' . $fetch[0] . '"> <img src="templates/default/images/edi.png"> edit</a>
-                    <a href="?id=courses&action=delete&item=' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="templates/default/images/del.png"> delete </a>
+                    <a href="?id=courses&action=edit&item=' . $fetch[0] . '"> <img src="'. $this->core->fullTemplatePath .'/images/edit.png"> edit</a>
+                    <a href="?id=courses&action=delete&item=' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="'. $this->core->fullTemplatePath .'/images/delete.gif"> delete </a>
                     </td>
                     </tr>';
 		}

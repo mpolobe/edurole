@@ -166,7 +166,7 @@ td {
 .breadcrumb {
 	height:20px;
 	width: 730px;
-	float: left;
+    margin-bottom: 10px;
 	position: relative;
 	padding-right: 0px;
 	padding-bottom: 7px;
@@ -1123,11 +1123,10 @@ h1 span {
 	width: 770px;
 	padding-right: 0px;
 	padding-bottom: 20px;
-	padding-top: 20px;
+	padding-top: 0px;
 	padding-left: 0px;
 	float: left;
 	font-size: 12px;
-	border-top: 1px solid #EEEEEE;
 }
 .contentpadhalf {
 	height: 85%;

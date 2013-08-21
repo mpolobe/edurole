@@ -1,4 +1,4 @@
-<form id="edituser" name="edituser" method="post" action="?id=users&action=saveedit">
+<form id="edituser" name="edituser" method="post" action="users/save-edit">
 <input type="hidden" name="id" value="update-account">
 <input type="hidden" name="studentid" id="studentid" value="<?php echo $id; ?>"/>
 

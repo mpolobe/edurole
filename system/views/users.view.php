@@ -126,12 +126,12 @@ class users {
 			$status = $row[20];
 
 			echo '<tr>
-			<td><img src="templates/default/images/bullet_user.png"></td>
+			<td><img src='. $this->core->fullTemplatePath .'/images/user.png"></td>
 			<td><a href="?id=view-information&uid=' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
 			<td><i>' . $role . '</i></td>
 				<td>' . $uid . '</td>
 				<td>' . $status . '</td>
-				<td><a href="?id=view-information&action=edit&uid=' . $uid . '"><img src="templates/default/images/edi.png"> edit</a>  <a href="?id=users&action=delete&uid=' . $uid . '" onclick="return confirm(\'Are you sure?\')"><img src="templates/default/images/del.png"> delete</a></td>
+				<td><a href="?id=view-information&action=edit&uid=' . $uid . '"><img src="'. $this->core->fullTemplatePath .'/images/edi.png"> edit</a>  <a href="?id=users&action=delete&uid=' . $uid . '" onclick="return confirm(\'Are you sure?\')"><img src="'. $this->core->fullTemplatePath .'/images/delete.gif"> delete</a></td>
 			  	</tr>';
 
 		}

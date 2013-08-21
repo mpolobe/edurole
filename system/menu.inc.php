@@ -13,7 +13,7 @@ class menuConstruct {
 
 		$this->fillMainMenu();
 
-		echo '</div>';
+		echo '</div><div class="contentpadfull">';
 
 	}
 
@@ -22,8 +22,7 @@ class menuConstruct {
 		$sql = "SELECT * 
 		FROM `permission-link`, `permissions`, `pages`, `page-segment` 
 		WHERE `pages`.`PageSegmentID` =  `page-segment`.`ID`
-	
-		AND `page-segment`.`SegmentRequiredPermission` = `permission-link`.`ID` 
+		AND `page-segment`.`SegmentRequiredPermission` = `permission-link`.`ID`
 		AND `permission-link`.`PermissionsRangeID` =  `permissions`.`ID` 
 		AND `permissions`.`RequiredRoleMin` <= " . $this->core->role . "
 		AND `permissions`.`RequiredRoleMax` <= " . $this->core->role . "
@@ -70,8 +69,10 @@ class menuConstruct {
 						$study = $fetch[1];
 						$school = $fetch[3];
 
-						echo '<div class="menu"><a href="?id=vle&view=school&id=1"> ' . $school . '</a></div>
-							<div class="menu"><a href="?id=vle&view=school&id=1"><img src="templates/default/images/expand.gif"> ' . $study . '</a></div>';
+						echo '<div class="menu"><a href="'. $this->core->conf['path'] .'/vle/school/1"> ' . $school . '</a></div>
+							<div class="menu"><a href="'. $this->core->conf['path'] .'/vle/school/1">
+								<img src="'. $this->core->fullTemplatePath .'/images/expand.gif"> ' . $study . '</a>
+							</div>';
 					}
 
 					echo '<div class="menu"><div class="indent"><a href="?id=vle&view=school&id=1"><img src="templates/default/images/expand.gif"> ' . $program . '</a></div></div>';
@@ -100,12 +101,12 @@ class menuConstruct {
 		echo '</div>';
 	}
 
-	private function segmentHeader($segmentName) {
+	public function segmentHeader($segmentName) {
 		echo '<div class="menuhdr"><strong>' . $segmentName . '</strong></div>';
 	}
 
-	private function pageItem($pageRoute, $pageName) {
-		echo '<div class="menu"><a href="' . $pageRoute . '">' . $pageName . '</a></div>';
+	public function pageItem($pageRoute, $pageName) {
+		echo '<div class="menu"><a href="'. $this->core->conf['path'] .'/' . $pageRoute . '">' . $pageName . '</a></div>';
 	}
 
 }
