@@ -115,7 +115,7 @@ class programmes {
 
 		$run = $this->core->database->doSelectQuery($sql);
 
-		echo '<p><b>Overview of all programmes currently on offer</b>  | <a href="?id=programmes&action=add">Add programme</a></p>
+		echo '<p><b>Overview of all programmes currently on offer</b>  | <a href="' . $this->core->conf['path'] . 'programmes/add">Add programme</a></p>
                 <p>
                 <table width="768" height="" border="0" cellpadding="3" cellspacing="0">
                 <tr class="tableheader">
@@ -169,13 +169,13 @@ class programmes {
 				}
 
 				$out = '<tr ' . $bgc . '>
-						<td><b><a href="?id=programmes&action=view&item=' . $fetch[0] . '"> ' . $fetch[1] . '</a></b></td>
+						<td><b><a href="' . $this->core->conf['path'] . 'programmes/view/' . $fetch[0] . '"> ' . $fetch[1] . '</a></b></td>
 						<td>';
 
 				$rest = ' </td><td> ' . $type . ' </td>
 						<td>
-						<a href="?id=programmes&action=edit&item=' . $fetch[0] . '"> <img src="templates/default/images/edi.png"> edit</a>
-						<a href="?id=programmes&action=delete&item=' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="templates/default/images/del.png"> delete </a>
+						<a href="' . $this->core->conf['path'] . 'programmes/edit/' . $fetch[0] . '"> <img src="templates/default/images/edi.png"> edit</a>
+						<a href="' . $this->core->conf['path'] . 'programmes/delete/' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="templates/default/images/del.png"> delete </a>
 						</td>
 						</tr>';
 
@@ -219,7 +219,7 @@ class programmes {
 					</tr>
 					<tr>
 					<td width="150"><b>Programme Coordinator</b></td>
-					<td><a href="?id=view-information&uid=' . $fetch[4] . '">' . $fetch[5] . ' ' . $fetch[6] . '</b></td>
+					<td><a href="' . $this->core->conf['path'] . 'information/view/' . $fetch[4] . '">' . $fetch[5] . ' ' . $fetch[6] . '</b></td>
 					<td></td>
 					</tr>
 					<tr><td>Programme Type</td>
@@ -251,13 +251,13 @@ class programmes {
 
 			while ($fetch = $run->fetch_row()) {
 
-				echo '<li><a href="?id=courses&action=view&item=' . $fetch[0] . '">' . $fetch[2] . '</a></li>';
+				echo '<li><a href="' . $this->core->conf['path'] . 'courses/view/' . $fetch[0] . '">' . $fetch[2] . '</a></li>';
 				$i++;
 
 			}
 
 			if ($i == 1) {
-				echo 'No courses have been added to the program yet. Please <a href="?id=programmes&action=edit&item=' . $fetch[0] . '">add some.</a>';
+				echo 'No courses have been added to the program yet. Please <a href="' . $this->core->conf['path'] . 'programmes/edit/' . $fetch[0] . '">add some.</a>';
 			}
 
 			echo '</td>

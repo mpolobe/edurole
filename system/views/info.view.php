@@ -22,7 +22,7 @@ class info {
 		<div class="menuhdr"><strong>Home menu</strong></div>
 		<div class="menu">
 		<a href=".">Home</a>
-		<a href="index.php?id=info">Overview of all studies</a>
+		<a href="' . $this->core->conf['path'] . '/info">Overview of all studies</a>
 		<a href="admission">Studies open for intake</a>
 		<a href="password">Recover lost password</a>
 		</div>

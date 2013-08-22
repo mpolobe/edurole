@@ -19,7 +19,7 @@ function showSchools() {
 
 $select = showSchools();
 ?>
-<form id="addstudy" name="addstudy" method="post" action="?id=studies&action=save">
+<form id="addstudy" name="addstudy" method="post" action="/studies&action=save">
 	<p>
 		<b>This form creates a new study, the start and end of intake determine the days online registration will be
 			open</b>

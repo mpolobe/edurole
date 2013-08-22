@@ -20,7 +20,7 @@ function showRoleSelect() {
 $select = showRoleSelect();
 ?>
 
-<form id="adduser" name="adduser" method="post" action="?id=users&action=save">
+<form id="adduser" name="adduser" method="post" action="/users&action=save">
 <p>All fields are required to proceed with the creation of the user</p>
 <table cellspacing="0">
 <tr>

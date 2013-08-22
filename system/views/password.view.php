@@ -30,7 +30,7 @@ class password {
 		<div class="menuhdr"><strong>Home menu</strong></div>
 		<div class="menu">
 		<a href=".">Home</a>
-		<a href="admission?id=info">Overview of all studies</a>
+		<a href="admission/info">Overview of all studies</a>
 		<a href="admission">Studies open for intake</a>
 		<a href="password">Recover lost password</a>
 		</div>

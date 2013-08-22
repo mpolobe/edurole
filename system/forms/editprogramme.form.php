@@ -33,7 +33,7 @@ function showUserSelect($role, $dean) {
 
 $select = showUserSelect("4", $dean);
 
-echo '<form id="editprogramme" name="editprogramme" method="post" action="?id=programmes&action=save">
+echo '<form id="editprogramme" name="editprogramme" method="post" action="/programmes&action=save">
 	<p>Please enter the following information</p>
 	<table width="768" border="0" cellpadding="5" cellspacing="0">
               <tr>
@@ -105,7 +105,7 @@ echo '	<table width="700" border="0" cellpadding="5" cellspacing="0">
 
  	<tr >
 	<td>Select which courses should be part of this programme</td>
-	<td width="100"> <form id="selected" name="selectedfr" method="post" action="?id=programmes&action=savecourses">
+	<td width="100"> <form id="selected" name="selectedfr" method="post" action="/programmes&action=savecourses">
 	<input type="hidden" name="item" value="' . $item . '" />
 	<select name="selected[]" multiple="multiple" size="10" style="width: 130px">';
 
@@ -126,12 +126,12 @@ while ($fetchw = mysql_fetch_row($srd)) {
 }
 
 if ($i == 1) {
-	echo 'No courses have been added to the program yet. Please <a href="?id=programmes&action=edit&item=' . $fetch[0] . '">add some.</a>';
+	echo 'No courses have been added to the program yet. Please <a href="' . $this->core->conf['path'] . 'programmes/edit/' . $fetch[0] . '">add some.</a>';
 }
 
 echo '</select>   <input type="submit" class="submit" name="submit" id="submit" value="Remove Selected" style="width: 130px" /></form></td>
 	<td  width="100">
-	<form id="nselected" name="nselectedfr" method="post" action="?id=programmes&action=savecourses">
+	<form id="nselected" name="nselectedfr" method="post" action="/programmes/savecourses">
 	<input type="hidden" name="item" value="' . $item . '" />
 	<select name="nselected[]" multiple="multiple" size="10" style="width: 130px">';
 
@@ -151,7 +151,7 @@ while ($fetchw = mysql_fetch_row($srd)) {
 }
 
 if ($i == 1) {
-	echo 'No courses have been added to the program yet. Please <a href="?id=programmes&action=edit&item=' . $fetch[0] . '">add some.</a>';
+	echo 'No courses have been added to the program yet. Please <a href="' . $this->core->conf['path'] . 'programmes/edit/' . $fetch[0] . '">add some.</a>';
 }
 
 echo '</select>  <input type="submit" class="submit" name="submit" id="submit" value="Add Selected" style="width: 130px" /></form>

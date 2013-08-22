@@ -19,15 +19,15 @@ class eduroleCore {
 		$this->initializer();
 	}
 
-	public function initializer(){
-		if($this->page == "api"){
-			new serviceBuilder($this);		// All service calls are processed in the service builder
-		}else {
-			new viewBuilder($this);			// All views are processed in the view builder
+	public function initializer() {
+		if ($this->page == "api") {
+			new serviceBuilder($this); // All service calls are processed in the service builder
+		} else {
+			new viewBuilder($this); // All views are processed in the view builder
 		}
 	}
 
-	public function processRoute(){
+	public function processRoute() {
 		$this->route = $this->cleanGet['id'];
 
 		$this->logEvent("Processing route: $this->route", "3");
@@ -43,7 +43,7 @@ class eduroleCore {
 		}
 	}
 
-	private function cleanInput(){
+	private function cleanInput() {
 		foreach (array_keys($_POST) as $key) {
 			$this->cleanPost[$key] = $this->database->mysqli->real_escape_string($_POST[$key]);
 		}
@@ -53,7 +53,7 @@ class eduroleCore {
 		}
 	}
 
-	public function getSessions(){
+	public function getSessions() {
 		if (isset($_SESSION['username'])) {
 			$this->username = $_SESSION['username'];
 		}
@@ -69,7 +69,7 @@ class eduroleCore {
 	}
 
 	public function setTemplate() {
-		if(isset($this->core->cleanPost['template'])){
+		if (isset($this->core->cleanPost['template'])) {
 			$_SESSION['template'] = $this->core->cleanPost['template'];
 			header('Location: .'); // Reload page
 		}
@@ -85,7 +85,7 @@ class eduroleCore {
 		$template = $this->conf['conf']['templates'][$template];
 
 		$this->template = $template;
-		$this->fullTemplatePath = $this->conf['conf']['path'] .'/'. $this->conf['conf']['templatePath'] . $this->template;
+		$this->fullTemplatePath = $this->conf['conf']['path'] . '/' . $this->conf['conf']['templatePath'] . $this->template;
 
 	}
 

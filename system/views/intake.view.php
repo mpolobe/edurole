@@ -24,7 +24,7 @@ class intake {
 				<div class="menuhdr"><strong>Home menu</strong></div>
 				<div class="menu">
 				<a href=".">Home</a>
-				<a href="index.php?id=info">Overview of all studies</a>
+				<a href="' . $this->core->conf['path'] . '/info">Overview of all studies</a>
 				<a href="admission">Studies open for intake</a>
 				<a href="password">Recover lost password</a>
 				</div>
@@ -65,7 +65,7 @@ class intake {
 
 		while ($row = $run->fetch_row()) {
 			echo '<tr>
-			<td><b><a href="index.php?id=register&action=view&item=' . $row[0] . '"> ' . $row[6] . '</a></b></td>' .
+			<td><b><a href="' . $this->core->conf['path'] . '/register/view/' . $row[0] . '"> ' . $row[6] . '</a></b></td>' .
 				'<td>' . $row[16] . '</td>' .
 				'<td>' . $row[3] . '</td>' .
 				'</tr>';

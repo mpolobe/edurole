@@ -110,7 +110,7 @@ class studies {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		echo '  | <a href="?id=studies&action=add">Add study</a></p><p>' .
+		echo '  | <a href="' . $this->core->conf['path'] . 'studies/add">Add study</a></p><p>' .
 			'<table width="768" height="" border="0" cellpadding="3" cellspacing="0"><tr class="tableheader"><td><b>Study</b></td>' .
 			'<td><b>School</b></td>' .
 			'<td><b>Management tools</b></td>' .
@@ -130,11 +130,11 @@ class studies {
 			}
 
 			echo '<tr ' . $bgc . '>
-			<td><b><a href="?id=studies&action=view&item=' . $row[0] . '"> ' . $row[1] . '</a></b></td>' .
-				'<td><a href="?id=schools&action=view&item=' . $row[3] . '">' . $row[2] . '</a></td>' .
+			<td><b><a href="' . $this->core->conf['path'] . 'studies/view/' . $row[0] . '"> ' . $row[1] . '</a></b></td>' .
+				'<td><a href="' . $this->core->conf['path'] . 'schools/view/' . $row[3] . '">' . $row[2] . '</a></td>' .
 				'<td>
-				<a href="?id=studies&action=edit&item=' . $row[0] . '"> <img src="templates/default/images/edi.png"> edit</a>
-			<a href="?id=studies&action=delete&item=' . $row[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="templates/default/images/del.png"> delete </a>
+				<a href="' . $this->core->conf['path'] . 'studies/edit/' . $row[0] . '"> <img src="templates/default/images/edi.png"> edit</a>
+			<a href="' . $this->core->conf['path'] . 'studies/delete/' . $row[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="templates/default/images/del.png"> delete </a>
 			</td>
 			</tr>';
 		}
@@ -179,7 +179,7 @@ class studies {
 					  </tr>
 					  <tr>
 						<td><strong>Part of school</strong></td>
-						<td><a href="?id=schools&action=view&item=' . $fetch[13] . '">' . $fetch[16] . '</a>
+						<td><a href="' . $this->core->conf['path'] . 'schools/view/' . $fetch[13] . '">' . $fetch[16] . '</a>
 					  </td>
 						<td></td>
 					  </tr>

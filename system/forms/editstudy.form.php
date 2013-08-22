@@ -25,7 +25,7 @@ function showSchools($school) {
 
 $select = showSchools($school);
 
-echo '<form id="addstudy" name="addstudy" method="post" action="?id=studies&action=save">
+echo '<form id="addstudy" name="addstudy" method="post" action="/studies&action=save">
 	<p>You are editing:<b> ' . $fetch[6] . '</b>  </p>
 	<p>
 

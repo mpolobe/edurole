@@ -1,4 +1,4 @@
-<form id="recover" name="recover" method="post" action="password.php?id=recover">
+<form id="recover" name="recover" method="post" action="password.php/recover">
 
 	<p>Please provide the needed information to recover your account password.</p>
 

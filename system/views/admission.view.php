@@ -158,20 +158,20 @@ class admission {
 			$status = $fetch[23];
 
 			if ($status == 6) {
-				$next = '<a href="'. $this->core->conf['path'] .'/admission/complete/' . $uid . '"><img src="'. $this->core->fullTemplatePath .'/images/exleft.gif"> <b>Complete</b> </a>';
+				$next = '<a href="' . $this->core->conf['path'] . '/admission/complete/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/exleft.gif"> <b>Complete</b> </a>';
 			} else {
-				$next = '<a href="'. $this->core->conf['path'] .'/admission/promote/' . $uid . '"><img src="'. $this->core->fullTemplatePath .'/images/exleft.gif"> Approve step </a>';
+				$next = '<a href="' . $this->core->conf['path'] . '/admission/promote/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/exleft.gif"> Approve step </a>';
 			}
 
 			echo '<tr>
-				<td><img src="'. $this->core->fullTemplatePath .'/images/user.png"></td>
-				<td><a href="'. $this->core->conf['path'] .'/information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
+				<td><img src="' . $this->core->fullTemplatePath . '/images/user.png"></td>
+				<td><a href="' . $this->core->conf['path'] . '/information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
 		
 				<td>' . $nrc . '</td>
-				<td><a href="'. $this->core->conf['path'] .'/admission/profile/' . $uid . '">Step ' . $status . '</a></td>
+				<td><a href="' . $this->core->conf['path'] . '/admission/profile/' . $uid . '">Step ' . $status . '</a></td>
 				<td><b>' . $study . '</b></td>
 				<td>' . $next . ' </td>
-				<td> <a href="'. $this->core->conf['path'] .'/admission/reject/' . $uid . '"><img src="'. $this->core->fullTemplatePath .'/images/delete.gif"> Deny</a></td>
+				<td> <a href="' . $this->core->conf['path'] . '/admission/reject/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> Deny</a></td>
 				</tr>';
 		}
 
@@ -213,13 +213,13 @@ class admission {
 			$status = $fetch[23];
 
 			echo '<tr>
-			<td><img src="'. $this->core->fullTemplatePath .'/images/user.png"></td>
-			<td><a href="'. $this->core->conf['path'] .'/information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
+			<td><img src="' . $this->core->fullTemplatePath . '/images/user.png"></td>
+			<td><a href="' . $this->core->conf['path'] . '/information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
 			<td>' . $nrc . '</td>
-			<td><a href="'. $this->core->conf['path'] .'/admission/profile/' . $uid . '">Step ' . $status . '</a></td>
+			<td><a href="' . $this->core->conf['path'] . '/admission/profile/' . $uid . '">Step ' . $status . '</a></td>
 			<td><b>' . $study . '</b></td>
-			<td><a href="'. $this->core->conf['path'] .'/admission/continue/' . $uid . '"><img src="'. $this->core->fullTemplatePath .'/images/edit.gif"> Continue </a></td>
-			<td><a href="'. $this->core->conf['path'] .'/admission/reject/' . $uid . '"><img src="'. $this->core->fullTemplatePath .'/images/delete.gif"> Delete</a></td>
+			<td><a href="' . $this->core->conf['path'] . '/admission/continue/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/edit.gif"> Continue </a></td>
+			<td><a href="' . $this->core->conf['path'] . '/admission/reject/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> Delete</a></td>
 			</tr>';
 
 		}
@@ -242,13 +242,13 @@ class admission {
 
 			if ($i == $role && $status == "Rejected") {
 				$background = 'style="background-color: #F2BFBF"';
-				$step = '<image src="'. $this->core->fullTemplatePath .'/images/error.png"> <b>FAILED TO MEET REQUIREMENTS</b>';
+				$step = '<image src="' . $this->core->fullTemplatePath . '/images/error.png"> <b>FAILED TO MEET REQUIREMENTS</b>';
 			} elseif ($i <= $role) {
 				$background = 'style="background-color: #DFF2BF"';
-				$step = '<image src="'. $this->core->fullTemplatePath .'/images/check.png"> completed';
+				$step = '<image src="' . $this->core->fullTemplatePath . '/images/check.png"> completed';
 			} elseif ($i > $role) {
 				$background = 'style="background-color: #fff"';
-				$step = '<image src="'. $this->core->fullTemplatePath .'/images/tviload.gif"> not yet completed';
+				$step = '<image src="' . $this->core->fullTemplatePath . '/images/tviload.gif"> not yet completed';
 			}
 
 			echo '<tr ' . $background . '>

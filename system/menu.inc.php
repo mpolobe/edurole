@@ -69,13 +69,13 @@ class menuConstruct {
 						$study = $fetch[1];
 						$school = $fetch[3];
 
-						echo '<div class="menu"><a href="'. $this->core->conf['path'] .'/vle/school/1"> ' . $school . '</a></div>
-							<div class="menu"><a href="'. $this->core->conf['path'] .'/vle/school/1">
-								<img src="'. $this->core->fullTemplatePath .'/images/expand.gif"> ' . $study . '</a>
+						echo '<div class="menu"><a href="' . $this->core->conf['path'] . '/vle/school/1"> ' . $school . '</a></div>
+							<div class="menu"><a href="' . $this->core->conf['path'] . '/vle/school/1">
+								<img src="' . $this->core->fullTemplatePath . '/images/expand.gif"> ' . $study . '</a>
 							</div>';
 					}
 
-					echo '<div class="menu"><div class="indent"><a href="?id=vle&view=school&id=1"><img src="templates/default/images/expand.gif"> ' . $program . '</a></div></div>';
+					echo '<div class="menu"><div class="indent"><a href="' . $this->core->conf['path'] . 'vle&view=school&id=1"><img src="templates/default/images/expand.gif"> ' . $program . '</a></div></div>';
 				}
 
 			} else if ($pageName == "Mail") {
@@ -89,7 +89,10 @@ class menuConstruct {
 					if (empty($mailcount)) {
 						$mailcount = "0";
 					}
+
+					$pageRoute = '/mail';
 					$pageName = 'Personal mail <div class="mailcount"><b>' . $mailcount . '</b></div>';
+					$this->pageItem($pageRoute, $pageName);
 
 				}
 			}
@@ -106,7 +109,7 @@ class menuConstruct {
 	}
 
 	public function pageItem($pageRoute, $pageName) {
-		echo '<div class="menu"><a href="'. $this->core->conf['path'] .'/' . $pageRoute . '">' . $pageName . '</a></div>';
+		echo '<div class="menu"><a href="' . $this->core->conf['path'] . '/' . $pageRoute . '">' . $pageName . '</a></div>';
 	}
 
 }

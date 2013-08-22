@@ -45,7 +45,7 @@ class institution {
 
 			if ($i == 0) {
 				echo '<div class="easymencontainer">
-			<form id="login" name="institutionname" method="POST" action="?id=institution&action=save">
+			<form id="login" name="institutionname" method="POST" action="/institution/save">
 			<p class="title2">Institutional identity</p>
 			<p><input type="hidden" name="id" value="view-information">
 			<div class="padding"><div class="label">Name of institution</div> <input type="text" name="institutionname" class="submit" value="' . $fetch[2] . '"/><br>
@@ -74,7 +74,7 @@ class institution {
 
 			if ($i == 1) {
 				echo '<div class="easymencontainer">
-                            <form id="login" name="paymenttypes" method="POST" action="?id=institution&action=save">
+                            <form id="login" name="paymenttypes" method="POST" action="/institution/save">
                             <p class="title2">Payment types</p>
                             <p><input type="hidden" name="id" value="view-information">
                             <div class="padding"><div class="label">Payment Type ' . $i . '</div> <input type="text" name="paymenttype' . $i . '" class="submit" value="' . $fetch[2] . '"/><br>
@@ -135,7 +135,7 @@ class institution {
 		echo '<div class="newscontainers">	<h2>News and updates</h2> <p>';
 
 		while ($fetch = $run->fetch_row()) {
-			echo ' <li> <b><a href="?id=item&item=' . $fetch[0] . '">' . $fetch[1] . '</a></b></li>';
+			echo ' <li> <b><a href="' . $this->core->conf['path'] . 'item/' . $fetch[0] . '">' . $fetch[1] . '</a></b></li>';
 		}
 
 		echo '</p></div>';

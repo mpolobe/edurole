@@ -4,7 +4,7 @@
 	<div class="center">
 
 	<div class="float">
-		<form name="templatef" id="templatef" action="?id=template" method="POST">
+		<form name="templatef" id="templatef" action="/template" method="POST">
 			<select name="templated" id="templated" onchange='this.form.submit()'>
 			<option value="0">template</option>	
 			<?php 	 $select = $this->showtemplate(); echo $select; ?>

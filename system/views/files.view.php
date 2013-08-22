@@ -54,7 +54,7 @@ class files {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		echo '<p><img src="templates/edurole/images/up.png"/> <a href="?id=files&action=upload&op=' . $path . '">upload a file</a> or <img src="templates/edurole/images/dd.gif"/> <a href="?id=files&action=new&op=' . $path . '">create an empty file</a> or <img src="templates/edurole/images/new.gif"/> <a href="?id=files&action=newdir&op=' . $path . '">new directory</a></b>';
+		echo '<p><img src="' . $this->core->fullTemplatePath . '/images/up.png"/> <a href="' . $this->core->conf['path'] . 'files/upload/' . $path . '">upload a file</a> or <img src="' . $this->core->fullTemplatePath . '/images/list.gif"/> <a href="' . $this->core->conf['path'] . 'files/new/' . $path . '">create an empty file</a> or <img src="' . $this->core->fullTemplatePath . '/images/new.gif"/> <a href="' . $this->core->conf['path'] . 'files/makedir/' . $path . '">new directory</a></b>';
 
 		overview($path);
 	}
@@ -62,14 +62,14 @@ class files {
 	function upload() {
 		$function = __FUNCTION__;
 		$title = 'Upload a file';
-		$description = 'Please note that executables must be compressed and the maximum file size is 50MB';
+		$description = 'Please note that executables must be compressed as ZIP, TGZ, RAR, etc. and the maximum file size is 50MB';
 
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
 		echo '<div class="heading">File upload</div>
 
-		<form id="login" name="login" method="get" action="?id=files&action=uploadfile" enctype="multipart/form-data">
+		<form id="login" name="login" method="get" action="/files/uploadfile" enctype="multipart/form-data">
 		<input type="hidden" name="id" value="view-information">
 		<div class="label">Select file to upload </div>
 		<input type="file" name="file" id="file" class="submit"><br>
@@ -115,7 +115,7 @@ class files {
 
 		echo '<div class="heading">New file</div>
     
-        <form id="login" name="login" method="get" action="?id=files&action=uploadfile" enctype="multipart/form-data">
+        <form id="login" name="login" method="get" action="/files/uploadfile" enctype="multipart/form-data">
         <input type="hidden" name="id" value="view-information">
         <div class="label">Select file to upload </div>
         <input type="file" name="file" id="file" class="submit"><br>

@@ -64,16 +64,16 @@ class viewBuilder {
 			$this->core->throwError("Required view missing $viewInclude");
 		}
 
-		$this->jsFiles = $this->core->conf['javascript'][0] . "\n"; 	//include default JS
+		$this->jsFiles = $this->core->conf['javascript'][0] . "\n"; //include default JS
 
 		foreach ($viewConfig->javascript as $file) {
-			$this->jsFiles .= $this->core->conf['javascript'][$file]; 	//include JS files required by page
+			$this->jsFiles .= $this->core->conf['javascript'][$file]; //include JS files required by page
 		}
 
-		$this->cssFiles = $this->core->conf['css'][0] . "\n"; 			//include default CSS
+		$this->cssFiles = $this->core->conf['css'][0] . "\n"; //include default CSS
 
 		foreach ($viewConfig->css as $file) {
-			$this->cssFiles .= $this->core->conf['css'][$file] . "\n"; 	//include CSS required by page
+			$this->cssFiles .= $this->core->conf['css'][$file] . "\n"; //include CSS required by page
 		}
 
 		$this->cssFiles = str_replace("%BASE%", $this->core->conf['conf']['path'], $this->cssFiles);
@@ -108,4 +108,5 @@ class viewBuilder {
 		include $this->core->conf['conf']['templatePath'] . $template . "/footer.inc.php";
 	}
 }
+
 ?>

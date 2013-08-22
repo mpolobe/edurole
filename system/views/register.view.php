@@ -22,7 +22,7 @@ class register {
 			echo '<div class="menucontainer">
 			<div class="menubar"><div class="menuhdr"><strong>Information for admission</strong></div><div class="menu">
 			<a href=".">Home</a>
-			<a href="index.php?id=info">Overview of all studies</a>
+			<a href="' . $this->core->conf['path'] . '/info">Overview of all studies</a>
 			<a href="admission">Studies open for intake</a>
 			</div></div></div>';
 
@@ -45,9 +45,9 @@ class register {
 
 			while ($fetch = $run->fetch_row()) {
 
-				echo '<form id="enroll" name="enroll" method="post" action="index.php?id=submit-registration" enctype="multipart/form-data" >
-							 <input type="hidden" name="studyid" value="' . $row['0'] . '">
-							 <p>You are requesting admission to the following study: <b> ' . $row[1] . ' </b> <br>Please complete the following form entirely to successfully complete your request for admission.</p>';
+				echo '<form id="enroll" name="enroll" method="post" action="' . $this->core->conf['path'] . '/register" enctype="multipart/form-data" >
+							 <input type="hidden" name="studyid" value="' . $fetch['0'] . '">
+							 <p>You are requesting admission to the following study: <b> ' . $fetch[1] . ' </b> <br>Please complete the following form entirely to successfully complete your request for admission.</p>';
 
 				include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
 
@@ -64,12 +64,12 @@ class register {
 
 			}
 
-			include "js/footer.js";
-			include "js/reg.js";
+			include $this->core->conf['path'] . "lib/edurole/footer.js";
+			include $this->core->conf['path'] . "lib/edurole/reg.js";
 
 		} else {
 
-			$this->core->throwError('No study was selected, please <a href="?id=admission">select one</a>');
+			$this->core->throwError('No study was selected, please <a href="' . $this->core->conf['path'] . 'admission">select one</a>');
 
 		}
 	}

@@ -3,7 +3,7 @@ include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
 
 $select = showUsers("100", null);
 
-echo '<form id="editprogramme" name="editprogramme" method="post" action="?id=programmes&action=save">
+echo '<form id="editprogramme" name="editprogramme" method="post" action="/programmes&action=save">
 	<p>Please enter the following information</p>
         <table cellspacing="0" >
           <tr>

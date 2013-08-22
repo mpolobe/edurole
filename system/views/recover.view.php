@@ -16,7 +16,7 @@ class recover {
 	public function buildView($core) {
 		$this->core = $core;
 
-		include_once 'lib/secureimage/securimage.php';
+		include_once $this->core->conf['conf']['libPath'] . '/secureimage/securimage.php';
 
 		$securimage = new Securimage();
 

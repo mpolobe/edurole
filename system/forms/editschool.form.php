@@ -5,7 +5,7 @@ include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
 
 $select = new optionBuilder($core);
 $select->showUsers("4", $dean);
-echo '<form id="editschool" name="editschool" method="post" action="?id=schools&action=save">
+echo '<form id="editschool" name="editschool" method="post" action="/schools&action=save">
 	<p>Please enter the following information</p>
         <table 	cellspacing="0" >
           <tr>

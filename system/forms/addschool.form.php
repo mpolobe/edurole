@@ -11,7 +11,7 @@ echo '<script type="text/javascript">
 	});
 </script>
 
-<form id="addschool" name="addschool" method="post" action="?id=schools&action=save">
+<form id="addschool" name="addschool" method="post" action="/schools&action=save">
 	<p>Please enter the following information</p>
 	<table width="768" border="0" cellpadding="5" cellspacing="0">
               <tr>

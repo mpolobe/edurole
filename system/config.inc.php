@@ -3,50 +3,50 @@
  * General system setup
  * You are required to change these values for the setup of the system.
  */
-$conf['conf']['debugging'] = FALSE;									// Set TRUE to enable debugging
-$conf['conf']['domain'] = "edurole.com";							// Domain on which the pages will be served
-$conf['conf']['mailenabled'] = TRUE;								// Whether to enable in-system mailclient
-$conf['conf']['hash'] = "2#FCLWJEFO2j3@K#LKF"; 						// Change this to a unique random set of characters
-$conf['conf']['titleName'] = "EduRole Student Information System";	// Default Page Title
+$conf['conf']['debugging'] = FALSE; // Set TRUE to enable debugging
+$conf['conf']['domain'] = "edurole.com"; // Domain on which the pages will be served
+$conf['conf']['mailenabled'] = TRUE; // Whether to enable in-system mailclient
+$conf['conf']['hash'] = "2#FCLWJEFO2j3@K#LKF"; // Change this to a unique random set of characters
+$conf['conf']['titleName'] = "EduRole Student Information System"; // Default Page Title
 
 /*
  * System paths
  */
-$conf['conf']['path'] = "/edurole-git"; 							// Change to path to path to Edurole on webserver (example: www.example.com/pathtosystem) would be /pathtosystem.
-$conf['conf']['classPath'] = "system/classes/";						// Location for classes
-$conf['conf']['viewPath'] = "system/views/";						// Location for views
-$conf['conf']['formPath'] = "system/forms/";						// Location for forms
-$conf['conf']['templatePath'] = "templates/";						// Location for templates
-$conf['conf']['dataStorePath'] = getcwd() . "/datastore/home/";		// Datastore location (userhomes, identities, etc.)
+$conf['conf']['path'] = "/edurole-git"; // Change to path to path to Edurole on webserver (example: www.example.com/pathtosystem) would be /pathtosystem.
+$conf['conf']['classPath'] = "system/classes/"; // Location for classes
+$conf['conf']['viewPath'] = "system/views/"; // Location for views
+$conf['conf']['formPath'] = "system/forms/"; // Location for forms
+$conf['conf']['templatePath'] = "templates/"; // Location for templates
+$conf['conf']['dataStorePath'] = getcwd() . "/datastore/home/"; // Datastore location (userhomes, identities, etc.)
 
 /*
  * MYSQL server information
  */
-$conf['mysql']['server'] = "localhost";								// MySQL server host
-$conf['mysql']['user'] = "root";									// MySQL user
-$conf['mysql']['password'] = "PASSWORD";							// MySQL password
-$conf['mysql']['db'] = "edurole";									// MySQL database
+$conf['mysql']['server'] = "localhost"; // MySQL server host
+$conf['mysql']['user'] = "root"; // MySQL user
+$conf['mysql']['password'] = "PASSWORD"; // MySQL password
+$conf['mysql']['db'] = "edurole"; // MySQL database
 
 /*
  * LDAP server information
  */
-$conf['conf']['ldapenabled'] = FALSE; 								// Enable LDAP integration or not
-$conf['ldap']['server'] = "localhost";								// LDAP host
-$conf['ldap']['port'] = "389"; 										// LDAP server port
+$conf['conf']['ldapenabled'] = FALSE; // Enable LDAP integration or not
+$conf['ldap']['server'] = "localhost"; // LDAP host
+$conf['ldap']['port'] = "389"; // LDAP server port
 $conf['ldap']['studentou'] = "ou=students,dc=mulungushi,dc=ac,dc=zm"; // Dedicated OU is needed for students
-$conf['ldap']['staffou'] = "ou=staff,dc=mulungushi,dc=ac,dc=zm"; 	// Dedicated OU is needed for staff
+$conf['ldap']['staffou'] = "ou=staff,dc=mulungushi,dc=ac,dc=zm"; // Dedicated OU is needed for staff
 $conf['ldap']['adminou'] = "ou=administrators,dc=mulungushi,dc=ac,dc=zm"; // Dedicated OU is needed for administrators
 
 /*
  * Mail server information
  */
-$conf['mail']['server'] = "localhost";								// IMAP server address
-$conf['mail']['port'] = "389"; 										// IMAP port
+$conf['mail']['server'] = "localhost"; // IMAP server address
+$conf['mail']['port'] = "389"; // IMAP port
 
 /*
  * Enabled templates, default is first template listed
  */
-$conf['conf']['templates'] = array("edurole");	// Template names in array form
+$conf['conf']['templates'] = array("edurole"); // Template names in array form
 
 /*
  * CSS available to the system, 0 is included on every page
