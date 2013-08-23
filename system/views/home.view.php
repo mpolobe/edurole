@@ -109,7 +109,7 @@ class home {
 
 				echo '<tr>
                         <td>Selected study</td>
-                        <td><b><a href="' . $this->core->conf['path'] . 'studies/view/' . $row[8] . '">' . $study . '</a></b></td>
+                        <td><b><a href="' . $this->core->conf['conf']['path'] . 'studies/view/' . $row[8] . '">' . $study . '</a></b></td>
                         </tr>';
 
 				$sql = "SELECT * FROM `programmes` as pr WHERE pr.`ID` = '$row[23]' OR pr.`ID` = '$row[24]'";
@@ -156,7 +156,7 @@ class home {
 		echo '<div class="newscontainers">	<h2>News and updates</h2> <p>';
 
 		while ($row = $run->fetch_row()) {
-			echo ' <li> <b><a href="' . $this->core->conf['path'] . 'item/' . $row[0] . '">' . $row[1] . '</a></b></li>';
+			echo ' <li> <b><a href="' . $this->core->conf['conf']['path'] . 'item/' . $row[0] . '">' . $row[1] . '</a></b></li>';
 		}
 
 		echo '</p></div>';
@@ -171,7 +171,7 @@ class home {
 		echo '<div class="welcomecontainers">';
 
 		if ($this->core->role == 1000) {
-			echo '<div style="float: right;"><a href="' . $this->core->conf['path'] . 'item/edit/' . $id . '">edit</a></div>';
+			echo '<div style="float: right;"><a href="' . $this->core->conf['conf']['path'] . 'item/edit/' . $id . '">edit</a></div>';
 		}
 
 		while ($row = $run->fetch_row()) {
@@ -187,13 +187,13 @@ class home {
 
 		if ($this->core->role >= 10) {
 			echo '<div class="easymencontainer">
-                 <div class="easymen"><a href="' . $this->core->conf['path'] . '/mail"><img src="' . $this->core->fullTemplatePath . '/images/mail.png"> <br>  Email</a></div>
-                 <div class="easymen"><a href="' . $this->core->conf['path'] . '/grades"><img src="' . $this->core->fullTemplatePath . '/images/chart.png"> <br> Grades</a></div>
-                 <div class="easymen"><a href="' . $this->core->conf['path'] . '/calendar"><img src="' . $this->core->fullTemplatePath . '/images/calendar.png"> <br> Calendar</a></div>
-                 <div class="easymen"><a href="' . $this->core->conf['path'] . '/books"><img src="' . $this->core->fullTemplatePath . '/images/books.png"> <br> Books</a></div>
-				 <div class="easymen"><a href="' . $this->core->conf['path'] . '/files"><img src="' . $this->core->fullTemplatePath . '/images/box.png"> <br>  Files</a></div>
-                 <div class="easymen"><a href="' . $this->core->conf['path'] . '/assignments"><img src="' . $this->core->fullTemplatePath . '/images/clipboard.png">  <br> Assignments</a></div>
-                 <div class="easymen"><a href="' . $this->core->conf['path'] . '/help"><img src="' . $this->core->fullTemplatePath . '/images/info.png">  <br> Help</a></div>
+                 <div class="easymen"><a href="' . $this->core->conf['conf']['path'] . '/mail"><img src="' . $this->core->fullTemplatePath . '/images/mail.png"> <br>  Email</a></div>
+                 <div class="easymen"><a href="' . $this->core->conf['conf']['path'] . '/grades"><img src="' . $this->core->fullTemplatePath . '/images/chart.png"> <br> Grades</a></div>
+                 <div class="easymen"><a href="' . $this->core->conf['conf']['path'] . '/calendar"><img src="' . $this->core->fullTemplatePath . '/images/calendar.png"> <br> Calendar</a></div>
+                 <div class="easymen"><a href="' . $this->core->conf['conf']['path'] . '/books"><img src="' . $this->core->fullTemplatePath . '/images/books.png"> <br> Books</a></div>
+				 <div class="easymen"><a href="' . $this->core->conf['conf']['path'] . '/files"><img src="' . $this->core->fullTemplatePath . '/images/box.png"> <br>  Files</a></div>
+                 <div class="easymen"><a href="' . $this->core->conf['conf']['path'] . '/assignments"><img src="' . $this->core->fullTemplatePath . '/images/clipboard.png">  <br> Assignments</a></div>
+                 <div class="easymen"><a href="' . $this->core->conf['conf']['path'] . '/help"><img src="' . $this->core->fullTemplatePath . '/images/info.png">  <br> Help</a></div>
                 </div>';
 		}
 	}

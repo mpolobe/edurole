@@ -78,7 +78,7 @@ class grades {
 			}
 
 			echo '<tr>' .
-				'<td><a href="' . $this->core->conf['path'] . 'courses/view/' . $courseid . '"><b>' . $coursename . '</b></a></td>' .
+				'<td><a href="' . $this->core->conf['conf']['path'] . 'courses/view/' . $courseid . '"><b>' . $coursename . '</b></a></td>' .
 				'<td>' . $date . '</td>' .
 				'<td><b>' . $grade . '</b></td>' .
 				'</tr>';
@@ -130,8 +130,8 @@ class grades {
 				'<td><b>Date and Time</b></td>' .
 				'</tr>' .
 				'<tr>' .
-				'<td><a href="' . $this->core->conf['path'] . 'courses/view/' . $courseid . '"><b>' . $coursename . '</b> </a></td>' .
-				'<td><a href="' . $this->core->conf['path'] . 'information/view/' . $batchname . '">(' . $validator . ')</a></td>' .
+				'<td><a href="' . $this->core->conf['conf']['path'] . 'courses/view/' . $courseid . '"><b>' . $coursename . '</b> </a></td>' .
+				'<td><a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $batchname . '">(' . $validator . ')</a></td>' .
 				'<td>' . $date . '</td>' .
 				'<td></td>' .
 				'<td>
@@ -179,13 +179,13 @@ class grades {
 				'<td width="100px"><b>Management</b></td>' .
 				'</tr>';
 			echo '<tr>' .
-				'<td><a href="' . $this->core->conf['path'] . 'courses/view/' . $courseid . '"><b>' . $coursename . '</b> </a></td>' .
-				'<td><a href="' . $this->core->conf['path'] . 'information/view/' . $batchname . '">(' . $validator . ')</a></td>' .
-				'<td><a href="' . $this->core->conf['path'] . 'information/view/' . $uid . '">' . $firstname . ' ' . $lastname . '</a></td>' .
+				'<td><a href="' . $this->core->conf['conf']['path'] . 'courses/view/' . $courseid . '"><b>' . $coursename . '</b> </a></td>' .
+				'<td><a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $batchname . '">(' . $validator . ')</a></td>' .
+				'<td><a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $uid . '">' . $firstname . ' ' . $lastname . '</a></td>' .
 				'<td>' . $date . '</td>' .
 				'<td>
-				<a href="' . $this->core->conf['path'] . 'studies/edit/' . $fetch[0] . '"> <img src="templates/default/images/edi.png"> edit</a>
-				<a href="' . $this->core->conf['path'] . 'studies/delete/' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="templates/default/images/del.png"> delete </a>
+				<a href="' . $this->core->conf['conf']['path'] . 'studies/edit/' . $fetch[0] . '"> <img src="templates/default/images/edi.png"> edit</a>
+				<a href="' . $this->core->conf['conf']['path'] . 'studies/delete/' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="templates/default/images/del.png"> delete </a>
 				</td>' .
 				'</tr>';
 			echo '</table></div>';
@@ -216,7 +216,7 @@ class grades {
 		while ($fetch = $run->fetch_row()) {
 			echo '<tr>
 			<td><img src="templates/default/images/bullet_user.png"></td>
-			<td><b><a href="' . $this->core->conf['path'] . 'information/view/' . $fetch[4] . '">' . $fetch[0] . ' ' . $fetch[2] . '</a></b></td>' .
+			<td><b><a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $fetch[4] . '">' . $fetch[0] . ' ' . $fetch[2] . '</a></b></td>' .
 				'<td>' . $fetch[4] . '</td>' .
 				'<td><input type="textbox" name="g' . $fetch[4] . '" size="5" class="submit"></td>' .
 				'</tr>';

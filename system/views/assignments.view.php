@@ -75,11 +75,11 @@ class assignments {
 				'<td width="100px"><b></td>' .
 				'</tr>';
 			echo '<tr>' .
-				'<td><a href="' . $this->core->conf['path'] . 'courses/view/' . $assignmentid . '"><b>' . $assignmentname . '</b></a></td>' .
-				'<td><a href="' . $this->core->conf['path'] . 'information/view/' . $uid . '">' . $firstname . ' ' . $lastname . '</a></td>' .
+				'<td><a href="' . $this->core->conf['conf']['path'] . 'courses/view/' . $assignmentid . '"><b>' . $assignmentname . '</b></a></td>' .
+				'<td><a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $uid . '">' . $firstname . ' ' . $lastname . '</a></td>' .
 				'<td>' . $date . '</td>' .
 				'<td>
-				<b><a href="' . $this->core->conf['path'] . 'studies/edit/' . $fetch[0] . '"> Submit result </a></b>
+				<b><a href="' . $this->core->conf['conf']['path'] . 'studies/edit/' . $fetch[0] . '"> Submit result </a></b>
                             </td>' .
 				'</tr></table></div>';
 
@@ -126,11 +126,11 @@ class assignments {
 				'<td width="100px"><b></td>' .
 				'</tr>';
 			echo '<tr>' .
-				'<td><a href="' . $this->core->conf['path'] . 'courses/view/' . $assignmentid . '"><b>' . $assignmentname . '</b></a></td>' .
-				'<td><a href="' . $this->core->conf['path'] . 'information/view/' . $uid . '">' . $firstname . ' ' . $lastname . '</a></td>' .
+				'<td><a href="' . $this->core->conf['conf']['path'] . 'courses/view/' . $assignmentid . '"><b>' . $assignmentname . '</b></a></td>' .
+				'<td><a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $uid . '">' . $firstname . ' ' . $lastname . '</a></td>' .
 				'<td>' . $date . '</td>' .
 				'<td>
-				<b><a href="' . $this->core->conf['path'] . 'studies/edit/' . $fetch[0] . '"> Submit result </a></b>
+				<b><a href="' . $this->core->conf['conf']['path'] . 'studies/edit/' . $fetch[0] . '"> Submit result </a></b>
                             </td>' .
 				'</tr></table></div>';
 

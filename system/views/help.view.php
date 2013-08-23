@@ -70,7 +70,7 @@ class help {
 			echo '<div class="newscontainers">	<h2>Help and information articles</h2> <p>';
 
 			while ($fetch = mysql_fetch_row($pep)) {
-				echo ' <li> <b><a href="' . $this->core->conf['path'] . 'help/' . $fetch[0] . '">' . $fetch[1] . '</a></b></li>';
+				echo ' <li> <b><a href="' . $this->core->conf['conf']['path'] . 'help/' . $fetch[0] . '">' . $fetch[1] . '</a></b></li>';
 			}
 
 			echo '</p></div>';

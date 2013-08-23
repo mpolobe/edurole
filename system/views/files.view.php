@@ -54,7 +54,7 @@ class files {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		echo '<p><img src="' . $this->core->fullTemplatePath . '/images/up.png"/> <a href="' . $this->core->conf['path'] . 'files/upload/' . $path . '">upload a file</a> or <img src="' . $this->core->fullTemplatePath . '/images/list.gif"/> <a href="' . $this->core->conf['path'] . 'files/new/' . $path . '">create an empty file</a> or <img src="' . $this->core->fullTemplatePath . '/images/new.gif"/> <a href="' . $this->core->conf['path'] . 'files/makedir/' . $path . '">new directory</a></b>';
+		echo '<p><img src="' . $this->core->fullTemplatePath . '/images/up.png"/> <a href="' . $this->core->conf['conf']['path'] . 'files/upload/' . $path . '">upload a file</a> or <img src="' . $this->core->fullTemplatePath . '/images/list.gif"/> <a href="' . $this->core->conf['conf']['path'] . 'files/new/' . $path . '">create an empty file</a> or <img src="' . $this->core->fullTemplatePath . '/images/new.gif"/> <a href="' . $this->core->conf['conf']['path'] . 'files/makedir/' . $path . '">new directory</a></b>';
 
 		overview($path);
 	}

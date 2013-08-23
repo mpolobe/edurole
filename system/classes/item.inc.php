@@ -10,7 +10,7 @@ class itemManager {
 		echo '<div class="welcomecontainers">';
 
 		if ($this->core->role == 1000) {
-			echo '<div style="float: right;"><a href="' . $this->core->conf['path'] . 'item/edit/' . $id . '">edit</a></div>';
+			echo '<div style="float: right;"><a href="' . $this->core->conf['conf']['path'] . 'item/edit/' . $id . '">edit</a></div>';
 		}
 
 		while ($row = $run->fetch_row()) {

@@ -5,13 +5,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><? echo $this->core->conf['conf']['titlename']; ?></title>
 
-<link rel="icon" type="image/png" href="templates/edurole/images/apple-touch-icon-144x144-precomposed.png">
-<link rel="apple-touch-startup-image" href="templates/edurole/images/splash-screen-320x460.png" media="screen and (max-device-width: 320px)" />
-<link rel="apple-touch-startup-image" media="(max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2)" href="templates/edurole/images/splash-screen-640x920.png" />
-<link rel="apple-touch-icon" href="templates/edurole/images/apple-touch-icon-57x57-precomposed.png" />
-<link rel="apple-touch-icon" sizes="72x72" href="templates/edurole/images/apple-touch-icon-72x72-precomposed.png" />
-<link rel="apple-touch-icon" sizes="114x114" href="templates/edurole/images/apple-touch-icon-114x114-precomposed.png" />
-<link rel="apple-touch-icon" sizes="144x144" href="templates/edurole/images/apple-touch-icon-144x144-precomposed.png" />
+<link rel="icon" type="image/png" href="<? echo $this->core->conf['conf']['path']; ?>/templates/edurole/images/apple-touch-icon-144x144-precomposed.png">
+<link rel="apple-touch-startup-image" href="<? echo $this->core->conf['conf']['path']; ?>/templates/edurole/images/splash-screen-320x460.png" media="screen and (max-device-width: 320px)" />
+<link rel="apple-touch-startup-image" media="(max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2)" href="<? echo $this->core->conf['conf']['path']; ?>/templates/edurole/images/splash-screen-640x920.png" />
+<link rel="apple-touch-icon" href="<? echo $this->core->conf['conf']['path']; ?>/templates/edurole/images/apple-touch-icon-57x57-precomposed.png" />
+<link rel="apple-touch-icon" sizes="72x72" href="<? echo $this->core->conf['conf']['path']; ?>/templates/edurole/images/apple-touch-icon-72x72-precomposed.png" />
+<link rel="apple-touch-icon" sizes="114x114" href="<? echo $this->core->conf['conf']['path']; ?>/templates/edurole/images/apple-touch-icon-114x114-precomposed.png" />
+<link rel="apple-touch-icon" sizes="144x144" href="<? echo $this->core->conf['conf']['path']; ?>/templates/edurole/images/apple-touch-icon-144x144-precomposed.png" />
 
 <? 
 echo $this->cssFiles;
@@ -26,5 +26,5 @@ if(isset($this->jsConflict)){
 
 </head>
 <body>
- <div class="headercenter"><a href="."><img src="templates/edurole/images/header.png" /></a></div>
+ <div class="headercenter"><a href="."><img src="<? echo $this->core->conf['conf']['path']; ?>/templates/edurole/images/header.png" /></a></div>
 		<div class="bodycontainer">

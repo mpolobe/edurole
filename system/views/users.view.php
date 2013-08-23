@@ -127,11 +127,11 @@ class users {
 
 			echo '<tr>
 			<td><img src=' . $this->core->fullTemplatePath . '/images/user.png"></td>
-			<td><a href="' . $this->core->conf['path'] . 'information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
+			<td><a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
 			<td><i>' . $role . '</i></td>
 			<td>' . $uid . '</td>
 			<td>' . $status . '</td>
-			<td><a href="' . $this->core->conf['path'] . 'information/edit/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/edi.png"> edit</a>  <a href="' . $this->core->conf['path'] . 'users/delete/' . $uid . '" onclick="return confirm(\'Are you sure?\')"><img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> delete</a></td>
+			<td><a href="' . $this->core->conf['conf']['path'] . 'information/edit/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/edi.png"> edit</a>  <a href="' . $this->core->conf['conf']['path'] . 'users/delete/' . $uid . '" onclick="return confirm(\'Are you sure?\')"><img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> delete</a></td>
 			</tr>';
 		}
 
@@ -170,11 +170,11 @@ class users {
 
 			echo '<tr>
 			<td><img src="' . $this->core->fullTemplatePath . '/images/bullet_user.png"></td>
-			<td><a href="' . $this->core->conf['path'] . 'information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
+			<td><a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
 
 			<td>' . $uid . '</td>
 			<td>' . $status . '</td>
-			<td><a href="' . $this->core->conf['path'] . 'information/edit/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/edi.png"> edit</a>  <a href="' . $this->core->conf['path'] . 'users/delete/' . $uid . '" onclick="return confirm(\'Are you sure?\')"><img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> delete</a></td>
+			<td><a href="' . $this->core->conf['conf']['path'] . 'information/edit/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/edi.png"> edit</a>  <a href="' . $this->core->conf['conf']['path'] . 'users/delete/' . $uid . '" onclick="return confirm(\'Are you sure?\')"><img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> delete</a></td>
 		  	</tr>';
 
 		}

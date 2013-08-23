@@ -99,7 +99,7 @@ class schools {
 
 		$run = $this->core->database->doSelectQuery($sql);
 
-		echo '<p><b>Overview of all schools</b>  | <a href="' . $this->core->conf['path'] . 'schools/add">Add school</a></p><p>
+		echo '<p><b>Overview of all schools</b>  | <a href="' . $this->core->conf['conf']['path'] . 'schools/add">Add school</a></p><p>
             <table width="768" height="" border="0" cellpadding="3" cellspacing="0">
             <tr class="tableheader">
             <td width="350px"><b>School</b></td>
@@ -119,11 +119,11 @@ class schools {
 			}
 
 			echo '<tr ' . $bgc . '>
-                    <td><b><a href="' . $this->core->conf['path'] . 'schools/view/' . $fetch[0] . '"> ' . $fetch[3] . '</a></b></td>' .
-				'<td><a href="' . $this->core->conf['path'] . 'information/view/' . $fetch[14] . '">' . $fetch[10] . ' ' . $fetch[12] . '</a></td>' .
+                    <td><b><a href="' . $this->core->conf['conf']['path'] . 'schools/view/' . $fetch[0] . '"> ' . $fetch[3] . '</a></b></td>' .
+				'<td><a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $fetch[14] . '">' . $fetch[10] . ' ' . $fetch[12] . '</a></td>' .
 				'<td>
-				<a href="' . $this->core->conf['path'] . 'schools/edit/' . $fetch[0] . '"> <img src="templates/default/images/edi.png"> edit</a>
-                    <a href="' . $this->core->conf['path'] . 'schools/delete/' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="templates/default/images/del.png"> delete </a>
+				<a href="' . $this->core->conf['conf']['path'] . 'schools/edit/' . $fetch[0] . '"> <img src="templates/default/images/edi.png"> edit</a>
+                    <a href="' . $this->core->conf['conf']['path'] . 'schools/delete/' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="templates/default/images/del.png"> delete </a>
                     </td>
                     </tr>';
 
@@ -173,7 +173,7 @@ class schools {
                   <tr>
                     <td><strong>Dean/Rector of school</strong></td>
                     <td>
-                     <a href="' . $this->core->conf['path'] . 'information/view/' . $fetch[14] . '">' . $fetch[10] . ' ' . $fetch[12] . '</a></td>
+                     <a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $fetch[14] . '">' . $fetch[10] . ' ' . $fetch[12] . '</a></td>
                     <td></td>
                   </tr>
                   <tr>

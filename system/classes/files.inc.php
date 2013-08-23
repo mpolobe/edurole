@@ -70,7 +70,7 @@ function overview($path) {
 					<td width="100"  ' . $kleur . ' style="color: #999;">&nbsp; dir</td>
 					<td width="60" style="color: #999;" align="center" ' . $kleur . '><img src="templates/' . $template . '/images/edit.gif" border="0"> edit</td>
 					<td width="60" align="center" ' . $kleur . '><a href=/files&action=delete&del=' . $selected . '/' . $fileurl . '&atat=mo.php?op=' . $path . '><img alt="Delete Directory" src="templates/' . $template . '/images/delete.gif" border="0"> delete</a></TD>
-					<td width="60" align="center" ' . $bgl . ' ' . $kleur . '><a href="' . $this->core->conf['path'] . 'files&action=rename&ren=' . $selected . '/' . $fileurl . '&op=' . $path . '"><center><img alt="Rename Directory" src="templates/' . $template . '/images/ren.gif" border="0"> rename</a></TD>';
+					<td width="60" align="center" ' . $bgl . ' ' . $kleur . '><a href="' . $this->core->conf['conf']['path'] . 'files&action=rename&ren=' . $selected . '/' . $fileurl . '&op=' . $path . '"><center><img alt="Rename Directory" src="templates/' . $template . '/images/ren.gif" border="0"> rename</a></TD>';
 
 				} else {
 
@@ -89,9 +89,9 @@ function overview($path) {
 
 					$sd = substr($sd, 0, 4) . "";
 					$type = str_replace("file", "<img src=templates/" . $template . "/images/dd.gif>", $type);
-					echo ' &nbsp;&nbsp;&nbsp;' . $type . '&nbsp;&nbsp;   <a href="' . $this->core->conf['path'] . 'download&file=' . $selected . '' . $fileurl . '">' . $file . '</a></TD>
+					echo ' &nbsp;&nbsp;&nbsp;' . $type . '&nbsp;&nbsp;   <a href="' . $this->core->conf['conf']['path'] . 'download&file=' . $selected . '' . $fileurl . '">' . $file . '</a></TD>
 					<td width="100" ' . $kleur . ' style="color: #999;">&nbsp; ' . $sd . '' . $ty . '</td>
-					<td width="60"  align="center" ' . $kleur . '><a href="' . $this->core->conf['path'] . 'files&action=edit&show=0&edi=' . $selected . '/' . $fileurl . '&op=' . $selected . '"><img alt="Edit File" src="templates/' . $template . '/images/edit.gif" border="0"> edit</a></TD>
+					<td width="60"  align="center" ' . $kleur . '><a href="' . $this->core->conf['conf']['path'] . 'files&action=edit&show=0&edi=' . $selected . '/' . $fileurl . '&op=' . $selected . '"><img alt="Edit File" src="templates/' . $template . '/images/edit.gif" border="0"> edit</a></TD>
 					<td width="60"   align="center" ' . $kleur . '><a href=/files&action=delete&del=' . $selected . '/' . $fileurl . '&op=' . $selected . '><img alt="Delete File" src="templates/' . $template . '/images/delete.gif" border="0"> delete</a></TD>
 					<td width="60"  valign="middle" align="center" ' . $bgl . ' ' . $kleur . '><a  href="/files&action=rename&show=0&ren=' . $selected . '/' . $fileurl . '&op=' . $selected . '"><center><img alt="Rename File" src="templates/' . $template . '/images/ren.gif" border="0"> rename</a></TD>';
 

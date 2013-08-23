@@ -135,7 +135,7 @@ class institution {
 		echo '<div class="newscontainers">	<h2>News and updates</h2> <p>';
 
 		while ($fetch = $run->fetch_row()) {
-			echo ' <li> <b><a href="' . $this->core->conf['path'] . 'item/' . $fetch[0] . '">' . $fetch[1] . '</a></b></li>';
+			echo ' <li> <b><a href="' . $this->core->conf['conf']['path'] . 'item/' . $fetch[0] . '">' . $fetch[1] . '</a></b></li>';
 		}
 
 		echo '</p></div>';

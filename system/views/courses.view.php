@@ -103,7 +103,7 @@ class courses {
 
 		$run = $this->core->database->doSelectQuery($sql);
 
-		echo '<p><a href="' . $this->core->conf['path'] . 'courses/add">Add course</a></p>
+		echo '<p><a href="' . $this->core->conf['conf']['path'] . 'courses/add">Add course</a></p>
             <p>
             <table width="768" height="" border="0" cellpadding="3" cellspacing="0">
             <tr class="tableheader"><td width="400"><b>Course Name</b></td>' .
@@ -122,13 +122,13 @@ class courses {
 			}
 
 			echo '<tr ' . $bgc . '>
-                    <td><b><a href="' . $this->core->conf['path'] . 'courses/view/' . $fetch[0] . '"> ' . $fetch[2] . '</a></b></td>
+                    <td><b><a href="' . $this->core->conf['conf']['path'] . 'courses/view/' . $fetch[0] . '"> ' . $fetch[2] . '</a></b></td>
                     <td>
-                    <a href="' . $this->core->conf['path'] . 'information/view/' . $fetch[3] . '">' . $fetch[4] . ' ' . $fetch[6] . '</a>
+                    <a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $fetch[3] . '">' . $fetch[4] . ' ' . $fetch[6] . '</a>
                     </td>
                     <td>
-                    <a href="' . $this->core->conf['path'] . 'courses/edit/' . $fetch[0] . '"> <img src="' . $this->core->fullTemplatePath . '/images/edit.png"> edit</a>
-                    <a href="' . $this->core->conf['path'] . 'courses/delete/' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> delete </a>
+                    <a href="' . $this->core->conf['conf']['path'] . 'courses/edit/' . $fetch[0] . '"> <img src="' . $this->core->fullTemplatePath . '/images/edit.png"> edit</a>
+                    <a href="' . $this->core->conf['conf']['path'] . 'courses/delete/' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> delete </a>
                     </td>
                     </tr>';
 		}
@@ -161,7 +161,7 @@ class courses {
                   </tr>
                   <tr>
                     <td><strong>Course coordinator</strong></td>
-                    <td><a href="' . $this->core->conf['path'] . 'information/view/' . $fetch[3] . '">' . $fetch[4] . ' ' . $fetch[6] . '</a></td>
+                    <td><a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $fetch[3] . '">' . $fetch[4] . ' ' . $fetch[6] . '</a></td>
                     <td></td>
                   </tr>
                   <tr>

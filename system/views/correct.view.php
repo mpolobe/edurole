@@ -45,7 +45,7 @@ class correct {
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($fetch = $run->fetch_row()) {
-			echo '<tr><td><a href="' . $this->core->conf['path'] . 'information/view/' . $fetch[4] . '"><b>' . $fetch[0] . " " . $fetch[1] . " " . $fetch[2] . '</a></b></td>' .
+			echo '<tr><td><a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $fetch[4] . '"><b>' . $fetch[0] . " " . $fetch[1] . " " . $fetch[2] . '</a></b></td>' .
 				'<td>' . $fetch[5] . '</td>' .
 				'<td><input type="textbox" name="sid' . $fetch[4] . '" value="' . $fetch[4] . '" class="submit" style="width: 90px;"></td>' .
 				'</tr>';

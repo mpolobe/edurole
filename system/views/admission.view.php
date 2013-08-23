@@ -61,7 +61,7 @@ class admission {
 		if ($this->core->role < 100) {
 			$sql = "SELECT * FROM `basic-information` as bi, `roles` as rl, `access` as ac WHERE ac.`ID` = '" . $this->core->userid . "' AND ac.`ID` = bi.`ID` AND ac.`RoleID` = rl.`ID`";
 		} else {
-			$sql = "SELECT * FROM `basic-information` as bi, `roles` as rl, `access` as ac WHERE ac.`ID` = '" . $uid . "' AND ac.`ID` = bi.`ID` AND ac.`RoleID` = rl.`ID`";
+			$sql = "SELECT * FROM `basic-information` as bi, `roles` as rl, `access` as ac WHERE ac.`ID` = '" . $this->core->item . "' AND ac.`ID` = bi.`ID` AND ac.`RoleID` = rl.`ID`";
 		}
 
 		$this->showInfoProfile($sql);
@@ -69,13 +69,13 @@ class admission {
 	}
 
 	function complete() {
-		$sql = "UPDATE `access` SET `RoleID` = 10 WHERE `access`.`ID` = '" . $uid . "'";
+		$sql = "UPDATE `access` SET `RoleID` = 10 WHERE `access`.`ID` = '" . $this->core->item . "'";
 		$this->database->doInsertQuery($sql);
 
-		$sql = "UPDATE `basic-information` SET `Status` = 'Enrolled' WHERE `basic-information`.`ID` = '" . $uid . "'";
+		$sql = "UPDATE `basic-information` SET `Status` = 'Enrolled' WHERE `basic-information`.`ID` = '" . $this->core->item . "'";
 		$this->database->doInsertQuery($sql);
 
-		$sql = "SELECT * FROM `basic-information` WHERE `GovernmentID` = '".$this->core->item."'";
+		$sql = "SELECT * FROM `basic-information` WHERE `GovernmentID` = '" . $this->core->item . "'";
 		$run = $this->core->database->doSelectQuery($sql);
 
 		$run = $this->core->database->doSelectQuery($sql);
@@ -160,20 +160,20 @@ class admission {
 			$status = $fetch[23];
 
 			if ($status == 6) {
-				$next = '<a href="' . $this->core->conf['path'] . '/admission/complete/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/exleft.gif"> <b>Complete</b> </a>';
+				$next = '<a href="' . $this->core->conf['conf']['path'] . '/admission/complete/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/exleft.gif"> <b>Complete</b> </a>';
 			} else {
-				$next = '<a href="' . $this->core->conf['path'] . '/admission/promote/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/exleft.gif"> Approve step </a>';
+				$next = '<a href="' . $this->core->conf['conf']['path'] . '/admission/promote/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/exleft.gif"> Approve step </a>';
 			}
 
 			echo '<tr>
 				<td><img src="' . $this->core->fullTemplatePath . '/images/user.png"></td>
-				<td><a href="' . $this->core->conf['path'] . '/information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
+				<td><a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
 		
 				<td>' . $nrc . '</td>
-				<td><a href="' . $this->core->conf['path'] . '/admission/profile/' . $uid . '">Step ' . $status . '</a></td>
+				<td><a href="' . $this->core->conf['conf']['path'] . '/admission/profile/' . $uid . '">Step ' . $status . '</a></td>
 				<td><b>' . $study . '</b></td>
 				<td>' . $next . ' </td>
-				<td> <a href="' . $this->core->conf['path'] . '/admission/reject/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> Deny</a></td>
+				<td> <a href="' . $this->core->conf['conf']['path'] . '/admission/reject/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> Deny</a></td>
 				</tr>';
 		}
 
@@ -216,12 +216,12 @@ class admission {
 
 			echo '<tr>
 			<td><img src="' . $this->core->fullTemplatePath . '/images/user.png"></td>
-			<td><a href="' . $this->core->conf['path'] . '/information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
+			<td><a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
 			<td>' . $nrc . '</td>
-			<td><a href="' . $this->core->conf['path'] . '/admission/profile/' . $uid . '">Step ' . $status . '</a></td>
+			<td><a href="' . $this->core->conf['conf']['path'] . '/admission/profile/' . $uid . '">Step ' . $status . '</a></td>
 			<td><b>' . $study . '</b></td>
-			<td><a href="' . $this->core->conf['path'] . '/admission/continue/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/edit.gif"> Continue </a></td>
-			<td><a href="' . $this->core->conf['path'] . '/admission/reject/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> Delete</a></td>
+			<td><a href="' . $this->core->conf['conf']['path'] . '/admission/continue/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/edit.gif"> Continue </a></td>
+			<td><a href="' . $this->core->conf['conf']['path'] . '/admission/reject/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> Delete</a></td>
 			</tr>';
 
 		}

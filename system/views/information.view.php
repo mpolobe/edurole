@@ -206,9 +206,9 @@ class information {
 			}
 
 			if ($this->core->role > 103) {
-				echo '<div style="margin-top: 1px; border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['path'] . 'information/edit/' . $uid . '">Edit user information</a></b></div>';
-				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['path'] . 'information/housing/' . $uid . '">Edit housing information</a></b></div>';
-				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['path'] . 'grades/view/' . $uid . '">Show users grades</a></b></div>';
+				echo '<div style="margin-top: 1px; border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . 'information/edit/' . $uid . '">Edit user information</a></b></div>';
+				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . 'information/housing/' . $uid . '">Edit housing information</a></b></div>';
+				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . 'grades/view/' . $uid . '">Show users grades</a></b></div>';
 			}
 
 			echo '</div>
@@ -426,7 +426,7 @@ class information {
 				if ($filename != "") {
 					echo '<tr>
 					<td>Image of certificate</td>
-					<td><a href="' . $this->core->conf['path'] . 'download/educationhistory/' . $filename . '"><b>View file</b></a></td>
+					<td><a href="' . $this->core->conf['conf']['path'] . 'download/educationhistory/' . $filename . '"><b>View file</b></a></td>
 			 		</tr>';
 				}
 				echo '</table>';
@@ -464,7 +464,7 @@ class information {
 
 			echo '<tr>
 			<td><img src="templates/default/images/bullet_user.png"></td>
-			<td><a href="' . $this->core->conf['path'] . 'information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
+			<td><a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
 			<td><i>' . $uid . '</i></td>
 			<td>' . $nrc . '</td>
 			<td>' . $dob . '</td>

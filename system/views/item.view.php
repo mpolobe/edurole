@@ -50,7 +50,7 @@ class item {
 		echo '<div class="newscontainers">	<h2>News and updates</h2> <p>';
 
 		while ($row = $run->fetch_row()) {
-			echo ' <li> <b><a href="' . $this->core->conf['path'] . 'item/' . $row[0] . '">' . $row[1] . '</a></b></li>';
+			echo ' <li> <b><a href="' . $this->core->conf['conf']['path'] . 'item/' . $row[0] . '">' . $row[1] . '</a></b></li>';
 		}
 
 		echo '</p></div>';
@@ -65,7 +65,7 @@ class item {
 		echo '<div class="welcomecontainers">';
 
 		if ($this->core->role == 1000) {
-			echo '<div style="float: right;"><a href="' . $this->core->conf['path'] . 'item/edit/' . $id . '">edit</a></div>';
+			echo '<div style="float: right;"><a href="' . $this->core->conf['conf']['path'] . 'item/edit/' . $id . '">edit</a></div>';
 		}
 
 		while ($row = $run->fetch_row()) {

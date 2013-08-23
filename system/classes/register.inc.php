@@ -1,6 +1,6 @@
 <?php
 
-echo '<div class="breadcrumb"><a href=".">home</a> > <a href="' . $this->core->conf['path'] . '/admission">registration request</a> </div>
+echo '<div class="breadcrumb"><a href=".">home</a> > <a href="' . $this->core->conf['conf']['path'] . '/admission">registration request</a> </div>
 <div class="contentpadfull"> ';
 
 $firstname = $this->core->$cleanPost["firstname"];

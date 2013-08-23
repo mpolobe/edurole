@@ -126,7 +126,7 @@ while ($fetchw = mysql_fetch_row($srd)) {
 }
 
 if ($i == 1) {
-	echo 'No courses have been added to the program yet. Please <a href="' . $this->core->conf['path'] . 'programmes/edit/' . $fetch[0] . '">add some.</a>';
+	echo 'No courses have been added to the program yet. Please <a href="' . $this->core->conf['conf']['path'] . 'programmes/edit/' . $fetch[0] . '">add some.</a>';
 }
 
 echo '</select>   <input type="submit" class="submit" name="submit" id="submit" value="Remove Selected" style="width: 130px" /></form></td>
@@ -151,7 +151,7 @@ while ($fetchw = mysql_fetch_row($srd)) {
 }
 
 if ($i == 1) {
-	echo 'No courses have been added to the program yet. Please <a href="' . $this->core->conf['path'] . 'programmes/edit/' . $fetch[0] . '">add some.</a>';
+	echo 'No courses have been added to the program yet. Please <a href="' . $this->core->conf['conf']['path'] . 'programmes/edit/' . $fetch[0] . '">add some.</a>';
 }
 
 echo '</select>  <input type="submit" class="submit" name="submit" id="submit" value="Add Selected" style="width: 130px" /></form>
