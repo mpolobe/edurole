@@ -6,7 +6,7 @@
 			<p>Trough the easy online registration form you can now complete your request for admission online. Click on
 				the link below to view the programs for which intake is currently open.</p>
 
-			<p><a href="admission"><strong> View current intake possibilities</strong></a></p>
+			<p><a href="<? echo $this->core->conf['path']; ?>/intake><strong> View current intake possibilities</strong></a></p>
 		</div>
 	</div>
 

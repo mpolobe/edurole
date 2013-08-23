@@ -1,6 +1,6 @@
 <?php
 
-echo '<div class="breadcrumb"><a href=".">home</a> > <a href="admission.php">registration request</a> </div>
+echo '<div class="breadcrumb"><a href=".">home</a> > <a href="' . $this->core->conf['path'] . '/admission">registration request</a> </div>
 <div class="contentpadfull"> ';
 
 $firstname = $this->core->$cleanPost["firstname"];
@@ -42,7 +42,7 @@ function password($length, $charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmno
 
 $sql = "INSERT INTO `basic-information` (`FirstName`, `MiddleName`, `Surname`, `Sex`, `ID`, `GovernmentID`, `DateOfBirth`, `PlaceOfBirth`, `Nationality`, `StreetName`, `PostalCode`, `Town`, `Country`, `HomePhone`, `MobilePhone`, `Disability`, `DissabilityType`, `PrivateEmail`, `MaritalStatus`, `StudyType`, `Status`) VALUES ('$firstname', '$middlename', '$surname', '$sex', NULL, '$id', '$year-$month-$day', '$pob', '$nationality', '$streetname', '$postalcode', '$town', '$country', '$homephone', '$celphone', '$dissability', '$disytype', '$email', '$mstatus', '$studytype', 'Requesting');";
 
-eduroleCore::throwError("An error occurred with the information you have entered. Possible causes are:<br> - You already have a student account at this institution<br> - The ID number you have entered is incorrect");
+$this->core->throwError("An error occurred with the information you have entered. Possible causes are:<br> - You already have a student account at this institution<br> - The ID number you have entered is incorrect");
 
 if ($this->core->database->doInsertQuery($sql)) {
 
@@ -83,7 +83,7 @@ if ($this->core->database->doInsertQuery($sql)) {
 					$file = $_FILES["education"];
 
 					$home = getcwd();
-					$path = $home . "/datastore/userhomes/" . $userID . "/education-history";
+					$path = $this->core->fullTemplatePath . '/datastore/userhomes/" . $userID . "/education-history';
 
 					if (!is_dir($path)) {
 						mkdir($path, 0755, true);
@@ -111,7 +111,6 @@ if ($this->core->database->doInsertQuery($sql)) {
 					} else {
 						eduroleCore::logEvent('Warning: File upload failed, invalid file', '2');
 						eduroleCore::throwWarning('Error: File upload failed, invalid file');
-
 					}
 
 					$i++;

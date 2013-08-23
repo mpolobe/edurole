@@ -317,8 +317,6 @@ class studies {
 			<td><b>' . $fetch[10] / 12 . ' years</b></td>
 			<td></td>
 			</tr>';
-
-
 		}
 
 		echo '<td>Available programmes</td>
@@ -326,9 +324,7 @@ class studies {
 		<td></td>
 		 </tr>
 		</table>';
-
 	}
-
 }
 
 ?>

@@ -65,7 +65,7 @@ class intake {
 
 		while ($row = $run->fetch_row()) {
 			echo '<tr>
-			<td><b><a href="' . $this->core->conf['path'] . '/register/view/' . $row[0] . '"> ' . $row[6] . '</a></b></td>' .
+			<td><b><a href="' . $this->core->conf['path'] . '/register/' . $row[0] . '"> ' . $row[6] . '</a></b></td>' .
 				'<td>' . $row[16] . '</td>' .
 				'<td>' . $row[3] . '</td>' .
 				'</tr>';

@@ -69,22 +69,27 @@ class admission {
 	}
 
 	function complete() {
-
-		$uid = $this->core->cleanGet['uid'];
-
 		$sql = "UPDATE `access` SET `RoleID` = 10 WHERE `access`.`ID` = '" . $uid . "'";
-		$run = $this->database->doInsertQuery($sql);
+		$this->database->doInsertQuery($sql);
 
 		$sql = "UPDATE `basic-information` SET `Status` = 'Enrolled' WHERE `basic-information`.`ID` = '" . $uid . "'";
-		$run = $this->database->doInsertQuery($sql);
+		$this->database->doInsertQuery($sql);
 
-		// ADD RUN MAIL FUNCTION TO INFORM STUDENT ENROLLMENT WAS SUCCESFUL
+		$sql = "SELECT * FROM `basic-information` WHERE `GovernmentID` = '".$this->core->item."'";
+		$run = $this->core->database->doSelectQuery($sql);
+
+		$run = $this->core->database->doSelectQuery($sql);
+
+		while ($fetch = $run->fetch_assoc()) {
+			$recipient = $fetch["PrivateEmail"];
+			$mailer = serviceBuilder("mailer");
+			$mailer->newMail("registrationSuccessful", $recipient);
+		}
 
 		$this->admissionFlow();
 	}
 
 	function promote() {
-
 		$uid = $this->core->cleanGet['uid'];
 
 		$sql = "UPDATE `edurole`.`access` SET `RoleID` = `RoleID`+1 WHERE `access`.`ID` = '" . $uid . "'";
@@ -94,7 +99,6 @@ class admission {
 	}
 
 	function reject() {
-
 		$uid = $this->core->cleanGet['uid'];
 
 		$sql = "UPDATE `edurole`.`basic-information` SET `Status` = 'Rejected' WHERE `basic-information`.`ID` = '" . $uid . "';";
@@ -104,7 +108,6 @@ class admission {
 	}
 
 	function continued() {
-
 		$uid = $this->core->cleanGet['uid'];
 
 		$sql = "UPDATE `edurole`.`basic-information` SET `Status` = 'Requesting' WHERE `basic-information`.`ID` = '" . $uid . "';";
@@ -115,7 +118,6 @@ class admission {
 
 
 	function delete() {
-
 		$uid = $this->core->cleanGet['uid'];
 
 		$sql = "UPDATE `edurole`.`basic-information` SET `Status` = 'Failed' WHERE `basic-information`.`ID` = '" . $uid . "';";
@@ -138,8 +140,8 @@ class admission {
 		<td bgcolor="#EEEEEE"></td>
 		<td bgcolor="#EEEEEE" width="200px"><b> Student Name</b></td>
 		<td bgcolor="#EEEEEE"><b> <b>National ID</b></td>
-		<td bgcolor="#EEEEEE"><b> Admission Phase</b></td>		
-		<td bgcolor="#EEEEEE"><b> Study</b></td>		
+		<td bgcolor="#EEEEEE"><b> Admission Phase</b></td>
+		<td bgcolor="#EEEEEE"><b> Study</b></td>
 		<td bgcolor="#EEEEEE" width="90px"><b> Options</b></td>
 		<td bgcolor="#EEEEEE" width="60px"></td>
 		</tr>';

@@ -30,7 +30,7 @@ class register {
 
 		$function = __FUNCTION__;
 		$title = 'Register for study';
-		$description = 'Please enter the complete for to be eligible for admission';
+		$description = 'Please enter the complete form to be eligible for admission';
 
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);

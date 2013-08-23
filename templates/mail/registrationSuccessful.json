@@ -1,0 +1,4 @@
+{
+Subject: "Admission approved",
+Content: "Dear %NAME%, Congratulations! \n Your Admission at %INSTITUTION% has been approved!. Please log in to the EduRole system for more information on what is next. \n\n Kind Regards,\n %INSTITUTION%"
+}
