@@ -34,11 +34,11 @@ class eduroleCore {
 
 		$this->route = explode('/', $this->route);
 
-		if (count($this->route) > 0) {
+		if (isset($this->route[0])) {
 			$this->page = $this->route[0];
-		} elseif (count($this->route) > 1) {
+		} elseif (isset($this->route[1])) {
 			$this->action = $this->route[1];
-		} elseif (count($this->route) > 2) {
+		} elseif (isset($this->route[2])) {
 			$this->item = $this->route[2];
 		}
 	}

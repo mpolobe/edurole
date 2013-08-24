@@ -35,7 +35,10 @@ class register {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		$item = $core->cleanGet['item'];
+		$item = $this->core->item;
+		$action = $this->core->action;
+		$action = $this->core->page;
+		echo $action . $item . "djjd";
 
 		if ($item) {
 
@@ -45,7 +48,7 @@ class register {
 
 			while ($fetch = $run->fetch_row()) {
 
-				echo '<form id="enroll" name="enroll" method="post" action="' . $this->core->conf['conf']['path'] . '/register" enctype="multipart/form-data" >
+				echo '<form id="enroll" name="enroll" method="post" action="' . $this->core->conf['conf']['path'] . '/register/submit" enctype="multipart/form-data" >
 							 <input type="hidden" name="studyid" value="' . $fetch['0'] . '">
 							 <p>You are requesting admission to the following study: <b> ' . $fetch[1] . ' </b> <br>Please complete the following form entirely to successfully complete your request for admission.</p>';
 
@@ -69,7 +72,7 @@ class register {
 
 		} else {
 
-			$this->core->throwError('No study was selected, please <a href="' . $this->core->conf['conf']['path'] . 'admission">select one</a>');
+			$this->core->throwError('No study was selected, please <a href="' . $this->core->conf['conf']['path'] . '/intake">select one</a>');
 
 		}
 	}

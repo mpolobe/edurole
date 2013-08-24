@@ -26,7 +26,7 @@ class menuConstruct {
 		AND `permission-link`.`PermissionsRangeID` =  `permissions`.`ID` 
 		AND `permissions`.`RequiredRoleMin` <= " . $this->core->role . "
 		AND `permissions`.`RequiredRoleMax` <= " . $this->core->role . "
-		ORDER BY `page-segment`.`SegmentName`";
+		ORDER BY `page-segment`.`SegmentPosition`";
 
 		$run = $this->core->database->doSelectQuery($sql);
 		$currentSegment = NULL;

@@ -12,15 +12,10 @@ class auth {
 		$password = $this->core->cleanPost['password'];
 
 		if (isset($username) && isset($password)) {
-
 			if (!$this->authenticateLDAP($username, $password)) {
-
 				if (!$this->authenticateSQL($username, $password)) {
-
 					$this->core->throwError('<p>Please <a href=".">return to the login page</a> and try again. If you forgot your password please request a new one <a href="password.php">here</a>.</p>', "LOGIN");
-
 				}
-
 			}
 
 		} else {
@@ -47,7 +42,7 @@ class auth {
 				$ldapbind = @ldap_bind($ldapconn, "uid=" . $username . "," . $ou, $password);
 
 				if ($ldapbind) { //successful login
-					$this->core->logEvent("User '$username' authenticated succesfuly", "3");
+					$this->core->logEvent("User '$username' authenticated successfully", "3");
 					auth::authorize($username, $password);
 				} else {
 					$this->core->logEvent("User '$username' authentication failed", "2");
@@ -71,7 +66,7 @@ class auth {
 
 		if ($run->num_rows > 0) { //successful login
 
-			$this->core->logEvent("User '$username' authenticated succesfuly", "3");
+			$this->core->logEvent("User '$username' authenticated successfully", "3");
 			auth::authorize($username, $password);
 
 		} else {
@@ -118,7 +113,7 @@ class auth {
 
 				if (!isset($_SESSION['access'])) {
 
-					// student authenticated succesfuly but doesn't have a role assigned (old migration data from Edurole v1.1)
+					// student authenticated successfully but doesn't have a role assigned (old migration data from Edurole v1.1)
 
 					$this->core->logEvent("Partial user in database: user $username only present in 'basic-information' table", "1");
 
@@ -210,13 +205,13 @@ class auth {
 
 	public function mysqlChangePass($username, $oldpass, $newpass) {
 
-		$newpass = sha1($newpass);
-		$oldpass = sha1($oldpass);
+		$newpass = hash('sha512', $newpass . $this->core->conf['conf']['hash'] . $username);
+		$oldpass = hash('sha512', $oldpass . $this->core->conf['conf']['hash'] . $username);
 
 		$sql = "UPDATE `access` SET `Password` = '$newpass' WHERE `Username` = '$username' AND `Password` = '$oldpass'";
 
 		if ($this->core->database->doSelectQuery($sql)) {
-			$this->core->throwSuccess("YOUR PASSWORD IS NOW CHANGED");
+			$this->core->throwSuccess("Your password has been changed! The next time you log-in you will need to use your new password.");
 		} else {
 			return (1);
 		}

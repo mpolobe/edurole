@@ -29,7 +29,7 @@ class intake {
 				<a href="password">Recover lost password</a>
 				</div>
 				</div>
-				</div>';
+				</div><div class="contentpadfull">';
 
 		}
 
@@ -64,7 +64,7 @@ class intake {
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($row = $run->fetch_row()) {
-			echo '<tr><td><b><a href="' . $this->core->conf['conf']['path'] . '/register/' . $row[0] . '"> ' . $row[6] . '</a></b></td>' .
+			echo '<tr><td><b><a href="' . $this->core->conf['conf']['path'] . '/register/study/' . $row[0] . '"> ' . $row[6] . '</a></b></td>' .
 				'<td>' . $row[16] . '</td>' .
 				'<td>' . $row[3] . '</td>' .
 				'</tr>';
