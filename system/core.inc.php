@@ -3,20 +3,27 @@ class eduroleCore {
 
 	public $conf, $page, $action, $item, $username, $userID, $template, $database, $role, $roleName, $cleanPost, $log, $cleanGet, $route, $fullTemplatePath;
 
-	public function __construct($conf) {
+	public function __construct($conf, $initialize = TRUE) {
 		$this->conf = $conf;
 
 		$this->logEvent("Initializing EduRole core", "3");
 
-		$this->database = new database($this);
-		$this->breadcrumb = new breadcrumb($this);
+		if (class_exists('database')) {
+			$this->database = new database($this);
+		}
+
+		if (class_exists('breadcrumb')) {
+			$this->breadcrumb = new breadcrumb($this);
+		}
 
 		$this->setTemplate();
 		$this->getSessions();
 		$this->cleanInput();
 		$this->processRoute();
 
-		$this->initializer();
+		if($initialize){
+			$this->initializer();
+		}
 	}
 
 	public function initializer() {
@@ -145,7 +152,7 @@ class eduroleCore {
 
 	public function throwError($error) {
 		echo '<div class="errorpopup">' . $error . '</div>';
-		$this->core->logEvent("ERROR: $error", "1");
+		$this->logEvent("ERROR: $error", "1");
 	}
 
 	public function throwSuccess($error) {

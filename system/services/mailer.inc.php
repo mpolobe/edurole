@@ -2,20 +2,20 @@
 class checkValue {
 
 	public $core;
-	public $view;
-	public $item = NULL;
+	public $service;
+	public $mail;
 
-	public function configView() {
-		$this->view->header = TRUE;
-		$this->view->footer = TRUE;
-		$this->view->javascript = array(3);
-		$this->view->css = array(1, 4);
+	public function configService() {
+		$this->service->output = FALSE;
 
-		return $this->view;
+		return $this->service;
 	}
 
 	public function runService($core) {
 		$this->core = $core;
+
+		include $this->core->conf['conf']['classPath'] . "mailcount.inc.php";
+		$this->mail = new mailOperations();
 	}
 
 	function newMail($mailTemplate, $recipient = NULL, $name = NULL, $study = NULL){
@@ -27,8 +27,7 @@ class checkValue {
 		}
 
 		$mailTemplate = parseMailTemplate($mailTemplate);
-
-		sendMail($mailTemplate, $recipient);
+		$this->mail->sendMail($mailTemplate, $recipient);
 	}
 
 	function parseMailTemplate($mailTemplate){
@@ -46,20 +45,6 @@ class checkValue {
 		return $mailTemplate;
 	}
 
-	function sendMail($mailTemplate, $recipient){
-		$to      = 	$recipient;
-		$subject = 	$mailTemplate->Subject;
-		$content = 	$mailTemplate->Content;
-		$headers =	'From: '. $this->core->conf['conf']['systemMail'] ."\r\n" .
-		'Reply-To: '. $this->core->conf['conf']['systemMail'] . "\r\n" .
-		'X-Mailer: EduRole SIS';
-
-		try{
-			mail($to, $subject, $content, $headers);
-		} catch (Exception $e){
-			$this->core->throwError("Mail could not be sent.");
-		}
-	}
 }
 
 ?>

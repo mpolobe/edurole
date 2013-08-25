@@ -24,8 +24,10 @@ class viewBuilder {
 				$auth->login();
 			} elseif ($page == "template") {
 				$this->core->setTemplate();
-			} elseif ($page) {
+			} elseif ($page == "intake" || $page == "register") {
 				$this->initView($page);
+			} else {
+				$this->initView("login");
 			}
 
 		} else {

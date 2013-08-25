@@ -21,9 +21,11 @@ class mail {
 		global $conf;
 
 		$function = __FUNCTION__;
+		$title = "Personal email";
 		echo breadcrumb::generate(get_class(), $function);
+		echo component::generateTitle($title, NULL);
 
-		echo '<div class="contentpadmail"><p class="title2">Personal email</p> <br /><div style="margin-left: -15px; height: 100%;">';
+		echo '<div style="margin-left: -15px; height: 100%;">';
 
 		// PROOF OF CONCEPT ROUNDCUBE INTEGRATION, NEEDS OVERHAUL TO SHARED SESSION AUTHENTICATION
 		echo '<iframe scrolling="no" width="768" height="100%" frameborder="0" src="http://' . $conf['conf']['domain'] . '/edurole/lib/roundcube?_autologin=1&username=' . $_SESSION['username'] . '&password=' . $_SESSION['password'] . '" seamless="seamless"></iframe>';

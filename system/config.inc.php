@@ -6,7 +6,7 @@
 $conf['conf']['debugging'] = FALSE;											// Set TRUE to enable debugging
 $conf['conf']['institutionName'] = "EduRole University"; 					// Institution name
 $conf['conf']['domain'] = "edurole.com";									// Domain on which the pages will be served
-$conf['conf']['mailenabled'] = TRUE;										// Whether to enable in-system mailclient
+$conf['conf']['mailEnabled'] = TRUE;										// Whether to enable in-system mailclient
 $conf['conf']['hash'] = "2#FCLWJEFO2j3@K#LKF";								// Change this to a unique random set of characters
 $conf['conf']['titleName'] = "EduRole Student Information System"; 			// Default Page Title
 $conf['conf']['systemMail'] = "info@edurole.com"; 							// System email
@@ -32,7 +32,7 @@ $conf['mysql']['db'] = "edurole"; 											// MySQL database
 /*
  * LDAP server information
  */
-$conf['conf']['ldapenabled'] = FALSE; 										// Enable LDAP integration or not
+$conf['conf']['ldapEnabled'] = FALSE; 										// Enable LDAP integration or not
 $conf['ldap']['server'] = "localhost"; 										// LDAP host
 $conf['ldap']['port'] = "389"; 												// LDAP server port
 $conf['ldap']['studentou'] = "ou=students,dc=mulungushi,dc=ac,dc=zm"; 		// Dedicated OU is needed for students

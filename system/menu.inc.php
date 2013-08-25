@@ -26,16 +26,16 @@ class menuConstruct {
 		AND `permission-link`.`PermissionsRangeID` =  `permissions`.`ID` 
 		AND `permissions`.`RequiredRoleMin` <= " . $this->core->role . "
 		AND `permissions`.`RequiredRoleMax` <= " . $this->core->role . "
-		ORDER BY `page-segment`.`SegmentPosition`";
+		ORDER BY `page-segment`.`SegmentPosition`,  `pages`.`PagePosition`";
 
 		$run = $this->core->database->doSelectQuery($sql);
 		$currentSegment = NULL;
 
-		while ($fetch = $run->fetch_row()) {
+		while ($fetch = $run->fetch_assoc()) {
 
-			$segmentName = $fetch[13];
-			$pageRoute = $fetch[8];
-			$pageName = $fetch[10];
+			$segmentName = $fetch['SegmentName'];
+			$pageRoute = $fetch['PageRoute'];
+			$pageName = $fetch['PageName'];
 
 			if ($segmentName == $currentSegment) {
 
@@ -78,20 +78,16 @@ class menuConstruct {
 					echo '<div class="menu"><div class="indent"><a href="' . $this->core->conf['conf']['path'] . 'vle&view=school&id=1"><img src="templates/default/images/expand.gif"> ' . $program . '</a></div></div>';
 				}
 
-			} else if ($pageName == "Mail") {
+			} else if ($pageName == "mail") {
 
-				if ($this->core->conf['conf']['mailenabled'] == TRUE) {
+				if ($this->core->conf['conf']['mailEnabled'] == TRUE) {
 
-					include $this->core->conf['conf']['classPath'] . "mailcount.inc.php";
-					$mail = new mail();
-					$mailcount = $mail->mailcount();
+					include $this->core->conf['conf']['classPath'] . "mail.inc.php";
 
-					if (empty($mailcount)) {
-						$mailcount = "0";
-					}
+					$mail = new mailOperations();
+					$mailCount = $mail->mailCount();
 
-					$pageRoute = '/mail';
-					$pageName = 'Personal mail <div class="mailcount"><b>' . $mailcount . '</b></div>';
+					$pageName = 'Personal mail <div class="mailcount"><b>' . $mailCount . '</b></div>';
 					$this->pageItem($pageRoute, $pageName);
 
 				}
