@@ -10,6 +10,11 @@ html {
 	overflow: -moz-scrollbars-vertical; 
 	overflow-y: scroll;
 }
+label{
+    display: inline-block;
+    width: 150px;
+    padding-left: 20px;
+}
 td {
 	padding-left: 10px;
 }
@@ -390,17 +395,6 @@ input:focus{
 	padding-right: 15px;
 	padding-left: 15px;
 	color: #fff;
-}
-.none{
-	background-image: url(../images/none.png);
-	width: 100%;
-	height: 100px;
-	font-size: 19px;
-	color: #777;
-	font-family: Arial, Helvetica, sans-serif;
-	padding-top: 80px;
-   	text-align: center;
-	font-weight: bold;
 }
 .buttoninfo {
 	float: left;

@@ -25,7 +25,7 @@ class installer {
 		$this->cssFiles = '<link href="../templates/edurole/css/style.css" rel="stylesheet" type="text/css" />';
 		require_once "../templates/edurole/header.inc.php";
 
-		echo'<div class="contentpadfull">
+		echo'<div class="contentpadfull"> <form action=".">
 		<div class="title">Welcome to EduRole</div>
 		<ul>
 			<li>PHP dependencies: php5-ldap, php5-imap, php5-gd</li>
@@ -60,7 +60,7 @@ class installer {
 			echo'<label for="'.$name.'">'.$name.'</label><input type="text" name="'.$name.'" value="'.$value.'"><br/>';
 		}
 
-		echo'</div>';
+		echo'<label for="submit"> </label><input type="submit" value="Save settings"> </div></form>';
 
 		clearstatcache();
 		require_once "../templates/edurole/footer.inc.php";

@@ -45,7 +45,7 @@ class database {
 
 		if (!$run = $this->mysqli->query($sql)) {
 			eduroleCore::logEvent("Query error SQL: <span style=\"font-weight: normal;\">" . $sql . "</span>" . $this->mysqli->error, "1");
-			eduroleCore::throwError("An error occured with the database information retrieval");
+			eduroleCore::throwError("An error occurred with the database information retrieval");
 			return false;
 		}
 
