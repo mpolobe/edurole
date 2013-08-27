@@ -11,8 +11,9 @@ html {
 	overflow-y: scroll;
 }
 label{
+	font-weight: bold;
     display: inline-block;
-    width: 150px;
+    width: 450px;
     padding-left: 20px;
 }
 td {

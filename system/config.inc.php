@@ -32,7 +32,7 @@ $conf['mysql']['db'] = "edurole"; 											// MySQL database
 /*
  * LDAP server information
  */
-$conf['conf']['ldapEnabled'] = FALSE; 										// Enable LDAP integration or not
+$conf['ldap']['ldapEnabled'] = FALSE; 										// Enable LDAP integration or not
 $conf['ldap']['server'] = "localhost"; 										// LDAP host
 $conf['ldap']['port'] = "389"; 												// LDAP server port
 $conf['ldap']['studentou'] = "ou=students,dc=mulungushi,dc=ac,dc=zm"; 		// Dedicated OU is needed for students

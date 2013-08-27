@@ -26,7 +26,7 @@ class auth {
 
 	private function authenticateLDAP($username, $password) {
 
-		if ($this->core->conf['conf']['ldapEnabled'] == TRUE) {
+		if ($this->core->conf['ldap']['ldapEnabled'] == TRUE) {
 
 			if (is_numeric($username)) { //Student usernames are numeric
 				$ou = $this->core->conf['ldap']['studentou']; //Use student OU

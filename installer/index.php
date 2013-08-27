@@ -49,17 +49,41 @@ class installer {
 		$this->core->throwSuccess("Please enter the following information");
 
 		echo'<div>';
-
-		$this->core->throwSuccess("MySQL server configuration");
-		foreach($conf["mysql"] as $name=>$value){
-			echo'<label for="'.$name.'">'.$name.'</label><input type="text" name="'.$name.'" value="'.$value.'"><br/>';
-		}
+		require_once "configNamer.inc.php";
 
 		$this->core->throwSuccess("General configuration");
 		foreach($conf["conf"] as $name=>$value){
-			echo'<label for="'.$name.'">'.$name.'</label><input type="text" name="'.$name.'" value="'.$value.'"><br/>';
+			if($fullname["conf"][$name][1]=="text"){ $input = '<input type="text" name="'.$name.'" value="'.$value.'">'; 
+			}elseif($fullname["conf"][$name][1]=="select"){ $input = '<select name="'.$name.'"> <option value="ON">ON</option> <option value="OFF">OFF</option> </select>'; }
+
+			echo'<label for="'.$name.'">'.$fullname["conf"][$name][0].'</label>'.$input.'<br/>';
+		}
+		
+		$this->core->throwSuccess("MySQL server configuration");
+		foreach($conf["mysql"] as $name=>$value){
+			if($fullname["mysql"][$name][1]=="text"){ $input = '<input type="text" name="'.$name.'" value="'.$value.'">'; 
+			}elseif($fullname["mysql"][$name][1]=="select"){ $input = '<select name="'.$name.'"> <option value="ON">ON</option> <option value="OFF">OFF</option> </select>'; }
+
+			echo'<label for="'.$name.'">'.$fullname["mysql"][$name][0].'</label>'.$input.'<br/>';
+		}
+		
+		$this->core->throwSuccess("LDAP server configuration");
+		foreach($conf["ldap"] as $name=>$value){
+			if($fullname["ldap"][$name][1]=="text"){ $input = '<input type="text" name="'.$name.'" value="'.$value.'">'; 
+			}elseif($fullname["ldap"][$name][1]=="select"){ $input = '<select name="'.$name.'"> <option value="ON">ON</option> <option value="OFF">OFF</option> </select>'; }
+			
+			echo'<label for="'.$name.'">'.$fullname["ldap"][$name][0].'</label>'.$input.'<br/>';
+		}
+		
+		$this->core->throwSuccess("Mail configuration");
+		foreach($conf["mail"] as $name=>$value){
+			if($fullname["mail"][$name][1]=="text"){ $input = '<input type="text" name="'.$name.'" value="'.$value.'">'; 
+			}elseif($fullname["mail"][$name][1]=="select"){ $input = '<select name="'.$name.'"> <option value="ON">ON</option> <option value="OFF">OFF</option> </select>'; }
+			
+			echo'<label for="'.$name.'">'.$fullname["mail"][$name][0].'</label>'.$input.'<br/>';
 		}
 
+		$this->core->throwSuccess("Write your configuration to file!");
 		echo'<label for="submit"> </label><input type="submit" value="Save settings"> </div></form>';
 
 		clearstatcache();
