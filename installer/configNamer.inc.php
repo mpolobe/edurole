@@ -14,7 +14,7 @@ $fullname['mysql']['user'] = array("MySQL username", "text");
 $fullname['mysql']['password'] = array("MySQL password", "text"); 
 $fullname['mysql']['db'] = array("Database name", "text"); 
 
-$fullname['conf']['ldapEnabled'] = array("Do you wish to enable LDAP?", "select"); 
+$fullname['ldap']['ldapEnabled'] = array("Do you wish to enable LDAP?", "select"); 
 $fullname['ldap']['server'] = array("LDAP server IP", "text"); 
 $fullname['ldap']['port'] = array("LDAP port","text"); 
 $fullname['ldap']['studentou'] = array("Organisational unit for students", "text"); 

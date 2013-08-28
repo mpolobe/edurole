@@ -14,7 +14,6 @@ class installer {
 		}
 
 		if(file_exists($core)){
-			require_once "../system/database.inc.php";
 			require_once $core;
 		} else {
 			echo "The EduRole core could not be loaded";
@@ -25,14 +24,13 @@ class installer {
 		$this->cssFiles = '<link href="../templates/edurole/css/style.css" rel="stylesheet" type="text/css" />';
 		require_once "../templates/edurole/header.inc.php";
 
-		echo'<div class="contentpadfull"> <form action=".">
+		echo'<div class="contentpadfull"> <form action="?save=true">
 		<div class="title">Welcome to EduRole</div>
 		<ul>
 			<li>PHP dependencies: php5-ldap, php5-imap, php5-gd</li>
 			<li>Apache dependencies: mod_rewrite</li>
 		</ul>';
-
-
+		
 		if (!extension_loaded('gd', 'gd2')) {
 			$this->core->throwError("The php5-gd extension is either not installed or not loaded, try installing it!");
 		}
@@ -57,6 +55,7 @@ class installer {
 			}elseif($fullname["conf"][$name][1]=="select"){ $input = '<select name="'.$name.'"> <option value="ON">ON</option> <option value="OFF">OFF</option> </select>'; }
 
 			echo'<label for="'.$name.'">'.$fullname["conf"][$name][0].'</label>'.$input.'<br/>';
+			if($name == "path"){ break; }
 		}
 		
 		$this->core->throwSuccess("MySQL server configuration");
@@ -89,8 +88,55 @@ class installer {
 		clearstatcache();
 		require_once "../templates/edurole/footer.inc.php";
 	}
+	
+	public function save(){
+		// Write changes to configuration
+		$config = "config.inc.php";
+		$fh = fopen($config, 'w+') or die("can't open configuration file");
+		foreach ($_POST as $key => $value){
+			$rule = '$conf[\'conf\']['.$key.'] = "'.$value.'";';
+			fwrite($fh, $rule);
+		}
+		
+		fclose($fh);
+		
+		// Base configuration completed, starting core
+		require_once "../system/database.inc.php";
+		require_once "../system/core.inc.php";
+		$this->core = new eduroleCore($conf, FALSE);
+
+		// Loading database
+		$fp = file('sql/edurole.sql', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+		$query = '';
+		foreach ($fp as $line) {
+			if ($line != '' && strpos($line, '--') === false) {
+				$query .= $line;
+				if (substr($query, -1) == ';') {
+					$this->core->database->doSelectQuery($query);
+					$query = '';
+				}
+			}
+		}
+
+		// Set users password
+		$username = "admin";
+		$hash = $conf['conf']['hash'];
+		$password = $password;
+		$passenc =  hash('sha512', $password . $hash . $username);
+		$sql = "INSERT INTO `access` (`ID`, `Username`, `RoleID`, `Password`) VALUES (100001, 'admin', 1000, '');";
+		$this->core->database->doSelectQuery($sql);
+		
+		
+		// Finished
+		$this->core->throwSuccess("System has been installed. Your kingdom <a href=\"../\">awaits!</a>");
+		
+	}
 }
 
 $installer = new installer();
-$installer->install();
+if(isset($_GET['save'])){
+	$installer->save();
+} else {
+	$installer->install();
+}
 ?>

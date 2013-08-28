@@ -27,6 +27,9 @@ class eduroleCore {
 	}
 
 	public function initializer() {
+		if ($conf['conf']['installed'] == FALSE) {
+			header('Location: installer/');
+		}
 		if ($this->page == "api") {
 			new serviceBuilder($this); // All service calls are processed in the service builder
 		} else {
@@ -78,7 +81,7 @@ class eduroleCore {
 	public function setTemplate() {
 		if (isset($this->core->cleanPost['template'])) {
 			$_SESSION['template'] = $this->core->cleanPost['template'];
-			header('Location: .'); // Reload page
+			header('Location: .');
 		}
 
 		if (isset($_SESSION['template'])) {

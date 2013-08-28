@@ -3,6 +3,7 @@
  * General system setup
  * You are required to change these values for the setup of the system.
  */
+$conf['conf']['installed'] = FALSE;											// Set to true to enable system
 $conf['conf']['debugging'] = FALSE;											// Set TRUE to enable debugging
 $conf['conf']['institutionName'] = "EduRole University"; 					// Institution name
 $conf['conf']['domain'] = "edurole.com";									// Domain on which the pages will be served
