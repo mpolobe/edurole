@@ -10,6 +10,7 @@ class eduroleCore {
 
 		if (class_exists('database')) {
 			$this->database = new database($this);
+			$this->cleanInput();
 		}
 
 		if (class_exists('breadcrumb')) {
@@ -18,7 +19,6 @@ class eduroleCore {
 
 		$this->setTemplate();
 		$this->getSessions();
-		$this->cleanInput();
 		$this->processRoute();
 
 		if($initialize){
