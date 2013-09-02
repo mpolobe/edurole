@@ -782,7 +782,7 @@
 	</div>
 </div>
 <h3><strong>
-		<div id="add-contact" class="link"><a href="#contact-element"> <img src="templates/default/images/plus.png"
+		<div id="add-contact" class="link"><a href="#contact-element"> <img src="<? echo $this->core->fullTemplatePath; ?>/images/plus.png"
 																			width="16" height="16"/> Add emergency
 				contact</a></div>
 	</strong></h3>
@@ -845,7 +845,7 @@
 	</div>
 </div>
 <h3><strong>
-		<div id="add-education" class="link"><a href="#add-education"> <img src="templates/default/images/plus.png"
+		<div id="add-education" class="link"><a href="#add-education"> <img src="<? echo $this->core->fullTemplatePath; ?>/images/plus.png"
 																			width="16" height="16"/> Add education
 				background</a></div>
 	</strong></h3>

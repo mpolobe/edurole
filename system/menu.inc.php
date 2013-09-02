@@ -37,17 +37,12 @@ class menuConstruct {
 			$pageRoute = $fetch['PageRoute'];
 			$pageName = $fetch['PageName'];
 
-			if ($segmentName == $currentSegment) {
-
-				$this->pageItem($pageRoute, $pageName);
-
-			} else if (!isset($currentSegment)) {
+			if (!isset($currentSegment)) {
 
 				echo '<div class="menubar">';
 				echo '<div class="menuusr"><strong>' . $this->core->username . '</strong> <i>(' . $this->core->rolename . ')</i> </div>';
 
 				$this->segmentHeader($segmentName);
-				$this->pageItem($pageRoute, $pageName);
 
 			} else if ($segmentName != $currentSegment) {
 
@@ -55,9 +50,9 @@ class menuConstruct {
 				<div class="menubar">';
 
 				$this->segmentHeader($segmentName);
-				$this->pageItem($pageRoute, $pageName);
 
 			}
+
 
 			if ($segmentName == "Virtual Learning Environment") {
 
@@ -78,7 +73,9 @@ class menuConstruct {
 					echo '<div class="menu"><div class="indent"><a href="' . $this->core->conf['conf']['path'] . 'vle&view=school&id=1"><img src="templates/default/images/expand.gif"> ' . $program . '</a></div></div>';
 				}
 
-			} else if ($pageName == "mail") {
+			} 
+			
+			if ($pageName == "mail") {
 
 				if ($this->core->conf['conf']['mailEnabled'] == TRUE) {
 
@@ -91,6 +88,8 @@ class menuConstruct {
 					$this->pageItem($pageRoute, $pageName);
 
 				}
+			} else {
+				$this->pageItem($pageRoute, $pageName);
 			}
 
 			$currentSegment = $segmentName;

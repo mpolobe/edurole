@@ -73,4 +73,5 @@ $conf['javascript'][5] = '<script src="%BASE%/lib/jquery/jquery.ui.datepicker.js
 $conf['javascript'][6] = '<script src="%BASE%/lib/requirejs/require.js"></script>';
 $conf['javascript'][7] = '<script src="%BASE%/lib/aloha/lib/aloha.js" data-aloha-plugins="common/ui,  common/format, common/list, common/link, common/highlighteditables"></script>';
 $conf['javascript'][9] = '<script src="%BASE%/lib/fullcalendar/fullcalendar.min.js"></script>';
+$conf['javascript'][10] = '<script src="%BASE%/lib/edurole/javascript/register.js"></script>';
 ?>

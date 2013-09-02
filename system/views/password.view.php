@@ -54,20 +54,21 @@ class password {
 		$newpass = $this->core->cleanPost["newpass"];
 		$newpasscheck = $this->core->cleanPost["newpasscheck"];
 
-		$title = 'Overview of personal assignments';
-		$description = 'Your assignments currently active in your courses and programmes';
+		$title = 'Change your account password';
+		$description = 'You are able to change your account password here.';
 
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
+		$auth = new auth($this->core);
+		
 		if (isset($newpass) && isset($oldpass)) {
 
 			if ($newpass == $newpasscheck) {
 
-				if (auth::ldapChangePass($this->username, $oldpass, $newpass)) {
-
-					if (auth::mysqlChangePass($this->username, $oldpass, $newpass)) {
-						eduroleCore::throwError("The information you have entered is incorrect.");
+				if ($auth->ldapChangePass($this->username, $oldpass, $newpass)) {
+					if (!$auth->mysqlChangePass($this->username, $oldpass, $newpass)) {
+						$this->core->throwError("The information you have entered is incorrect.");
 					}
 				}
 

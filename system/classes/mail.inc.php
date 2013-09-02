@@ -20,7 +20,7 @@ class mailOperations{
 
 		@imap_close($mbox);
 
-		if (empty($out)) {
+		if(!isset($out)) {
 			$out = "0";
 		}
 

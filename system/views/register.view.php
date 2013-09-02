@@ -8,7 +8,7 @@ class register {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
 		$this->view->menu = FALSE;
-		$this->view->javascript = array(3);
+		$this->view->javascript = array(3,10);
 		$this->view->css = array(4);
 
 		return $this->view;
@@ -38,7 +38,6 @@ class register {
 		$item = $this->core->item;
 		$action = $this->core->action;
 		$action = $this->core->page;
-		echo $action . $item . "djjd";
 
 		if ($item) {
 

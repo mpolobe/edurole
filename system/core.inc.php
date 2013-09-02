@@ -27,7 +27,7 @@ class eduroleCore {
 	}
 
 	public function initializer() {
-		if ($conf['conf']['installed'] == FALSE) {
+		if ($this->conf['conf']['installed'] == FALSE) {
 			header('Location: installer/');
 		}
 		if ($this->page == "api") {
@@ -46,9 +46,11 @@ class eduroleCore {
 
 		if (isset($this->route[0])) {
 			$this->page = $this->route[0];
-		} elseif (isset($this->route[1])) {
+		}
+		if (isset($this->route[1])) {
 			$this->action = $this->route[1];
-		} elseif (isset($this->route[2])) {
+		}
+		if (isset($this->route[2])) {
 			$this->item = $this->route[2];
 		}
 	}
@@ -79,8 +81,8 @@ class eduroleCore {
 	}
 
 	public function setTemplate() {
-		if (isset($this->core->cleanPost['template'])) {
-			$_SESSION['template'] = $this->core->cleanPost['template'];
+		if (isset($this->cleanPost['template'])) {
+			$_SESSION['template'] = $this->cleanPost['template'];
 			header('Location: .');
 		}
 
