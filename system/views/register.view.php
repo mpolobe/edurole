@@ -7,7 +7,7 @@ class register {
 	public function configView() {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
-		$this->view->menu = FALSE;
+		$this->view->menu = TRUE;
 		$this->view->javascript = array(3,10);
 		$this->view->css = array(4);
 
@@ -17,14 +17,19 @@ class register {
 	public function buildView($core) {
 		$this->core = $core;
 
-		if ($this->view->menu != FALSE) {
-
+		if ($this->view->menu == TRUE) {
+		
 			echo '<div class="menucontainer">
-			<div class="menubar"><div class="menuhdr"><strong>Information for admission</strong></div><div class="menu">
-			<a href=".">Home</a>
-			<a href="' . $this->core->conf['conf']['path'] . '/info">Overview of all studies</a>
-			<a href="admission">Studies open for intake</a>
-			</div></div></div>';
+				<div class="menubar">
+				<div class="menuhdr"><strong>Home menu</strong></div>
+				<div class="menu">
+				<a href=".">Home</a>
+				<a href="' . $this->core->conf['conf']['path'] . '/info">Overview of all studies</a>
+				<a href="admission">Studies open for intake</a>
+				<a href="password">Recover lost password</a>
+				</div>
+				</div>
+				</div><div class="contentpadfull">';
 
 		}
 
