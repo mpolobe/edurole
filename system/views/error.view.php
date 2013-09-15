@@ -17,14 +17,23 @@ class error {
 	public function buildView($core) {
 		$this->core = $core;
 
+		$error = $this->core->getViewError();
+		
+		if($error){
+			$this->showError($error->message, $error->description);		
+		}
+		
+	}
+	
+	public function showError($message, $description){
+	
 		$function = __FUNCTION__;
-		$title = 'System or User error';
-		$description = 'Please try something else!';
 
 		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
+		echo component::generateTitle($message);
 
-		$this->core->throwError("The following page does not exist!");
+		$this->core->throwError($description);
+	
 	}
 }
 

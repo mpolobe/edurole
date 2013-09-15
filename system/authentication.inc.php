@@ -14,14 +14,22 @@ class auth {
 		if (isset($username) && isset($password)) {
 			if (!$this->authenticateLDAP($username, $password)) {
 				if (!$this->authenticateSQL($username, $password)) {
-					$this->core->throwError('<p>Please <a href=".">return to the login page</a> and try again. If you forgot your password please request a new one <a href="password.php">here</a>.</p>', "LOGIN");
+					return FALSE;
+				} else {
+					return TRUE;
 				}
+			}else {
+				return TRUE;
 			}
 
 		} else {
-			echo "<h2>Please enter all fields</h2>";
+			$this->core->setViewError('Please enter all fields', 'Please <a href=".">return to the login page</a> and try again.');
+			var_dump($this->core);
+			$this->core->builder->initView("error");
+			return FALSE;
 		}
 
+		return FALSE;
 	}
 
 	private function authenticateLDAP($username, $password) {
@@ -42,11 +50,16 @@ class auth {
 				$ldapbind = @ldap_bind($ldapconn, "uid=" . $username . "," . $ou, $password);
 
 				if ($ldapbind) { //successful login
+				
 					$this->core->logEvent("User '$username' authenticated successfully", "3");
-					auth::authorize($username, $password);
+					$this->authorize($username, $password);
+					return TRUE;
+					
 				} else {
+				
 					$this->core->logEvent("User '$username' authentication failed", "2");
-					return false;
+					return FALSE;
+					
 				}
 
 			} else {
@@ -54,7 +67,8 @@ class auth {
 			}
 
 		}
-		return false;
+		
+		return FALSE;
 	}
 
 	private function authenticateSQL($username, $password) {
@@ -67,14 +81,16 @@ class auth {
 		if ($run->num_rows > 0) { //successful login
 
 			$this->core->logEvent("User '$username' authenticated successfully", "3");
-			auth::authorize($username, $password);
+			$this->authorize($username, $password);
+			return TRUE;
 
 		} else {
 
 			$this->core->logEvent("User '$username' authentication failed", "2");
-			return false;
+			return FALSE;
 		}
-
+		
+		return FALSE;
 	}
 
 	public function authorize($username, $password) {
@@ -94,18 +110,16 @@ class auth {
 				$run = $this->core->database->doSelectQuery($sql);
 
 				while ($row = $run->fetch_row()) {
-
-					$_SESSION['access'] = $row[2];
-					$_SESSION['userid'] = $row[0];
-					$_SESSION['username'] = $username;
-					$_SESSION['password'] = $password;
-					$id = $row[0];
-					auth::role($row[2]);
+				
+					$access = $row[2];
+					$userid = $row[0];
+					$rolename = $this->role($row[2]);
+					
 				}
 
 				$sql = "SELECT `st`.Name,  `st`.ShortName, ProgramName, `sc`.Name FROM `access` as ac, `student-study-link` as ss, `study` as st, `student-program-link` as pl, `programmes` as pr, `schools` as sc, `basic-information` as bi
-				WHERE ac.`ID` = '$id' AND ac.`ID` = bi.`ID` AND bi.`GovernmentID` = ss.`StudentID` AND ss.`StudyID` = st.`ID`  AND bi.`GovernmentID` = pl.`StudentID` AND st.`ParentID` = sc.`ID` AND pl.`major` = pr.`id`
-				OR  ac.`ID` = '$id'  AND ac.`ID` = bi.`ID` AND bi.`GovernmentID` = ss.`StudentID` AND ss.`StudyID` = st.`ID`  AND bi.`GovernmentID` = pl.`StudentID` AND st.`ParentID` = sc.`ID` AND pl.`minor` = pr.`id`";
+				WHERE ac.`ID` = '$userid' AND ac.`ID` = bi.`ID` AND bi.`GovernmentID` = ss.`StudentID` AND ss.`StudyID` = st.`ID`  AND bi.`GovernmentID` = pl.`StudentID` AND st.`ParentID` = sc.`ID` AND pl.`major` = pr.`id`
+				OR  ac.`ID` = '$userid'  AND ac.`ID` = bi.`ID` AND bi.`GovernmentID` = ss.`StudentID` AND ss.`StudyID` = st.`ID`  AND bi.`GovernmentID` = pl.`StudentID` AND st.`ParentID` = sc.`ID` AND pl.`minor` = pr.`id`";
 
 				$run = $this->core->database->doSelectQuery($sql);
 
@@ -120,7 +134,7 @@ class auth {
 					$sql = "INSERT INTO `access` (`ID`, `Username`, `RoleID`, `Password`) VALUES ('$username', '$username', '10', '$passwordHashed');";
 					$run = $this->core->database->doSelectQuery($sql);
 
-					$_SESSION['access'] = "10";
+					$access = "10";
 				}
 
 			} else {
@@ -136,11 +150,9 @@ class auth {
 
 			while ($row = $run->fetch_row()) {
 
-				$_SESSION['username'] = $username;
-				$_SESSION['password'] = $password;
-				$_SESSION['userid'] = $row[0];
-				$_SESSION['access'] = $row[1];
-				$this->role($row[1]);
+				$userid = $row[0];
+				$access = $row[1];
+				$rolename = $this->role($row[1]);
 
 				$this->core->logEvent("User $username authorized level $row[1]", "3");
 
@@ -154,14 +166,19 @@ class auth {
 			}
 
 		}
-
-		if (!isset($_SESSION['access'])) {
-			$this->core->logEvent("Unauthorized access by $username.", "3");
-			$this->core->exitError("You do not have permissions to access this system, please contact the academic office", "LOGIN");
-		} else {
-			header("location: .");
-		}
-
+		
+		$_SESSION['access'] = $access;
+		$_SESSION['userid'] = $userid;
+		$_SESSION['username'] = $username;
+		$_SESSION['password'] = $password;
+		$_SESSION['rolename'] = $rolename;
+		
+		$this->core->setUsername($username);
+		$this->core->setUserID($userid);
+		$this->core->setRoleName($rolename);
+		$this->core->setRole($access);
+		
+		return TRUE;
 	}
 
 	public function ldapChangePass($username, $oldpass, $newpass) {
@@ -191,8 +208,9 @@ class auth {
 			$userpassword = "{SHA}" . base64_encode(pack("H*", sha1($newpass)));
 			if (ldap_mod_replace($ldapconn, "uid=" . $username . "," . $ou, array('userpassword' => $userpassword))) {
 				echo "<p><h2>YOUR PASSWORD IS NOW CHANGED</h2></p>";
+				return TRUE;
 			} else {
-				return (FALSE);
+				return FALSE;
 			}
 
 		} catch (Exception $e) {
@@ -224,7 +242,7 @@ class auth {
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($row = $run->fetch_row()) {
-			$_SESSION['rolename'] = $row[1];
+			return $row[1];
 		}
 	}
 

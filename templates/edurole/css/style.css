@@ -27,6 +27,10 @@ td {
 	width: 100%;
 	min-width: 1000px;	
 }
+.formElement {
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
 .statistic{
 	color: #777;
 	font-family: "Molengo", "arial", serif;

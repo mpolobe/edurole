@@ -5,10 +5,9 @@ class viewBuilder {
 
 	public function __construct($core) {
 		$this->core = $core;
-		$this->viewBuilder($this->core->page);
 	}
 
-	public function viewBuilder($page) {
+	public function buildView($page) {
 		$this->core->logEvent("Starting view builder for page: " . $this->core->page . " action: " . $this->core->action, "3");
 
 		if (!isset($this->core->role)) {
@@ -21,10 +20,24 @@ class viewBuilder {
 				$this->initView("login");
 			} elseif ($page == "login") {
 				$auth = new auth($this->core);
-				$auth->login();
+				$login = $auth->login();
+
+				if($login == FALSE){
+					// User failed to authenticate
+					$this->core->setViewError('Login failed', 'Please <a href=".">return to the login page</a> and try again. If you forgot your password please request a new one <a href="password.php">here</a>.');
+					$this->initView("error");
+				} else if(!isset($this->core->role)) {
+					// User does not have any permissions
+					$this->core->setViewError('Unauthorized access', "You do not have permissions to access this system, please contact the academic office", "LOGIN");
+					$this->initView("error");
+				} else if($login == TRUE) {
+					// User successfully authenticated
+					$this->initView("home");
+				}
 			} elseif ($page == "template") {
 				$this->core->setTemplate();
-			} elseif ($page == "intake" || $page == "register") {
+			} elseif ($page == "intake" || $page == "register" || $page == "studies") {
+				//admission flow
 				$this->initView($page);
 			} else {
 				$this->initView("login");

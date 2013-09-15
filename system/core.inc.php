@@ -1,7 +1,7 @@
 <?php
 class eduroleCore {
 
-	public $conf, $page, $action, $item, $username, $userID, $template, $database, $role, $roleName, $cleanPost, $log, $cleanGet, $route, $fullTemplatePath;
+	public $conf, $page, $action, $item, $username, $userID, $template, $database, $role, $roleName, $cleanPost, $log, $cleanGet, $route, $fullTemplatePath, $builder;
 
 	public function __construct($conf, $initialize = TRUE) {
 		$this->conf = $conf;
@@ -30,10 +30,12 @@ class eduroleCore {
 		if ($this->conf['conf']['installed'] == FALSE) {
 			header('Location: installer/');
 		}
+		
 		if ($this->page == "api") {
-			new serviceBuilder($this); // All service calls are processed in the service builder
+			$this->builder = new serviceBuilder($this); // All service calls are processed in the service builder
 		} else {
-			new viewBuilder($this); // All views are processed in the view builder
+			$this->builder = new viewBuilder($this); // All views are processed in the view builder
+			$this->builder->buildView($this->page);
 		}
 	}
 
@@ -70,7 +72,7 @@ class eduroleCore {
 			$this->username = $_SESSION['username'];
 		}
 		if (isset($_SESSION['rolename'])) {
-			$this->rolename = $_SESSION['rolename'];
+			$this->roleName = $_SESSION['rolename'];
 		}
 		if (isset($_SESSION['access'])) {
 			$this->role = $_SESSION['access'];
@@ -150,25 +152,62 @@ class eduroleCore {
 	}
 
 	public function showAlert($message) {
-		echo '<script>
-                        alert("' . $message . '");
-              </script>';
+		echo '<script> alert("' . $message . '"); </script>';
 	}
 
-	public function throwError($error) {
-		echo '<div class="errorpopup">' . $error . '</div>';
-		$this->logEvent("ERROR: $error", "1");
+	public function throwError($message) {
+		echo '<div class="errorpopup">' . $message . '</div>';
+		$this->logEvent("ERROR: $message", "1");
 	}
 
-	public function throwSuccess($error) {
-		echo '<div class="successpopup">' . $error . '</div>';
+	public function throwSuccess($message) {
+		echo '<div class="successpopup">' . $message . '</div>';
+	}
+	
+	/* Setters */
+	
+	public function setViewError($error, $description) {
+		$this->viewError->message = $error;
+		$this->viewError->description = $description;
+	}
+	
+	public function setUsername($username) {
+		$this->username = $username;
+	}
+	
+	public function setRole($role) {
+		$this->role = $role;
+	}
+	
+	public function setRoleName($roleName) {
+		$this->roleName = $roleName;
+	}
+	
+	public function setUserID($userID) {
+		$this->userID = $userID;
 	}
 
-	function getUsername() {
-		$username = $_SESSION['username'];
-		return $username;
+	/* Setters */
+	
+	public function getViewError() {
+		return $this->viewError;
 	}
-
+	
+	public function getUsername() {
+		return $this->username;
+	}
+	
+	public function getRole() {
+		return $this->role;
+	}
+	
+	public function getRoleName() {
+		return $this->roleName;
+	}
+	
+	public function getUserID() {
+		return $this->userID;
+	}
 }
 
 ?>

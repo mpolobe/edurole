@@ -8,7 +8,7 @@ class register {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
 		$this->view->menu = TRUE;
-		$this->view->javascript = array(3,10);
+		$this->view->javascript = array(3,10,11);
 		$this->view->css = array(4);
 
 		return $this->view;
@@ -23,10 +23,10 @@ class register {
 				<div class="menubar">
 				<div class="menuhdr"><strong>Home menu</strong></div>
 				<div class="menu">
-				<a href=".">Home</a>
-				<a href="' . $this->core->conf['conf']['path'] . '/info">Overview of all studies</a>
-				<a href="admission">Studies open for intake</a>
-				<a href="password">Recover lost password</a>
+				<a href="' . $this->core->conf['conf']['path'] . '">Home</a>
+				<a href="' . $this->core->conf['conf']['path'] . '/studies">Overview of all studies</a>
+				<a href="' . $this->core->conf['conf']['path'] . '/intake">Studies open for intake</a>
+				<a href="' . $this->core->conf['conf']['path'] . '/password">Recover lost password</a>
 				</div>
 				</div>
 				</div><div class="contentpadfull">';
