@@ -7,7 +7,8 @@ class intake {
 	public function configView() {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
-		$this->view->menu = TRUE;
+		$this->view->menu = FALSE;
+		$this->view->internalMenu = TRUE;
 		$this->view->javascript = array(3);
 		$this->view->css = array(4);
 
@@ -17,7 +18,7 @@ class intake {
 	public function buildView($core) {
 		$this->core = $core;
 
-		if ($this->view->menu == TRUE) {
+		if ($this->view->internalMenu == TRUE) {
 
 			echo '<div class="menucontainer">
 				<div class="menubar">

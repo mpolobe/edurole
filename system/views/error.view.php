@@ -7,7 +7,7 @@ class error {
 	public function configView() {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
-		$this->view->menu = TRUE;
+		$this->view->menu = FALSE;
 		$this->view->javascript = array(3);
 		$this->view->css = array(4);
 

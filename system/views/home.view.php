@@ -9,7 +9,8 @@ class home {
 		$this->view->footer = TRUE;
 		$this->view->javascript = array(3);
 		$this->view->css = array(4);
-
+		$this->view->menu = TRUE;
+		
 		return $this->view;
 	}
 
@@ -71,12 +72,12 @@ class home {
 
 		$this->core->logEvent("Initializing info-sheet", "3");
 
-		$sql = "SELECT * FROM `basic-information` as bi, `access` as ac WHERE ac.`ID` = '" . $this->core->userid . "' AND ac.`ID` = bi.`ID`";
+		$sql = "SELECT * FROM `basic-information` as bi, `access` as ac WHERE ac.`ID` = '" . $this->core->userID . "' AND ac.`ID` = bi.`ID`";
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($row = $run->fetch_row()) {
 
-			$id = $this->core->userid;
+			$id = $this->core->userID;
 			$firstname = $row[0];
 			$middlename = $row[1];
 			$surname = $row[2];
@@ -95,10 +96,10 @@ class home {
 			}
 
 			echo '<td>' . $idnumber . '</td></tr>';
-			echo '<tr><td>Current role</td> <td>' . $this->core->rolename . '</td></tr>';
+			echo '<tr><td>Current role</td> <td>' . $this->core->roleName . '</td></tr>';
 			echo '<tr><td>Selected template</td> <td>' . $this->core->template . '</td></tr>';
 
-			$sql = "SELECT * FROM `access` as ac, `student-study-link` as ss, `study` as st, `student-program-link` as pl WHERE ac.`ID` = '" . $this->core->userid . "' AND ss.`StudyID` = st.`ID` AND pl.`StudentID` = $nrc AND ss.`StudentID` = $nrc";
+			$sql = "SELECT * FROM `access` as ac, `student-study-link` as ss, `study` as st, `student-program-link` as pl WHERE ac.`ID` = '" . $this->core->userID . "' AND ss.`StudyID` = st.`ID` AND pl.`StudentID` = $nrc AND ss.`StudentID` = $nrc";
 
 			$run = $this->core->database->doSelectQuery($sql);
 

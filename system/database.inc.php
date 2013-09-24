@@ -24,15 +24,14 @@ class database {
 	}
 
 	public function doInsertQuery($sql) {
-
 		if (!$run = $this->mysqli->query($sql)) {
 			eduroleCore::logEvent("Query error: " . $this->mysqli->error, "1");
 
 			if ($this->mysqli->error == "Duplicate entry '0' for key 'PRIMARY'") {
 				return ("duplicate");
 			} else {
-				eduroleCore::logEvent("Query error: " . $this->mysqli->error, "1");
-				eduroleCore::throwError("An error occurred with the information you have entered.");
+				$this->core->logEvent("Query error: " . $this->mysqli->error, "1");
+				$this->core->throwError("An error occurred with the information you have entered.");
 				return false;
 			}
 		} else {
@@ -44,8 +43,8 @@ class database {
 	public function doSelectQuery($sql) {
 
 		if (!$run = $this->mysqli->query($sql)) {
-			eduroleCore::logEvent("Query error SQL: <span style=\"font-weight: normal;\">" . $sql . "</span>" . $this->mysqli->error, "1");
-			eduroleCore::throwError("An error occurred with the database information retrieval");
+			$this->core->logEvent("Query error SQL: <span style=\"font-weight: normal;\">" . $sql . "</span>" . $this->mysqli->error, "1");
+			$this->core->throwError("An error occurred with the database information retrieval");
 			return false;
 		}
 
@@ -54,10 +53,8 @@ class database {
 	}
 
 	public function closeConnection() {
-
 		mysqli_close($this->connection);
-		eduroleCore::logEvent("Database connection closed", "3");
-
+		$this->core->logEvent("Database connection closed", "3");
 	}
 
 }

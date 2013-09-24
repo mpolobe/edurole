@@ -1,7 +1,29 @@
 <?php
 class eduroleCore {
 
-	public $conf, $page, $action, $item, $username, $userID, $template, $database, $role, $roleName, $cleanPost, $log, $cleanGet, $route, $fullTemplatePath, $builder;
+	public $conf;
+	
+	public $route;
+	public $page;
+	public $action;
+	public $item;
+	
+	public $username;
+	public $userID;
+	public $role;
+	public $roleName;
+	
+	public $template;
+	public $fullTemplatePath;
+	
+	public $database;
+	
+	public $cleanGet;
+	public $cleanPost;
+	
+	public $log;
+
+	public $builder;
 
 	public function __construct($conf, $initialize = TRUE) {
 		$this->conf = $conf;
@@ -25,7 +47,7 @@ class eduroleCore {
 			$this->initializer();
 		}
 	}
-
+		
 	public function initializer() {
 		if ($this->conf['conf']['installed'] == FALSE) {
 			header('Location: installer/');
@@ -35,7 +57,7 @@ class eduroleCore {
 			$this->builder = new serviceBuilder($this); // All service calls are processed in the service builder
 		} else {
 			$this->builder = new viewBuilder($this); // All views are processed in the view builder
-			$this->builder->buildView($this->page);
+			$this->builder($this->page);
 		}
 	}
 
@@ -56,6 +78,10 @@ class eduroleCore {
 			$this->item = $this->route[2];
 		}
 	}
+	
+	public function builder($page) {
+		$this->builder->buildView($page);
+	}
 
 	private function cleanInput() {
 		foreach (array_keys($_POST) as $key) {
@@ -74,11 +100,11 @@ class eduroleCore {
 		if (isset($_SESSION['rolename'])) {
 			$this->roleName = $_SESSION['rolename'];
 		}
-		if (isset($_SESSION['access'])) {
-			$this->role = $_SESSION['access'];
+		if (isset($_SESSION['role'])) {
+			$this->role = $_SESSION['role'];
 		}
 		if (isset($_SESSION['userid'])) {
-			$this->userid = $_SESSION['userid'];
+			$this->userID = $_SESSION['userid'];
 		}
 	}
 
@@ -186,8 +212,20 @@ class eduroleCore {
 	public function setUserID($userID) {
 		$this->userID = $userID;
 	}
-
-	/* Setters */
+	
+	public function setPage($page) {
+		$this->page = $page;
+	}
+	
+	public function setAction($action) {
+		$this->action = $action;
+	}
+	
+	public function setItem($item) {
+		$this->item = $item;
+	}
+	
+	/* Getters */
 	
 	public function getViewError() {
 		return $this->viewError;
@@ -207,6 +245,14 @@ class eduroleCore {
 	
 	public function getUserID() {
 		return $this->userID;
+	}
+	
+	public function getTitle(){
+		if(isset($this->title)){
+			return $this->title;
+		} else {
+			return $this->conf['conf']['titleName'];
+		}
 	}
 }
 

@@ -22,17 +22,11 @@ class viewBuilder {
 				$auth = new auth($this->core);
 				$login = $auth->login();
 
-				if($login == FALSE){
-					// User failed to authenticate
+				if($login == FALSE){			// User failed to authenticate
 					$this->core->setViewError('Login failed', 'Please <a href=".">return to the login page</a> and try again. If you forgot your password please request a new one <a href="password.php">here</a>.');
 					$this->initView("error");
-				} else if(!isset($this->core->role)) {
-					// User does not have any permissions
-					$this->core->setViewError('Unauthorized access', "You do not have permissions to access this system, please contact the academic office", "LOGIN");
-					$this->initView("error");
-				} else if($login == TRUE) {
-					// User successfully authenticated
-					$this->initView("home");
+				} else if($login == TRUE) {		// User successfully authenticated
+					header("LOCATION: .");	
 				}
 			} elseif ($page == "template") {
 				$this->core->setTemplate();
@@ -66,6 +60,7 @@ class viewBuilder {
 	}
 
 	public function initView($view) {
+		
 		$viewInclude = $this->core->conf['conf']['viewPath'] . $view . ".view.php";
 
 		if (file_exists($viewInclude)) {
@@ -78,6 +73,7 @@ class viewBuilder {
 		} else {
 			$this->core->throwError("Required view missing $viewInclude");
 		}
+		
 
 		$this->jsFiles = $this->core->conf['javascript'][0] . "\n"; //include default JS
 
@@ -98,13 +94,19 @@ class viewBuilder {
 		if ($viewConfig->header == TRUE) {
 			$this->viewPageHeader($this->core->template);
 		}
-
-		if (isset($this->core->role) && $viewConfig->menu != TRUE) {
-			$menu = new menuConstruct($this->core);
-			$menu->buildMainMenu();
+		
+		$menu = new menuConstruct($this->core);
+		
+		if(!isset($viewConfig->menu)){
+			$viewConfig->menu = FALSE;
+		} 
+		
+		if($viewConfig->menu == TRUE){
+			$menu = $menu->buildMainMenu(TRUE);
+			echo $menu;
 		}
 
-		$this->view->buildview($this->core);
+		$view = $this->view->buildview($this->core);
 
 		if ($this->core->conf['conf']['debugging'] == TRUE) {
 			$this->core->showDebugger();

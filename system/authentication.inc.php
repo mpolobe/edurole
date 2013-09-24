@@ -33,7 +33,6 @@ class auth {
 	}
 
 	private function authenticateLDAP($username, $password) {
-
 		if ($this->core->conf['ldap']['ldapEnabled'] == TRUE) {
 
 			if (is_numeric($username)) { //Student usernames are numeric
@@ -52,7 +51,7 @@ class auth {
 				if ($ldapbind) { //successful login
 				
 					$this->core->logEvent("User '$username' authenticated successfully", "3");
-					$this->authorize($username, $password);
+					$this->authenticateSQL($username, $password);
 					return TRUE;
 					
 				} else {
@@ -73,112 +72,60 @@ class auth {
 
 	private function authenticateSQL($username, $password) {
 
-		$password = hash('sha512', $password . $this->core->conf['conf']['hash'] . $username);
-
-		$sql = "SELECT ID FROM `access` WHERE `username` = '$username' AND `password` = '$password'";
+		$passwordHashed = hash('sha512', $password . $this->core->conf['conf']['hash'] . $username);
+		
+		$sql = "SELECT access.ID as UserID, RoleID FROM `access` LEFT JOIN `basic-information` ON `basic-information`.`ID`=`access`.`Username` WHERE `access`.Username = '$username' AND `access`.Password = '$passwordHashed'";
 		$run = $this->core->database->doSelectQuery($sql);
 
 		if ($run->num_rows > 0) { //successful login
-
 			$this->core->logEvent("User '$username' authenticated successfully", "3");
-			$this->authorize($username, $password);
-			return TRUE;
-
+			
+			while ($row = $run->fetch_assoc()) {
+				$userID = $row['UserID'];
+				$role = $row['RoleID'];
+				$rolename = $this->role($role);
+								
+				if(empty($role)) {
+					// User does not have any permissions
+					$this->core->setViewError('Unauthorized access', "You do not have permissions to access this system, please contact the academic office", "LOGIN");
+					$this->core->builder->initView("error");
+				}
+			}
+			
 		} else {
-
 			$this->core->logEvent("User '$username' authentication failed", "2");
 			return FALSE;
 		}
+
+		if(isset($username, $password, $userID, $role, $rolename)){
 		
-		return FALSE;
-	}
+			$_SESSION['userid'] = $userID;
+			$_SESSION['username'] = $username;
+			$_SESSION['password'] = $password;
+			$_SESSION['role'] = $role;
+			$_SESSION['rolename'] = $rolename;
 
-	public function authorize($username, $password) {
+			$_SESSION['saobjects'] = $this->getStudyInformation($userID);
 
-		$passwordHashed = hash('sha512', $password . $this->core->conf['conf']['hash'] . $username);
-
-		if (is_numeric($username)) {
-
-			$sql = "SELECT * FROM `basic-information` WHERE ID LIKE '$username'";
-			$run = $this->core->database->doSelectQuery($sql);
-
-			if ($run->num_rows > 0) {
-
-				$_SESSION['username'] = $username;
-
-				$sql = "SELECT * FROM `access` WHERE Username LIKE '$username'";
-				$run = $this->core->database->doSelectQuery($sql);
-
-				while ($row = $run->fetch_row()) {
-				
-					$access = $row[2];
-					$userid = $row[0];
-					$rolename = $this->role($row[2]);
-					
-				}
-
-				$sql = "SELECT `st`.Name,  `st`.ShortName, ProgramName, `sc`.Name FROM `access` as ac, `student-study-link` as ss, `study` as st, `student-program-link` as pl, `programmes` as pr, `schools` as sc, `basic-information` as bi
-				WHERE ac.`ID` = '$userid' AND ac.`ID` = bi.`ID` AND bi.`GovernmentID` = ss.`StudentID` AND ss.`StudyID` = st.`ID`  AND bi.`GovernmentID` = pl.`StudentID` AND st.`ParentID` = sc.`ID` AND pl.`major` = pr.`id`
-				OR  ac.`ID` = '$userid'  AND ac.`ID` = bi.`ID` AND bi.`GovernmentID` = ss.`StudentID` AND ss.`StudyID` = st.`ID`  AND bi.`GovernmentID` = pl.`StudentID` AND st.`ParentID` = sc.`ID` AND pl.`minor` = pr.`id`";
-
-				$run = $this->core->database->doSelectQuery($sql);
-
-				$_SESSION['saobjects'] = $run->fetch_array(MYSQLI_NUM);
-
-				if (!isset($_SESSION['access'])) {
-
-					// student authenticated successfully but doesn't have a role assigned (old migration data from Edurole v1.1)
-
-					$this->core->logEvent("Partial user in database: user $username only present in 'basic-information' table", "1");
-
-					$sql = "INSERT INTO `access` (`ID`, `Username`, `RoleID`, `Password`) VALUES ('$username', '$username', '10', '$passwordHashed');";
-					$run = $this->core->database->doSelectQuery($sql);
-
-					$access = "10";
-				}
-
-			} else {
-
-				$this->core->logEvent("Partial user in database: user $username only present in 'access' table", "1");
-
-			}
-
+			$this->core->setUsername($username);
+			$this->core->setUserID($userID);
+			$this->core->setRoleName($rolename);
+			$this->core->setRole($role);
+		
+			return TRUE;
 		} else {
-
-			$sql = "SELECT ID, RoleID FROM `access` WHERE Username LIKE '$username'";
-			$run = $this->core->database->doSelectQuery($sql);
-
-			while ($row = $run->fetch_row()) {
-
-				$userid = $row[0];
-				$access = $row[1];
-				$rolename = $this->role($row[1]);
-
-				$this->core->logEvent("User $username authorized level $row[1]", "3");
-
-			}
-
-			if (!isset($_SESSION['access'])) {
-
-				$sql = "INSERT INTO `access` (`ID`, `Username`, `RoleID`, `Password`) VALUES (NULL, '$username', '4', '$passwordHashed');";
-				$run = $this->core->database->doSelectQuery($sql);
-
-			}
-
+			return FALSE;
 		}
-		
-		$_SESSION['access'] = $access;
-		$_SESSION['userid'] = $userid;
-		$_SESSION['username'] = $username;
-		$_SESSION['password'] = $password;
-		$_SESSION['rolename'] = $rolename;
-		
-		$this->core->setUsername($username);
-		$this->core->setUserID($userid);
-		$this->core->setRoleName($rolename);
-		$this->core->setRole($access);
-		
-		return TRUE;
+	}
+	
+	public function getStudyInformation($userID){
+		$sql = "SELECT `st`.Name,  `st`.ShortName, ProgramName, `sc`.Name FROM `access` as ac, `student-study-link` as ss, `study` as st, `student-program-link` as pl, `programmes` as pr, `schools` as sc, `basic-information` as bi
+		WHERE ac.`ID` = '$userID' AND ac.`ID` = bi.`ID` AND bi.`GovernmentID` = ss.`StudentID` AND ss.`StudyID` = st.`ID`  AND bi.`GovernmentID` = pl.`StudentID` AND st.`ParentID` = sc.`ID` AND pl.`major` = pr.`id`
+		OR  ac.`ID` = '$userID'  AND ac.`ID` = bi.`ID` AND bi.`GovernmentID` = ss.`StudentID` AND ss.`StudyID` = st.`ID`  AND bi.`GovernmentID` = pl.`StudentID` AND st.`ParentID` = sc.`ID` AND pl.`minor` = pr.`id`";
+
+		$run = $this->core->database->doSelectQuery($sql);
+
+		return $run->fetch_array(MYSQLI_NUM);
 	}
 
 	public function ldapChangePass($username, $oldpass, $newpass) {
@@ -222,7 +169,6 @@ class auth {
 	}
 
 	public function mysqlChangePass($username, $oldpass, $newpass) {
-
 		$newpass = hash('sha512', $newpass . $this->core->conf['conf']['hash'] . $username);
 		$oldpass = hash('sha512', $oldpass . $this->core->conf['conf']['hash'] . $username);
 
@@ -237,18 +183,24 @@ class auth {
 	}
 
 	private function role($access) {
-
 		$sql = "SELECT * FROM `roles` WHERE RoleLevel LIKE '$access'";
 		$run = $this->core->database->doSelectQuery($sql);
 
-		while ($row = $run->fetch_row()) {
-			return $row[1];
+		while ($row = $run->fetch_assoc()) {
+			return $row['RoleName'];
 		}
 	}
 
 	function logout() {
 		session_destroy();
-		header("location: .");
+		
+		$this->core->setUsername(NULL);
+		$this->core->setUserID(NULL);
+		$this->core->setRoleName(NULL);
+		$this->core->setRole(NULL);
+			
+		$this->core->setPage(NULL);
+		$this->core->initializer();
 	}
 }
 

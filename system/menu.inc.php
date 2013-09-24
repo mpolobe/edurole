@@ -7,18 +7,31 @@ class menuConstruct {
 		$this->core = $core;
 	}
 
-	public function buildMainMenu() {
-
-		echo '<div class="menucontainer">';
-
-		$this->fillMainMenu();
-
-		echo '</div><div class="contentpadfull">';
-
+	public function buildMainMenu($menudata = FALSE) {
+	
+		if($menudata == FALSE){
+			$menu = NULL;
+		} else if(isset($this->core->role)){
+			$menu = $this->fillMainMenu();
+		}
+		
+		$menu = $this->menuContainer($menu);
+		
+		return $menu;
+	}
+	
+	public function menuContainer($menu) {
+		$container = '<div class="menucontainer">';
+		$container .= $menu;
+		$container .= '</div><div class="contentpadfull">';
+		
+		return $container;
 	}
 
 	private function fillMainMenu() {
 
+		$menu = NULL;
+		
 		$sql = "SELECT * 
 		FROM `permission-link`, `permissions`, `pages`, `page-segment` 
 		WHERE `pages`.`PageSegmentID` =  `page-segment`.`ID`
@@ -39,17 +52,17 @@ class menuConstruct {
 
 			if (!isset($currentSegment)) {
 
-				echo '<div class="menubar">';
-				echo '<div class="menuusr"><strong>' . $this->core->username . '</strong> <i>(' . $this->core->rolename . ')</i> </div>';
+				$menu .= '<div class="menubar">';
+				$menu .= '<div class="menuusr"><strong>' . $this->core->username . '</strong> <i>(' . $this->core->roleName . ')</i> </div>';
 
-				$this->segmentHeader($segmentName);
+				$menu .= $this->segmentHeader($segmentName);
 
 			} else if ($segmentName != $currentSegment) {
 
-				echo '</div>
+				$menu .= '</div>
 				<div class="menubar">';
 
-				$this->segmentHeader($segmentName);
+				$menu .= $this->segmentHeader($segmentName);
 
 			}
 
@@ -64,17 +77,17 @@ class menuConstruct {
 						$study = $fetch[1];
 						$school = $fetch[3];
 
-						echo '<div class="menu"><a href="' . $this->core->conf['conf']['path'] . '/vle/school/1"> ' . $school . '</a></div>
+						$menu .= '<div class="menu"><a href="' . $this->core->conf['conf']['path'] . '/vle/school/1"> ' . $school . '</a></div>
 							<div class="menu"><a href="' . $this->core->conf['conf']['path'] . '/vle/school/1">
 								<img src="' . $this->core->fullTemplatePath . '/images/expand.gif"> ' . $study . '</a>
 							</div>';
 					}
 
-					echo '<div class="menu"><div class="indent"><a href="' . $this->core->conf['conf']['path'] . 'vle&view=school&id=1"><img src="templates/default/images/expand.gif"> ' . $program . '</a></div></div>';
+					$menu .= '<div class="menu"><div class="indent"><a href="' . $this->core->conf['conf']['path'] . 'vle&view=school&id=1"><img src="templates/default/images/expand.gif"> ' . $program . '</a></div></div>';
 				}
 
 			} 
-			
+
 			if ($pageName == "mail") {
 
 				if ($this->core->conf['conf']['mailEnabled'] == TRUE) {
@@ -85,26 +98,30 @@ class menuConstruct {
 					$mailCount = $mail->mailCount();
 
 					$pageName = 'Personal mail <div class="mailcount"><b>' . $mailCount . '</b></div>';
-					$this->pageItem($pageRoute, $pageName);
+					$menu .= $this->pageItem($pageRoute, $pageName);
 
 				}
 			} else {
-				$this->pageItem($pageRoute, $pageName);
+				$menu .= $this->pageItem($pageRoute, $pageName);
 			}
 
 			$currentSegment = $segmentName;
 
 		}
 
-		echo '</div>';
+		$menu .= '</div>';
+		
+		return $menu;
 	}
 
 	public function segmentHeader($segmentName) {
-		echo '<div class="menuhdr"><strong>' . $segmentName . '</strong></div>';
+		$menu = '<div class="menuhdr"><strong>' . $segmentName . '</strong></div>';
+		return $menu;
 	}
 
 	public function pageItem($pageRoute, $pageName) {
-		echo '<div class="menu"><a href="' . $this->core->conf['conf']['path'] . '/' . $pageRoute . '">' . $pageName . '</a></div>';
+		$menu = '<div class="menu"><a href="' . $this->core->conf['conf']['path'] . '/' . $pageRoute . '">' . $pageName . '</a></div>';
+		return $menu;	
 	}
 
 }
