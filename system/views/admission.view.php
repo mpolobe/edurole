@@ -8,6 +8,7 @@ class admission {
 	public function configView() {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
+		$this->view->menu = TRUE;
 		$this->view->javascript = array(3);
 		$this->view->css = array(1, 4);
 
@@ -16,20 +17,19 @@ class admission {
 
 	public function buildView($core) {
 		$this->core = $core;
-		$uid = $this->core->cleanGet['uid'];
 
-		if (empty($this->core->action) && $this->core->role < 100 || $this->core->action == "profile" && isset($uid)) {
+		if (empty($this->core->action) && $this->core->role < 100 || $this->core->action == "profile" && isset($this->core->item)) {
 			$this->admissionProfile();
-		} elseif ($this->core->action == "promote" && $this->core->role >= 103 && isset($uid)) {
-			$this->promote();
-		} elseif ($this->core->action == "reject" && $this->core->role >= 103 && isset($uid)) {
-			$this->reject();
-		} elseif ($this->core->action == "continue" && $this->core->role >= 103 && isset($uid)) {
-			$this->continued();
-		} elseif ($this->core->action == "delete" && $this->core->role >= 103 && isset($uid)) {
-			$this->delete();
-		} elseif ($this->core->action == "complete" && $this->core->role >= 103 && isset($uid)) {
-			$this->complete();
+		} elseif ($this->core->action == "promote" && $this->core->role >= 103 && isset($this->core->item)) {
+			$this->promote($this->core->item);
+		} elseif ($this->core->action == "reject" && $this->core->role >= 103 && isset($this->core->item)) {
+			$this->reject($this->core->item);
+		} elseif ($this->core->action == "continue" && $this->core->role >= 103 && isset($this->core->item)) {
+			$this->continued($this->core->item);
+		} elseif ($this->core->action == "delete" && $this->core->role >= 103 && isset($this->core->item)) {
+			$this->delete($this->core->item);
+		} elseif ($this->core->action == "complete" && $this->core->role >= 103 && isset($this->core->item)) {
+			$this->complete($this->core->item);
 		} elseif (empty($this->core->action) && $this->core->role >= 103) {
 			$this->admissionFlow();
 		}
@@ -68,16 +68,14 @@ class admission {
 
 	}
 
-	function complete() {
-		$sql = "UPDATE `access` SET `RoleID` = 10 WHERE `access`.`ID` = '" . $this->core->item . "'";
+	function complete($item) {
+		$sql = "UPDATE `access` SET `RoleID` = 10 WHERE `access`.`ID` = '" . $item . "'";
 		$this->database->doInsertQuery($sql);
 
-		$sql = "UPDATE `basic-information` SET `Status` = 'Enrolled' WHERE `basic-information`.`ID` = '" . $this->core->item . "'";
+		$sql = "UPDATE `basic-information` SET `Status` = 'Enrolled' WHERE `basic-information`.`ID` = '" . $item . "'";
 		$this->database->doInsertQuery($sql);
 
-		$sql = "SELECT * FROM `basic-information` WHERE `GovernmentID` = '" . $this->core->item . "'";
-		$run = $this->core->database->doSelectQuery($sql);
-
+		$sql = "SELECT * FROM `basic-information` WHERE `GovernmentID` = '" . $item . "'";
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($fetch = $run->fetch_assoc()) {
@@ -89,46 +87,40 @@ class admission {
 		$this->admissionFlow();
 	}
 
-	function promote() {
-		$uid = $this->core->cleanGet['uid'];
+	function promote($item) {
 
-		$sql = "UPDATE `edurole`.`access` SET `RoleID` = `RoleID`+1 WHERE `access`.`ID` = '" . $uid . "'";
+		$sql = "UPDATE `edurole`.`access` SET `RoleID` = `RoleID`+1 WHERE `access`.`ID` = '" . $item . "'";
 		$run = $this->database->doInsertQuery($sql);
 
 		$this->admissionFlow();
 	}
 
-	function reject() {
-		$uid = $this->core->cleanGet['uid'];
+	function reject($item) {
 
-		$sql = "UPDATE `edurole`.`basic-information` SET `Status` = 'Rejected' WHERE `basic-information`.`ID` = '" . $uid . "';";
+		$sql = "UPDATE `edurole`.`basic-information` SET `Status` = 'Rejected' WHERE `basic-information`.`ID` = '" . $item . "';";
 		$run = $this->database->doInsertQuery($sql);
 
 		$this->admissionFlow();
 	}
 
-	function continued() {
-		$uid = $this->core->cleanGet['uid'];
+	function continued($item) {
 
-		$sql = "UPDATE `edurole`.`basic-information` SET `Status` = 'Requesting' WHERE `basic-information`.`ID` = '" . $uid . "';";
+		$sql = "UPDATE `edurole`.`basic-information` SET `Status` = 'Requesting' WHERE `basic-information`.`ID` = '" . $item . "';";
 		$run = $this->database->doInsertQuery($sql);
 
 		$this->admissionFlow();
 	}
 
 
-	function delete() {
-		$uid = $this->core->cleanGet['uid'];
+	function delete($item) {
 
-		$sql = "UPDATE `edurole`.`basic-information` SET `Status` = 'Failed' WHERE `basic-information`.`ID` = '" . $uid . "';";
+		$sql = "UPDATE `edurole`.`basic-information` SET `Status` = 'Failed' WHERE `basic-information`.`ID` = '" . $item . "';";
 		$run = $this->database->doInsertQuery($sql);
 
 		$this->admissionFlow();
 	}
 
 	function admissionManager() {
-
-		$id = $this->userid;
 
 		echo '<p class="title1">Currently active admission requests</p> ';
 

@@ -7,7 +7,7 @@ class programmes {
 	public function configView() {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
-		$this->view->menu = FALSE;
+		$this->view->menu = TRUE;
 		$this->view->javascript = array(3);
 		$this->view->css = array(4);
 
@@ -16,39 +16,34 @@ class programmes {
 
 	public function buildView($core) {
 		$this->core = $core;
-		$item = $this->core->cleanGet['item'];
 
-		$sql = "(SELECT `programmes`.ID, ProgramName, ProgramCoordinator, ProgramType FROM `programmes`) UNION ALL (SELECT `programmes`.ID, ProgramName, ProgramCoordinator, ProgramType FROM `programmes`, `program-course-link` WHERE ProgramID = programmes.ID) ORDER BY ID ";
-
-		if ($this->core->action == "list" && isset($item) && $this->core->role > 100) {
-			$sql = "SELECT * FROM `programmes`, `program-course-link`, `studies`, WHERE `programmes`.ParentID = `studies`.ID AND `studies`.ID = $item ORDER BY `studies`.Name";
-			$this->listProgrammes($sql);
+		if ($this->core->action == "list" && isset($this->core->item) && $this->core->role > 100) {
+			$this->listProgrammes($this->core->item);
 		} elseif ($this->core->action == "view") {
-			$sql = "SELECT `programmes`.ID, ProgramName, ProgramCoordinator, ProgramType, `basic-information`.ID, FirstName, Surname FROM `programmes`, `basic-information` WHERE `programmes`.ID = $item AND ProgramCoordinator = `basic-information`.ID";
-			$this->showProgram($sql);
-		} elseif ($this->core->action == "edit" && isset($item) && $this->core->role > 100) {
-			$sql = "SELECT `programmes`.ID, ProgramName, ProgramCoordinator, ProgramType, `basic-information`.ID, FirstName, Surname FROM `programmes`, `basic-information` WHERE `programmes`.ID = $item AND ProgramCoordinator = `basic-information`.ID";
-			$this->editProgram($sql);
+			$this->showProgram($this->core->item);
+		} elseif ($this->core->action == "edit" && isset($this->core->item) && $this->core->role > 100) {
+			$this->editProgram($this->core->item);
 		} elseif ($this->core->action == "add" && $this->core->role > 100) {
 			$this->addProgram();
 		} elseif ($this->core->action == "save" && $this->core->role > 100) {
 			$this->saveProgram();
-			$this->listProgrammes($sql);
-		} elseif ($this->core->action == "delete" && isset($item) && $this->core->role > 100) {
-			$this->deleteProgram($item);
+			$this->listProgrammes();
+		} elseif ($this->core->action == "delete" && isset($this->core->item) && $this->core->role > 100) {
+			$this->deleteProgram($this->core->item);
 		} else {
-			$this->listProgrammes($sql);
+			$this->listProgrammes();
 		}
 	}
 
-	function editProgram($sql) {
+	function editProgram($item) {
 		$function = __FUNCTION__;
 		$title = 'Programme management';
 		$description = 'Edit Programme';
 
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
-
+		
+		$sql = "SELECT `programmes`.ID, ProgramName, ProgramCoordinator, ProgramType, `basic-information`.ID, FirstName, Surname FROM `programmes`, `basic-information` WHERE `programmes`.ID = $item AND ProgramCoordinator = `basic-information`.ID";
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($fetch = $run->fetch_row()) {
@@ -69,11 +64,11 @@ class programmes {
 		include $this->core->conf['conf']['formPath'] . "addprogramme.form.php";
 	}
 
-	function deleteProgram($id) {
-		$sql = 'DELETE FROM `programmes`  WHERE `ID` = "' . $id . '"';
+	function deleteProgram($item) {
+		$sql = 'DELETE FROM `programmes`  WHERE `ID` = "' . $item . '"';
 		$run = $this->database->doInsertQuery($sql);
 
-		$this->listProgrammes($sql);
+		$this->listProgrammes();
 		$this->core->showAlert("The programme has been deleted");
 	}
 
@@ -105,13 +100,19 @@ class programmes {
 		}
 	}
 
-	function listProgrammes($sql) {
+	function listProgrammes($item) {
 		$function = __FUNCTION__;
 		$title = 'Programme management';
 		$description = 'Overview of programmes';
 
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
+
+		if(isset($item)){
+			$sql = "SELECT * FROM `programmes`, `program-course-link`, `studies`, WHERE `programmes`.ParentID = `studies`.ID AND `studies`.ID = $item ORDER BY `studies`.Name";
+		}else{
+			$sql = "(SELECT `programmes`.ID, ProgramName, ProgramCoordinator, ProgramType FROM `programmes`) UNION ALL (SELECT `programmes`.ID, ProgramName, ProgramCoordinator, ProgramType FROM `programmes`, `program-course-link` WHERE ProgramID = programmes.ID) ORDER BY ID ";
+		}
 
 		$run = $this->core->database->doSelectQuery($sql);
 
@@ -194,7 +195,7 @@ class programmes {
 	}
 
 
-	function showProgram($sql) {
+	function showProgram($item) {
 		$function = __FUNCTION__;
 		$title = 'View program';
 		$description = 'Overview of program';
@@ -202,6 +203,7 @@ class programmes {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
+		$sql = "SELECT `programmes`.ID, ProgramName, ProgramCoordinator, ProgramType, `basic-information`.ID, FirstName, Surname FROM `programmes`, `basic-information` WHERE `programmes`.ID = $item AND ProgramCoordinator = `basic-information`.ID";
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($fetch = $run->fetch_row()) {

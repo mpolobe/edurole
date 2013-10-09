@@ -7,7 +7,7 @@ class information {
 	public function configView() {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
-		$this->view->menu = FALSE;
+		$this->view->menu = TRUE;
 		$this->view->javascript = array(3);
 		$this->view->css = array(4);
 
@@ -24,7 +24,7 @@ class information {
 		$study = $this->core->cleanGet['studies'];
 		$program = $this->core->cleanGet['program'];
 
-		if (empty($this->core->item)) {
+		if (empty($this->core->item) || $this->core->action == "search") {
 			$this->searchInformation();
 		} else if (isset($lastName) || isset($firstName)) {
 			$this->searchByNamme($firstName, $lastName, $listType);
@@ -32,11 +32,11 @@ class information {
 			$this->searchByStudy($study, $listType);
 		} else if (isset($program)) {
 			$this->searchByProgram($program, $listType);
-		} elseif ($this->core->action == "edit" && !isset($uid)) {
-			$this->editUser($this->userid);
-		} elseif ($this->core->action == "personal") {
+		} elseif ($this->core->item == "edit" && !isset($uid)) {
+			$this->editUser($this->core->userID);
+		} elseif ($this->core->item == "personal") {
 			$this->getProfile();
-		} elseif ($this->core->action == "edit" && isset($uid)) {
+		} elseif ($this->core->item == "edit" && isset($uid)) {
 			$this->editUser($uid);
 		} elseif (isset($uid) && is_numeric($uid)) {
 			$this->getStudentProfile($uid);
@@ -76,7 +76,7 @@ class information {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		$sql = "SELECT * FROM  `basic-information` as bi, `access` as ac WHERE ac.`ID` = '" . $this->core->userid . "' AND ac.`ID` = bi.`ID`";
+		$sql = "SELECT * FROM  `basic-information` as bi, `access` as ac WHERE ac.`ID` = '" . $this->core->userID . "' AND ac.`ID` = bi.`ID`";
 		$run = $this->core->database->doSelectQuery($sql);
 		$this->showInfoProfile($run);
 	}
@@ -162,6 +162,7 @@ class information {
 	}
 
 	function showInfoProfile($run) {
+	
 		while ($row = $run->fetch_row()) {
 			$results = TRUE;
 			$firstname = $row[0];
@@ -195,20 +196,20 @@ class information {
 			$picid = ltrim($picid, '0');
 
 			echo '<div class="student">
-		<div class="studentname"> ' . $firstname . ' ' . $middlename . ' ' . $surname . ' </div>';
+			<div class="studentname"> ' . $firstname . ' ' . $middlename . ' ' . $surname . ' </div>';
 
 			echo '<div class="profilepic">';
 
-			if (file_exists("datastore/student-pictures/picture-$picid.jpg")) {
-				echo '<img width="100%" src="datastore/student-pictures/picture-' . $picid . '.jpg">';
+			if (file_exists("datastore/identities/pictures/picture-$picid.jpg")) {
+				echo '<img width="100%" src="datastore/identities/pictures/picture-' . $picid . '.jpg">';
 			} else {
 				echo '<div class="none">No image available</div>';
 			}
 
 			if ($this->core->role > 103) {
-				echo '<div style="margin-top: 1px; border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . 'information/edit/' . $uid . '">Edit user information</a></b></div>';
-				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . 'information/housing/' . $uid . '">Edit housing information</a></b></div>';
-				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . 'grades/view/' . $uid . '">Show users grades</a></b></div>';
+				echo '<div style="margin-top: 1px; border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/information/edit/' . $uid . '">Edit user information</a></b></div>';
+				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/information/housing/' . $uid . '">Edit housing information</a></b></div>';
+				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/grades/view/' . $uid . '">Show users grades</a></b></div>';
 			}
 
 			echo '</div>

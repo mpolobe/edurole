@@ -7,10 +7,10 @@ class home {
 	public function configView() {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
+		$this->view->menu = TRUE;
 		$this->view->javascript = array(3);
 		$this->view->css = array(4);
-		$this->view->menu = TRUE;
-		
+
 		return $this->view;
 	}
 

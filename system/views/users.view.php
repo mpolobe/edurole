@@ -8,7 +8,7 @@ class users {
 	public function configView() {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
-		$this->view->menu = FALSE;
+		$this->view->menu = TRUE;
 		$this->view->javascript = array(3);
 		$this->view->css = array(4);
 
@@ -17,14 +17,13 @@ class users {
 
 	public function buildView($core) {
 		$this->core = $core;
-		$uid = $this->core->cleanGet['uid'];
 
 		if ($this->core->action == "add" && $this->core->role >= 100) {
 			$this->addUser();
 		} elseif ($this->core->action == "save" && $this->core->role >= 100) {
 			$this->saveUser();
-		} elseif ($this->core->action == "delete" && isset($uid) && $core->role >= 100) {
-			$this->deleteUser($uid);
+		} elseif ($this->core->action == "delete" && isset($this->core->item) && $core->role >= 100) {
+			$this->deleteUser($this->core->item);
 		} else if ($this->core->role >= 100 & $this->core->action == "students") {
 			$this->showStudentList();
 		} else if ($this->core->action == "saveedit") {

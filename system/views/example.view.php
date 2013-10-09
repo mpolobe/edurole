@@ -7,7 +7,7 @@ class example {
 	public function configView() {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
-		$this->view->menu = FALSE;
+		$this->view->menu = TRUE;
 		$this->view->javascript = array(2, 3, 9);
 		$this->view->css = array(4, 1, 2);
 

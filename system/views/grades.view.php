@@ -7,7 +7,7 @@ class grades {
 	public function configView() {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
-		$this->view->menu = FALSE;
+		$this->view->menu = TRUE;
 		$this->view->javascript = array(3);
 		$this->view->css = array(4);
 
@@ -16,21 +16,17 @@ class grades {
 
 	public function buildView($core) {
 		$this->core = $core;
-
-		$this->core->action = $this->core->cleanGet['action'];
-		$this->item = $this->core->cleanGet['item'];
-
 		include $this->core->conf['conf']['classPath'] . "grades.inc.php";
 
-		if ($this->core->action == "view-grades") {
+		if ($this->core->action == "view-grades" && $this->core->role >= 100) {
 			$this->gradebook();
-		} elseif ($this->core->action == "management") {
+		} elseif ($this->core->action == "management" && $this->core->role >= 100) {
 			$this->manager();
-		} elseif ($this->core->action == "selectcourse") {
+		} elseif ($this->core->action == "selectcourse" && $this->core->role >= 100) {
 			$this->selectCourse();
-		} elseif ($this->core->action == "entergrades") {
+		} elseif ($this->core->action == "entergrades" && $this->core->role >= 100) {
 			$this->enterGrades(NULL, NULL);
-		} elseif ($this->core->action == "submit") {
+		} elseif ($this->core->action == "submit" && $this->core->role >= 100) {
 			$this->gradesSubmit();
 		} else {
 			if ($this->core->role >= 104) {

@@ -34,7 +34,7 @@ class viewBuilder {
 				//admission flow
 				$this->initView($page);
 			} else {
-				$this->initView("login");
+				header("location: {$this->core->conf['conf']['path']}");
 			}
 
 		} else {

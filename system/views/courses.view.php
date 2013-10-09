@@ -3,12 +3,11 @@ class courses {
 
 	public $core;
 	public $view;
-	public $item = NULL;
 
 	public function configView() {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
-		$this->view->menu = FALSE;
+		$this->view->menu = TRUE;
 		$this->view->javascript = array(3);
 		$this->view->css = array(4);
 
@@ -17,30 +16,25 @@ class courses {
 
 	public function buildView($core) {
 		$this->core = $core;
-		$this->item = $this->core->cleanGet['item'];
-
+		
 		if ($this->core->action == "list") {
-			$sql = "SELECT * FROM `programmes`,`studies` WHERE `programmes`.ParentID = `studies`.ID AND `studies`.ID = $this->item ORDER BY `studies`.Name";
-			$this->listCourses($sql);
+			$this->listCourses();
 		} elseif ($this->core->action == "view") {
-			$sql = "SELECT * FROM `courses`, `basic-information` WHERE `courses`.ID = $this->item AND `courses`.CourseCoordinator = `basic-information`.ID";
-			$this->showCourse($sql);
-		} elseif ($this->core->action == "edit" && isset($item) && $this->core->role > 3) {
-			$sql = "SELECT * FROM `courses` WHERE `courses`.ID = $item";
-			$this->editCourse($sql);
-		} elseif ($this->core->action == "add" && $this->core->role > 3) {
+			$this->showCourse($this->core->item);
+		} elseif ($this->core->action == "edit" && isset($this->core->item) && $this->core->role > 103) {
+			$this->editCourse($this->core->item);
+		} elseif ($this->core->action == "add" && $this->core->role > 103) {
 			$this->addCourse();
-		} elseif ($this->core->action == "save" && $this->core->role > 3) {
+		} elseif ($this->core->action == "save" && $this->core->role > 103) {
 			$this->saveCourse();
-		} elseif ($this->core->action == "delete" && isset($item) && $this->core->role > 3) {
-			$this->deleteCourse($item);
+		} elseif ($this->core->action == "delete" && isset($this->core->item) && $this->core->role > 103) {
+			$this->deleteCourse($this->core->item);
 		} else {
-			$sql = "SELECT * FROM `courses`, `basic-information` WHERE `courses`.CourseCoordinator = `basic-information`.ID ORDER BY `courses`.Name";
-			$this->listCourses($sql);
+			$this->listCourses();
 		}
 	}
 
-	function editCourse($sql) {
+	function editCourse($item) {
 		$function = __FUNCTION__;
 		$title = 'Edit course';
 		$description = 'Remember to save changes after you are done';
@@ -48,6 +42,7 @@ class courses {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
+		$sql = "SELECT * FROM `courses` WHERE `courses`.ID = $item";
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($fetch = $run->fetch_row()) {
@@ -67,8 +62,8 @@ class courses {
 
 	}
 
-	function deleteCourse($id) {
-		$sql = 'DELETE FROM `schools`  WHERE `ID` = "' . $id . '"';
+	function deleteCourse($item) {
+		$sql = 'DELETE FROM `schools`  WHERE `ID` = "' . $item . '"';
 		$run = $this->core->database->doSelectQuery($sql);
 
 		$sql = "SELECT * FROM `programmes`,`studies` WHERE `programmes`.ParentID = `studies`.ID AND `studies`.ID = $this->item ORDER BY `studies`.Name";
@@ -93,7 +88,7 @@ class courses {
 		$this->listSchools($sql);
 	}
 
-	function listCourses($sql) {
+	function listCourses($item) {
 		$function = __FUNCTION__;
 		$title = 'Overview of courses';
 		$description = 'Overview of all courses currently on offer';
@@ -101,6 +96,7 @@ class courses {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
+		$sql = "SELECT * FROM `programmes`,`studies` WHERE `programmes`.ParentID = `studies`.ID AND `studies`.ID = $this->item ORDER BY `studies`.Name";
 		$run = $this->core->database->doSelectQuery($sql);
 
 		echo '<p><a href="' . $this->core->conf['conf']['path'] . 'courses/add">Add course</a></p>
@@ -136,7 +132,7 @@ class courses {
 		echo '</table></p>';
 	}
 
-	function showCourse($sql) {
+	function showCourse($item) {
 		$function = __FUNCTION__;
 		$title = 'View course information';
 		$description = 'Overview of all courses currently on offer';
@@ -144,6 +140,7 @@ class courses {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
+		$sql = "SELECT * FROM `courses`, `basic-information` WHERE `courses`.ID = $item AND `courses`.CourseCoordinator = `basic-information`.ID";
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($fetch = $run->fetch_row()) {

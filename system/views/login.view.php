@@ -7,9 +7,9 @@ class login {
 	public function configView() {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
+		$this->view->menu = FALSE;
 		$this->view->javascript = array(3);
 		$this->view->css = array(4, 6);
-		$this->view->menu = FALSE;
 		
 		return $this->view;
 	}

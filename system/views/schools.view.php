@@ -8,7 +8,7 @@ class schools {
 	public function configView() {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
-		$this->view->menu = FALSE;
+		$this->view->menu = TRUE;
 		$this->view->javascript = array(3);
 		$this->view->css = array(4);
 
@@ -17,33 +17,31 @@ class schools {
 
 	public function buildView($core) {
 		$this->core = $core;
-		$item = $this->core->cleanGet['item'];
 
 		if (empty($this->core->action) && $this->core->role > 2) {
-			$sql = "SELECT * FROM `schools`,`access`,`basic-information` WHERE Dean = `access`.ID AND `access`.ID = `basic-information`.ID ORDER BY Name";
-			$this->listSchools($sql);
+			$this->listSchools();
 		} elseif ($this->core->action == "view") {
 			$this->showSchool();
-		} elseif ($this->core->action == "edit" && isset($item) && $this->core->role > 5) {
-			$sql = "SELECT * FROM `schools` WHERE ID = $item";
-			$this->editSchool($sql);
-		} elseif ($this->core->action == "add" && $this->core->role > 5) {
+		} elseif ($this->core->action == "edit" && isset($this->core->item) && $this->core->role > 104) {
+			$this->editSchool($this->core->item);
+		} elseif ($this->core->action == "add" && $this->core->role > 104) {
 			$this->addSchool();
-		} elseif ($this->core->action == "save" && $this->core->role > 5) {
+		} elseif ($this->core->action == "save" && $this->core->role > 104) {
 			$this->saveSchool();
-		} elseif ($this->core->action == "delete" && isset($item) && $this->core->role > 5) {
-			$this->deleteSchool($item);
+		} elseif ($this->core->action == "delete" && isset($this->core->item) && $this->core->role > 104) {
+			$this->deleteSchool($this->core->item);
 		}
 	}
 
-	function editSchool($sql) {
+	function editSchool($item) {
 		$function = __FUNCTION__;
 		$title = 'Edit School';
 		$description = 'Remember to save any changes you make';
 
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
-
+		
+		$sql = "SELECT * FROM `schools` WHERE ID = $item";
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($fetch = $run->fetch_row()) {
@@ -62,12 +60,11 @@ class schools {
 		include $this->core->conf['conf']['formPath'] . "addschool.form.php";
 	}
 
-	function deleteSchool($id) {
-		$sql = 'DELETE FROM `schools`  WHERE `ID` = "' . $id . '"';
+	function deleteSchool($item) {
+		$sql = 'DELETE FROM `schools`  WHERE `ID` = "' . $item . '"';
 		$run = $this->database->doInsertQuery($sql);
 
-		$sql = "SELECT * FROM `schools`,`access`,`basic-information` WHERE Dean = `access`.ID AND `access`.ID = `basic-information`.ID ORDER BY Name";
-		$this->listSchools($sql);
+		$this->listSchools();
 		$this->core->showAlert("The school has been deleted");
 	}
 
@@ -84,12 +81,11 @@ class schools {
 		}
 
 		$run = $this->database->doInsertQuery($sql);
-
-		$sql = "SELECT * FROM `schools`,`access`,`basic-information` WHERE Dean = `access`.ID AND `access`.ID = `basic-information`.ID ORDER BY Name";
-		$this->listSchools($sql);
+		
+		$this->listSchools();
 	}
 
-	function listSchools($sql) {
+	function listSchools($item) {
 		$function = __FUNCTION__;
 		$title = 'Overview of schools';
 		$description = 'The following schools currently exist in the system';
@@ -97,6 +93,7 @@ class schools {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
+		$sql = "SELECT * FROM `schools`,`access`,`basic-information` WHERE Dean = `access`.ID AND `access`.ID = `basic-information`.ID ORDER BY Name";
 		$run = $this->core->database->doSelectQuery($sql);
 
 		echo '<p><b>Overview of all schools</b>  | <a href="' . $this->core->conf['conf']['path'] . 'schools/add">Add school</a></p><p>
