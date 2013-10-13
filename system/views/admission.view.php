@@ -19,7 +19,7 @@ class admission {
 		$this->core = $core;
 
 		if (empty($this->core->action) && $this->core->role < 100 || $this->core->action == "profile" && isset($this->core->item)) {
-			$this->admissionProfile();
+			$this->admissionProfile($this->core->item);
 		} elseif ($this->core->action == "promote" && $this->core->role >= 103 && isset($this->core->item)) {
 			$this->promote($this->core->item);
 		} elseif ($this->core->action == "reject" && $this->core->role >= 103 && isset($this->core->item)) {
@@ -30,7 +30,7 @@ class admission {
 			$this->delete($this->core->item);
 		} elseif ($this->core->action == "complete" && $this->core->role >= 103 && isset($this->core->item)) {
 			$this->complete($this->core->item);
-		} elseif (empty($this->core->action) && $this->core->role >= 103) {
+		} elseif (empty($this->core->action) && $this->core->role >= 103 || $this->core->action == "management" && $this->core->role >= 103) {
 			$this->admissionFlow();
 		}
 	}
@@ -49,11 +49,9 @@ class admission {
 
 	function admissionProfile() {
 
-		$uid = $this->core->cleanGet['uid'];
-
 		$function = __FUNCTION__;
-		$title = 'Personal admission progress';
-		$description = 'Overview of all users with privileges higher than student';
+		$title = 'Student admission progress';
+		$description = 'Overview of students admission progress';
 
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
@@ -70,10 +68,10 @@ class admission {
 
 	function complete($item) {
 		$sql = "UPDATE `access` SET `RoleID` = 10 WHERE `access`.`ID` = '" . $item . "'";
-		$this->database->doInsertQuery($sql);
+		$run = $this->core->database->doInsertQuery($sql);
 
 		$sql = "UPDATE `basic-information` SET `Status` = 'Enrolled' WHERE `basic-information`.`ID` = '" . $item . "'";
-		$this->database->doInsertQuery($sql);
+		$run = $this->core->database->doInsertQuery($sql);
 
 		$sql = "SELECT * FROM `basic-information` WHERE `GovernmentID` = '" . $item . "'";
 		$run = $this->core->database->doSelectQuery($sql);
@@ -90,7 +88,7 @@ class admission {
 	function promote($item) {
 
 		$sql = "UPDATE `edurole`.`access` SET `RoleID` = `RoleID`+1 WHERE `access`.`ID` = '" . $item . "'";
-		$run = $this->database->doInsertQuery($sql);
+		$run = $this->core->database->doInsertQuery($sql);
 
 		$this->admissionFlow();
 	}
@@ -98,7 +96,7 @@ class admission {
 	function reject($item) {
 
 		$sql = "UPDATE `edurole`.`basic-information` SET `Status` = 'Rejected' WHERE `basic-information`.`ID` = '" . $item . "';";
-		$run = $this->database->doInsertQuery($sql);
+		$run = $this->core->database->doInsertQuery($sql);
 
 		$this->admissionFlow();
 	}
@@ -106,7 +104,7 @@ class admission {
 	function continued($item) {
 
 		$sql = "UPDATE `edurole`.`basic-information` SET `Status` = 'Requesting' WHERE `basic-information`.`ID` = '" . $item . "';";
-		$run = $this->database->doInsertQuery($sql);
+		$run = $this->core->database->doInsertQuery($sql);
 
 		$this->admissionFlow();
 	}
@@ -115,7 +113,7 @@ class admission {
 	function delete($item) {
 
 		$sql = "UPDATE `edurole`.`basic-information` SET `Status` = 'Failed' WHERE `basic-information`.`ID` = '" . $item . "';";
-		$run = $this->database->doInsertQuery($sql);
+		$run = $this->core->database->doInsertQuery($sql);
 
 		$this->admissionFlow();
 	}

@@ -8,7 +8,7 @@ class home {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
 		$this->view->menu = TRUE;
-		$this->view->javascript = array(3);
+		$this->view->javascript = array();
 		$this->view->css = array(4);
 
 		return $this->view;

@@ -82,7 +82,7 @@ class courses {
 			$sql = "INSERT INTO `courses` (`ID`, `ParentID`, `Established`, `Name`, `Description`, `Dean`) VALUES (NULL, '0', CURRENT_DATE(), '$name', '$description', '$dean');";
 		}
 
-		$run = $this->database->doInsertQuery($sql);
+		$run = $this->core->database->doInsertQuery($sql);
 
 		$sql = "SELECT * FROM `courses`, `programmes`,`access`,`basic-information` WHERE Dean = `access`.ID AND `access`.ID = `basic-information`.ID ORDER BY Name";
 		$this->listSchools($sql);

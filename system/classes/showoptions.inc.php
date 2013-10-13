@@ -8,7 +8,7 @@ class optionBuilder {
 		$this->core = $core;
 	}
 
-	public function buildSelect($sql) {
+	public function buildSelect($sql, $selected = NULL) {
 
 		$run = $this->core->database->doSelectQuery($sql);
 
@@ -39,7 +39,7 @@ class optionBuilder {
 			$sql = "SELECT `ID`, `ProgramName` FROM `programmes`";
 		}
 
-		$out = $this->buildSelect($sql);
+		$out = $this->buildSelect($sql, $selected);
 
 		return ($out);
 	}
@@ -52,7 +52,7 @@ class optionBuilder {
 			$sql = "SELECT `ID`, `Name` FROM `courses`";
 		}
 
-		$out = $this->buildSelect($sql);
+		$out = $this->buildSelect($sql, $selected);
 
 		return ($out);
 	}
@@ -61,7 +61,7 @@ class optionBuilder {
 
 		$sql = "SELECT `ID`, CONCAT(`FirstName`, ' ', `Surname`) FROM `basic-information`, `access`, `roles` WHERE `access`.`ID` = `basic-information`.`ID` AND `access`.`RoleID` = `roles`.`ID` AND `access`.`RoleID` >= $role";
 
-		$out = $this->buildSelect($sql);
+		$out = $this->buildSelect($sql, $selected);
 
 		return ($out);
 	}
@@ -70,7 +70,7 @@ class optionBuilder {
 
 		$sql = "SELECT `ID`, `Name` FROM `settings` WHERE `Name` LIKE 'PaymentType%' ORDER BY `Name`";
 
-		$out = $this->buildSelect($sql);
+		$out = $this->buildSelect($sql, $selected);
 
 		return ($out);
 	}
@@ -79,7 +79,7 @@ class optionBuilder {
 
 		$sql = "SELECT `ID`, `Name` FROM `schools`";
 
-		$out = $this->buildSelect($sql);
+		$out = $this->buildSelect($sql, $selected);
 
 		return ($out);
 	}
@@ -88,19 +88,30 @@ class optionBuilder {
 
 		$sql = "SELECT `ID`, `Name` FROM `study`";
 
-		$out = $this->buildSelect($sql);
+		$out = $this->buildSelect($sql, $selected);
 
 		return ($out);
 	}
 
-	function showRoles($role) {
+	function showRoles($selected) {
 
 		$sql = "SELECT * FROM `roles`";
 
-		$out = $this->buildSelect($sql);
+		$out = $this->buildSelect($sql, $selected);
 
 		return ($out);
 	}
+	
+	
+	function showAccommodation($selected) {
+
+		$sql = "SELECT * FROM `accommodation`";
+
+		$out = $this->buildSelect($sql, $selected);
+
+		return ($out);
+	}
+
 
 }
 

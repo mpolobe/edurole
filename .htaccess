@@ -2,4 +2,5 @@ RewriteEngine On
 RewriteRule	^templates/(.*)$ - [NC,L]
 RewriteRule	^lib/.*	- [NC,L]
 RewriteRule	^installer/.* - [NC,L]
+RewriteRule	^datastore/.* - [NC,L]
 RewriteRule	(.*)	index.php?id=$1  [QSA,L]

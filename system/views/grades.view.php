@@ -19,7 +19,7 @@ class grades {
 		include $this->core->conf['conf']['classPath'] . "grades.inc.php";
 
 		if ($this->core->action == "view-grades" && $this->core->role >= 100) {
-			$this->gradebook();
+			$this->viewGrades();
 		} elseif ($this->core->action == "management" && $this->core->role >= 100) {
 			$this->manager();
 		} elseif ($this->core->action == "selectcourse" && $this->core->role >= 100) {
@@ -32,25 +32,22 @@ class grades {
 			if ($this->core->role >= 104) {
 				$this->manager();
 			} else {
-				$this->viewOwn();
+				$this->gradeBook();
 			}
 		}
 
 	}
 
-	function gradebook() {
+	function viewGrades() {
 		$function = __FUNCTION__;
 		$title = 'Gradebook';
-		$description = 'Please enter a name for the new file to create it in the current working directory';
+		$description = 'Overview of submitted grades';
 
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		$sql = "SELECT * FROM `grades`, `courses` WHERE `grades`.StudentID = \"" . $_SESSION['username'] . "\" AND `courses`.ID = CourseID ORDER BY Name";
-
+		$sql = "SELECT * FROM `grades`, `courses` WHERE `grades`.StudentID = \"" . $this->core->userID . "\" AND `courses`.ID = CourseID ORDER BY Name";
 		$run = $this->core->database->doSelectQuery($sql);
-
-		echo '<p><b>Overview of all grades submitted</b></p><p>';
 
 		$init = TRUE;
 
@@ -91,7 +88,7 @@ class grades {
 
 	}
 
-	function viewOwn() {
+	function gradeBook() {
 		$function = __FUNCTION__;
 		$title = 'Grading center';
 		$description = 'Overview of personally submitted grades';
@@ -99,8 +96,7 @@ class grades {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		$sql = "SELECT * FROM `gradebook`, `courses` WHERE `courses`.ID = `gradebook`.Course AND `gradebook`.Owner = '" . $this->core->userid . "' ORDER BY `gradebook`.DateTime";
-
+		$sql = "SELECT * FROM `gradebook`, `courses` WHERE `gradebook`.`CourseID` = `courses`.`ID` AND `gradebook`.`OwnerID` = '" . $this->core->userID . "' ORDER BY `gradebook`.`DateTime`";
 		$run = $this->core->database->doSelectQuery($sql);
 
 		echo '<p><b>Overview of all batches of grades submitted</b></p>';
@@ -145,7 +141,7 @@ class grades {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		$sql = "SELECT * FROM `gradebook`, `courses`, `basic-information` WHERE  `courses`.ID = `gradebook`.Course AND `gradebook`.Owner = `basic-information`.ID ORDER BY `gradebook`.DateTime";
+		$sql = "SELECT * FROM `gradebatches`, `courses`, `basic-information` WHERE `courses`.ID = `gradebatches`.Course AND `gradebatches`.Owner = `basic-information`.ID ORDER BY `gradebatches`.DateTime";
 
 		$run = $this->core->database->doSelectQuery($sql);
 
@@ -163,25 +159,25 @@ class grades {
 			$coursename = $fetch[9];
 			$batchname = $fetch[8];
 			$date = $fetch[4];
-			$uid = $fetch[10];
+			$uid = $fetch[2];
 
 
 			echo '<div style="border:solid 1px #ccc; padding-left: 10px; margin-bottom: 4px;"><table width="756">' .
 				'<tr>' .
-				'<td width="200px"><b>Results batch:</b></td>' .
+				'<td width="200px"><b>Course grade batches:</b></td>' .
 				'<td width="150px"><b>Batchnumber</b></td>' .
 				'<td width="150px"><b>Submitted by</b></td>' .
 				'<td width="150px"><b>Date and Time</b></td>' .
 				'<td width="100px"><b>Management</b></td>' .
 				'</tr>';
 			echo '<tr>' .
-				'<td><a href="' . $this->core->conf['conf']['path'] . 'courses/view/' . $courseid . '"><b>' . $coursename . '</b> </a></td>' .
-				'<td><a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $batchname . '">(' . $validator . ')</a></td>' .
-				'<td><a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $uid . '">' . $firstname . ' ' . $lastname . '</a></td>' .
+				'<td><a href="' . $this->core->conf['conf']['path'] . '/courses/view/' . $courseid . '"><b>' . $coursename . '</b> </a></td>' .
+				'<td><a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $batchname . '">(' . $validator . ')</a></td>' .
+				'<td><a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $uid . '">' . $firstname . ' ' . $lastname . '</a></td>' .
 				'<td>' . $date . '</td>' .
 				'<td>
-				<a href="' . $this->core->conf['conf']['path'] . 'studies/edit/' . $fetch[0] . '"> <img src="templates/default/images/edi.png"> edit</a>
-				<a href="' . $this->core->conf['conf']['path'] . 'studies/delete/' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="templates/default/images/del.png"> delete </a>
+				<a href="' . $this->core->conf['conf']['path'] . '/studies/edit/' . $fetch[0] . '"> <img src="'.$this->core->fullTemplatePath.'/images/edi.png"> edit</a>
+				<a href="' . $this->core->conf['conf']['path'] . '/studies/delete/' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="'.$this->core->fullTemplatePath.'/images/del.png"> delete </a>
 				</td>' .
 				'</tr>';
 			echo '</table></div>';
@@ -311,7 +307,7 @@ class grades {
 
 			$sql = "COMMIT;";
 
-			if ($this->database->doInsertQuery($sql)) {
+			if ($this->core->database->doInsertQuery($sql)) {
 				echo $output . "</table><p><b>All grades have been submitted for approval.</b></p>";
 			} else {
 				throwerror("ERROR UNKNOWN");

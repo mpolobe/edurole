@@ -8,8 +8,8 @@ class login {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
 		$this->view->menu = FALSE;
-		$this->view->javascript = array(3);
-		$this->view->css = array(4, 6);
+		$this->view->javascript = array();
+		$this->view->css = array('login');
 		
 		return $this->view;
 	}

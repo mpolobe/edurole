@@ -66,14 +66,14 @@ class password {
 
 			if ($newpass == $newpasscheck) {
 
-				if ($auth->ldapChangePass($this->username, $oldpass, $newpass)) {
-					if (!$auth->mysqlChangePass($this->username, $oldpass, $newpass)) {
-						$this->core->throwError("The information you have entered is incorrect.");
-					}
+				if (!$auth->ldapChangePass($this->core->username, $oldpass, $newpass)) {
+					$ldap = false;
+				}
+				if ($auth->mysqlChangePass($this->core->username, $oldpass, $newpass) == false && $ldap == false) {
+					$this->core->throwError("The information you have entered is incorrect.");
 				}
 
 			} else {
-
 				echo "<h2>The entered passwords do not match</h2>";
 			}
 

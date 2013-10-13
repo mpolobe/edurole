@@ -92,14 +92,15 @@ class menuConstruct {
 
 				if ($this->core->conf['conf']['mailEnabled'] == TRUE) {
 
-					include $this->core->conf['conf']['classPath'] . "mail.inc.php";
-
-					$mail = new mailOperations();
-					$mailCount = $mail->mailCount();
-
-					$pageName = 'Personal mail <div class="mailcount"><b>' . $mailCount . '</b></div>';
+					$pageName = 'Personal mail <div class="mailcount"><b><img src="'.$this->core->fullTemplatePath .'/images/mail.gif"></b></div>'.
+					'<script type="text/javascript">' . "\n" .
+					'	jQuery(document).ready(function(){' . "\n" .
+					'		url = \''.$this->core->conf['conf']['path'].'/api/mailcount/\';' . "\n".
+					'		get_mail(url);' . "\n".
+					'	});' . "\n".
+					'</script>';
+					
 					$menu .= $this->pageItem($pageRoute, $pageName);
-
 				}
 			} else {
 				$menu .= $this->pageItem($pageRoute, $pageName);

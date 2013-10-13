@@ -1,5 +1,5 @@
 <form id="login" name="login" method="get" action="">
-	<input type="hidden" name="id" value="view-information">
+	<input type="hidden" name="id" value="information">
 
 	<div class="label">Enter student number:</div>
 	<input type="text" name="uid" id="student-id" class="submit" style="width: 125px"/>
@@ -8,7 +8,7 @@
 
 <form id="login" name="login" method="get" action="">
 	<div class="heading">Search by name</div>
-	<input type="hidden" name="id" value="view-information">
+	<input type="hidden" name="id" value="information">
 
 	<div class="padding">
 		<div class="label">Enter students first name:</div>
@@ -29,7 +29,7 @@
 <form id="login" name="login" method="get" action="">
 	<div class="heading">View students by study</div>
 	<div class="label">Show all students from:</div>
-	<input type="hidden" name="id" value="view-information">
+	<input type="hidden" name="id" value="information">
 	<select name="studies" id="studies" class="submit" width="250" style="width: 250px">
 		<?php echo $study; ?>
 	</select> <br/>
@@ -46,7 +46,7 @@
 <form id="login" name="login" method="get" action="">
 	<div class="heading">View students by programme</div>
 	<div class="label">Show all students from:</div>
-	<input type="hidden" name="id" value="view-information">
+	<input type="hidden" name="id" value="information">
 	<select name="program" id="program" class="submit" width="250" style="width: 250px">
 		<?php echo $program; ?>
 	</select>

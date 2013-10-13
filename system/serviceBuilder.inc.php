@@ -5,7 +5,7 @@ class serviceBuilder {
 
 	public function __construct($core) {
 		$this->core = $core;
-		$this->serviceBuilder($this->core->page);
+		$this->serviceBuilder($this->core->action);
 	}
 
 	public function serviceBuilder($service) {
@@ -17,9 +17,9 @@ class serviceBuilder {
 			 * Non-autoloading views available without authorization are listed here.
 			 */
 
-			if (empty($page)) {
+			if (empty($service)) {
 				$this->core->throwError("No service selected");
-			} elseif ($page) {
+			} elseif ($service) {
 				$this->initService($service);
 			}
 
@@ -29,9 +29,9 @@ class serviceBuilder {
 			 * Non-autoloading views available with authorization are listed here.
 			 */
 
-			if (empty($page)) {
+			if (empty($service)) {
 				$this->core->throwError("No service selected");
-			} elseif ($page) {
+			} elseif ($service) {
 				$this->initService($service);
 			}
 		}

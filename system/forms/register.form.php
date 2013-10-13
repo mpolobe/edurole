@@ -1,8 +1,8 @@
 <div class="formElement">
 	<h2><strong>Personal Information</strong></h2>
-	<p>In this section you will provide basic information needed for your enrollment.</p>
+	<p>In this section you will provide basic information needed for your enrolment.</p>
 	
-	<table width="768" height="465" border="0" cellpadding="5" cellspacing="0">
+	<table width="768" border="0" cellpadding="5" cellspacing="0">
 	<tr>
 		<td width="205" height="28" bgcolor="#EEEEEE"><strong>Information</strong></td>
 		<td width="200" bgcolor="#EEEEEE"><strong>Input fields</strong></td>

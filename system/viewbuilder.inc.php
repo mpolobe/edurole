@@ -74,38 +74,37 @@ class viewBuilder {
 			$this->core->throwError("Required view missing $viewInclude");
 		}
 		
-
-		$this->jsFiles = $this->core->conf['javascript'][0] . "\n"; //include default JS
-
+		array_unshift($viewConfig->javascript, 'jquery', 'jquery.dropdown');
+		array_unshift($viewConfig->css, 'style', 'ddslick');
+				
+		if($viewConfig->menu == TRUE){
+			array_push($viewConfig->javascript, 'mail');
+			$menu = new menuConstruct($this->core);
+			$menu = $menu->buildMainMenu(TRUE);
+		}
+		
 		foreach ($viewConfig->javascript as $file) {
 			$this->jsFiles .= $this->core->conf['javascript'][$file]; //include JS files required by page
 		}
-
-		$this->cssFiles = $this->core->conf['css'][0] . "\n"; //include default CSS
 
 		foreach ($viewConfig->css as $file) {
 			$this->cssFiles .= $this->core->conf['css'][$file] . "\n"; //include CSS required by page
 		}
 
+		if(!isset($viewConfig->menu)){
+			$viewConfig->menu = FALSE;
+		}
+		
 		$this->cssFiles = str_replace("%BASE%", $this->core->conf['conf']['path'], $this->cssFiles);
 		$this->jsFiles = str_replace("%BASE%", $this->core->conf['conf']['path'], $this->jsFiles);
 		$this->cssFiles = str_replace("%TEMPLATE%", $this->core->template, $this->cssFiles);
-
+		
 		if ($viewConfig->header == TRUE) {
 			$this->viewPageHeader($this->core->template);
 		}
 		
-		$menu = new menuConstruct($this->core);
+		echo $menu;
 		
-		if(!isset($viewConfig->menu)){
-			$viewConfig->menu = FALSE;
-		} 
-		
-		if($viewConfig->menu == TRUE){
-			$menu = $menu->buildMainMenu(TRUE);
-			echo $menu;
-		}
-
 		$view = $this->view->buildview($this->core);
 
 		if ($this->core->conf['conf']['debugging'] == TRUE) {

@@ -3,7 +3,7 @@
 
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><? echo $this->core->conf['conf']['titlename']; ?></title>
+<title><? echo $this->core->getTitle(); ?></title>
 
 <link rel="icon" type="image/png" href="<? echo $this->core->conf['conf']['path']; ?>/templates/edurole/images/apple-touch-icon-144x144-precomposed.png">
 <link rel="apple-touch-startup-image" href="<? echo $this->core->conf['conf']['path']; ?>/templates/edurole/images/splash-screen-320x460.png" media="screen and (max-device-width: 320px)" />

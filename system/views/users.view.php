@@ -54,43 +54,6 @@ class users {
 		include $this->core->conf['conf']['formPath'] . "adduser.form.php";
 	}
 
-	function saveEdit() {
-
-		$username = $this->core->cleanPost["username"];
-		$firstname = $this->core->cleanPost["firstname"];
-		$middlename = $this->core->cleanPost["middlename"];
-		$surname = $this->core->cleanPost["surname"];
-		$sex = $this->core->cleanPost["sex"];
-		$id = $this->core->cleanPost["studentid"];
-		$day = $this->core->cleanPost["day"];
-		$month = $this->core->cleanPost["month"];
-		$year = $this->core->cleanPost["year"];
-		$pob = $this->core->cleanPost["pob"];
-		$nationality = $this->core->cleanPost["nationality"];
-		$streetname = $this->core->cleanPost["streetname"];
-		$postalcode = $this->core->cleanPost["postalcode"];
-		$town = $this->core->cleanPost["town"];
-		$country = $this->core->cleanPost["country"];
-		$homephone = $this->core->cleanPost["homephone"];
-		$celphone = $this->core->cleanPost["celphone"];
-		$dissability = $this->core->cleanPost["dissability"];
-		$mstatus = $this->core->cleanPost["mstatus"];
-		$email = $this->core->cleanPost["email"];
-		$dissabilitytype = $this->core->cleanPost["dissabilitytype"];
-		$status = $this->core->cleanPost["status"];
-		$roleid = $this->core->cleanPost["role"];
-
-		$sql = "UPDATE `basic-information` SET  `Sex` = '$sex', `Nationality` = '$nationality ', `StreetName` = '$streetname ', `PostalCode` = '$postalcode', `Town` = '$town', `Country` = '$country', `HomePhone` = '$homephone', `MobilePhone` = '$celphone', `Disability` = '$dissability', `DissabilityType` = '$dissabilitytype', `PrivateEmail` = '$email', `MaritalStatus` = '$mstatus', `Status` = '$status' WHERE `ID` = '$id' ";
-		$run = $this->database->doInsertQuery($sql);
-
-		$sql = "UPDATE `access` SET  `RoleID` =  '$roleid' WHERE `access`.`ID` = '$id';";
-		$run = $this->database->doInsertQuery($sql);
-
-		showUserList();
-
-		$this->core->showAlert("The account has been updated");
-	}
-
 	function showUserList() {
 
 		$function = __FUNCTION__;
@@ -126,11 +89,11 @@ class users {
 
 			echo '<tr>
 			<td><img src=' . $this->core->fullTemplatePath . '/images/user.png"></td>
-			<td><a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
+			<td><a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
 			<td><i>' . $role . '</i></td>
 			<td>' . $uid . '</td>
 			<td>' . $status . '</td>
-			<td><a href="' . $this->core->conf['conf']['path'] . 'information/edit/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/edi.png"> edit</a>  <a href="' . $this->core->conf['conf']['path'] . 'users/delete/' . $uid . '" onclick="return confirm(\'Are you sure?\')"><img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> delete</a></td>
+			<td><a href="' . $this->core->conf['conf']['path'] . '/information/edit/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/edi.png"> edit</a>  <a href="' . $this->core->conf['conf']['path'] . '/users/delete/' . $uid . '" onclick="return confirm(\'Are you sure?\')"><img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> delete</a></td>
 			</tr>';
 		}
 
@@ -169,11 +132,11 @@ class users {
 
 			echo '<tr>
 			<td><img src="' . $this->core->fullTemplatePath . '/images/bullet_user.png"></td>
-			<td><a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
+			<td><a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
 
 			<td>' . $uid . '</td>
 			<td>' . $status . '</td>
-			<td><a href="' . $this->core->conf['conf']['path'] . 'information/edit/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/edi.png"> edit</a>  <a href="' . $this->core->conf['conf']['path'] . 'users/delete/' . $uid . '" onclick="return confirm(\'Are you sure?\')"><img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> delete</a></td>
+			<td><a href="' . $this->core->conf['conf']['path'] . '/information/edit/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/edi.png"> edit</a>  <a href="' . $this->core->conf['conf']['path'] . '/users/delete/' . $uid . '" onclick="return confirm(\'Are you sure?\')"><img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> delete</a></td>
 		  	</tr>';
 
 		}
@@ -187,7 +150,7 @@ class users {
 			DELETE FROM `access`  WHERE `ID` = "' . $id . '";
 			COMMIT;';
 
-		$run = $this->database->mysqli->doInsertQuery($sql);
+		$run = $this->core->database->doInsertQuery($sql);
 
 		$this->showUserList();
 		$this->core->showAlert("The account has been deleted");

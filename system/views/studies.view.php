@@ -44,7 +44,7 @@ class studies {
 		echo component::generateTitle($title, $description);
 
 		$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID AND `study`.ParentID = `schools`.ID AND `study`.ID = $item";
-		$run = $this->database->doSelectQuery($sql);
+		$run = $this->core->database->doInsertQuery($sql);
 
 		while ($fetch = $run->fetch_row()) {
 			include $this->core->conf['conf']['formPath'] . "editstudy.form.php";
@@ -91,8 +91,7 @@ class studies {
 			$sql = "INSERT INTO `study` (`ID`, `ParentID`, `IntakeStart`, `IntakeEnd`, `Delivery`, `IntakeMax`, `Name`, `ShortName`, `Active`, `StudyType`, `TimeBlocks`, `StudyIntensity`) VALUES (NULL, '$school', '$startintake', '$endintake', '$delivery', '$maxintake', '$fullname', '$shortname', '$active', '$type', '$duration', '$intensity');";
 		}
 
-		$run = $this->database->doInsertQuery($sql);
-
+		$run = $this->core->database->doInsertQuery($sql);
 		
 		$this->listStudies();
 	}
@@ -131,11 +130,11 @@ class studies {
 			}
 
 			echo '<tr ' . $bgc . '>
-			<td><b><a href="' . $this->core->conf['conf']['path'] . 'studies/view/' . $row[0] . '"> ' . $row[1] . '</a></b></td>' .
-				'<td><a href="' . $this->core->conf['conf']['path'] . 'schools/view/' . $row[3] . '">' . $row[2] . '</a></td>' .
+			<td><b><a href="' . $this->core->conf['conf']['path'] . '/studies/view/' . $row[0] . '"> ' . $row[1] . '</a></b></td>' .
+				'<td><a href="' . $this->core->conf['conf']['path'] . '/schools/view/' . $row[3] . '">' . $row[2] . '</a></td>' .
 				'<td>
-				<a href="' . $this->core->conf['conf']['path'] . 'studies/edit/' . $row[0] . '"> <img src="templates/default/images/edi.png"> edit</a>
-			<a href="' . $this->core->conf['conf']['path'] . 'studies/delete/' . $row[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="templates/default/images/del.png"> delete </a>
+				<a href="' . $this->core->conf['conf']['path'] . '/studies/edit/' . $row[0] . '"> <img src="'.$this->core->fullTemplatePath.'/images/edi.png"> edit</a>
+			<a href="' . $this->core->conf['conf']['path'] . '/studies/delete/' . $row[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="'.$this->core->fullTemplatePath.'/images/del.png"> delete </a>
 			</td>
 			</tr>';
 		}

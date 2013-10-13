@@ -17,7 +17,7 @@ class institution {
 	public function buildView($core) {
 		$this->core = $core;
 
-		if (empty($this->core->action) || $this->core->action == "manage") {
+		if (empty($this->core->action) || $this->core->action == "management") {
 			$this->manageInstitution();
 		}
 	}

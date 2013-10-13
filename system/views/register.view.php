@@ -7,9 +7,10 @@ class register {
 	public function configView() {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
-		$this->view->menu = TRUE;
-		$this->view->javascript = array(3,10,11);
-		$this->view->css = array(4);
+		$this->view->menu = FALSE;
+		$this->view->internalMenu = TRUE;
+		$this->view->javascript = array('register', 'jquery.form-repeater');
+		$this->view->css = array();
 
 		return $this->view;
 	}
@@ -17,7 +18,7 @@ class register {
 	public function buildView($core) {
 		$this->core = $core;
 
-		if ($this->view->menu == TRUE) {
+		if ($this->view->internalMenu == TRUE) {
 		
 			echo '<div class="menucontainer">
 				<div class="menubar">

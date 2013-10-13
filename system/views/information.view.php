@@ -8,7 +8,7 @@ class information {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
 		$this->view->menu = TRUE;
-		$this->view->javascript = array(3);
+		$this->view->javascript = array('jquery.form-repeater');
 		$this->view->css = array(4);
 
 		return $this->view;
@@ -17,29 +17,32 @@ class information {
 	public function buildView($core) {
 		$this->core = $core;
 
+		include $this->core->conf['conf']['classPath'] . "users.inc.php";
+		
 		$listType = $this->core->cleanGet['listtype'];
-		$uid = $this->core->cleanGet['uid'];
 		$firstName = $this->core->cleanGet['studentfirstname'];
 		$lastName = $this->core->cleanGet['studentlastname'];
-		$study = $this->core->cleanGet['studies'];
-		$program = $this->core->cleanGet['program'];
-
+		$search = $this->core->cleanGet['search'];
+		
 		if (empty($this->core->item) || $this->core->action == "search") {
 			$this->searchInformation();
 		} else if (isset($lastName) || isset($firstName)) {
 			$this->searchByNamme($firstName, $lastName, $listType);
-		} else if (isset($study)) {
-			$this->searchByStudy($study, $listType);
-		} else if (isset($program)) {
-			$this->searchByProgram($program, $listType);
-		} elseif ($this->core->item == "edit" && !isset($uid)) {
+		} else if ($this->core->action == "search" && isset($this->core->item) && $search == "study") {
+			$this->searchByStudy($this->core->item, $listType);
+		} else if ($this->core->action == "search" && isset($this->core->item)  && $search == "programme") {
+			$this->searchByProgram($this->core->item, $listType);
+		} elseif ($this->core->action == "edit" && !isset($this->core->item)) {
 			$this->editUser($this->core->userID);
+		} elseif ($this->core->action == "edit" && $this->core->item == "save") {
+			$users = new users($this->core);
+			$users->saveEdit();
+		} elseif ($this->core->action == "edit" && isset($this->core->item)) {
+			$this->editUser($this->core->item);
 		} elseif ($this->core->item == "personal") {
 			$this->getProfile();
-		} elseif ($this->core->item == "edit" && isset($uid)) {
-			$this->editUser($uid);
-		} elseif (isset($uid) && is_numeric($uid)) {
-			$this->getStudentProfile($uid);
+		} elseif (isset($this->core->item) && is_numeric($this->core->item)) {
+			$this->getStudentProfile($this->core->item);
 		}
 	}
 
@@ -201,14 +204,14 @@ class information {
 			echo '<div class="profilepic">';
 
 			if (file_exists("datastore/identities/pictures/picture-$picid.jpg")) {
-				echo '<img width="100%" src="datastore/identities/pictures/picture-' . $picid . '.jpg">';
+				echo '<img width="100%" src="'.$this->core->conf['conf']['path'].'/datastore/identities/pictures/picture-' . $picid . '.jpg">';
 			} else {
 				echo '<div class="none">No image available</div>';
 			}
 
 			if ($this->core->role > 103) {
 				echo '<div style="margin-top: 1px; border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/information/edit/' . $uid . '">Edit user information</a></b></div>';
-				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/information/housing/' . $uid . '">Edit housing information</a></b></div>';
+				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/housing/edit/' . $uid . '">Edit housing information</a></b></div>';
 				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/grades/view/' . $uid . '">Show users grades</a></b></div>';
 			}
 
@@ -263,34 +266,58 @@ class information {
 
 				if (!isset($major)) {
 					$major = $name;
-					echo '<p><div class="segment"><strong>Student course information</strong></div></p>
+					echo '<div class="segment">Student course information</div>
+					<table width="500" height="" border="0" cellpadding="0" cellspacing="0">
+					<tr>
+					<td width="200">Major</td>
+					<td width=""><b>' . $major . '</b></td>
+					</tr>';
+					} else {
+						$minor = $name;
+						echo '<tr>
+					<td>Minor</td>
+					<td width=""><b>' . $minor . '</b></td>
+					</tr>
+					</table>';
+					unset($major);
+					$student = TRUE;
+				}
+				
+			}
+
+			$sql = "SELECT * FROM `accommodation`,`housing`,`rooms` WHERE `housing`.StudentID = '$uid' AND `housing`.RoomID = `rooms`.ID AND `accommodation`.ID =  `rooms`.accommodationID";
+			$run = $this->core->database->doSelectQuery($sql);
+
+			while ($fetch = $run->fetch_assoc()) {
+
+				$AccommodationName = $fetch['Name'];
+				$RoomNumber = $fetch['RoomNumber'];
+				$RoomType = $fetch['RoomType'];	
+				
+				echo '<div class="segment">Housing information</div>
 				<table width="500" height="" border="0" cellpadding="0" cellspacing="0">
 				<tr>
-				<td width="200">Major</td>
-				<td width=""><b>' . $major . '</b></td>
-				</tr>';
-				} else {
-					$minor = $name;
-					echo '<tr>
-				<td>Minor</td>
-				<td width=""><b>' . $minor . '</b></td>
-			  	</tr>
+				<td width="200">Accommodation</td>
+				<td width="">' . $AccommodationName . '</td>
+				</tr>
+				<tr>
+				<td>Room</td>
+				<td width="">' . $RoomNumber . ' (' . $RoomType . ')</td>
+				</tr>
 				</table>';
-					unset($major);
-				}
 
 			}
-
-			if (!isset($minor)) {
+			
+			if (!isset($minor) && $student == TRUE) {
 				$minor = $name;
 				echo '<tr>
-			<td>Minor</td>
-			<td width=""><b>' . $minor . '</b></td>
-		  	</tr>
-			</table>';
+				<td>Minor</td>
+				<td width=""><b>' . $minor . '</b></td>
+				</tr>
+				</table>';
 			}
-
-			echo '<p><div class="segment"><strong>Contact information</strong></div></p>
+			
+			echo '<div class="segment">Contact information</div>
 			<table width="400" height="" border="0" cellpadding="0" cellspacing="0">
 			  <tr>
 				<td width="200">Streetname</td>
@@ -341,10 +368,9 @@ class information {
 				echo '<tr>
 				<td>Private Email</td>
 				<td><a href="mailto:' . $email . '">' . $email . '</td>
-				</tr>
-				</table>';
+				</tr>';
 			}
-
+			echo'</table>';
 
 			$sql = "SELECT * FROM `emergency-contact` WHERE `StudentID` = '" . $nrc . "'";
 			$run = $this->core->database->doSelectQuery($sql);
@@ -358,7 +384,7 @@ class information {
 				$town = $fetch[6];
 				$postalcode = $fetch[7];
 
-				echo '<p><div class="segment"><strong>Student emergency information</strong></div></p>
+				echo '<div class="segment">Emergency information</div>
 				<table width="500" height="" border="0" cellpadding="0" cellspacing="0">
 				  <tr>
 					<td width="200">Full Name</td>
@@ -404,7 +430,7 @@ class information {
 				$filename = $row[5];
 
 				if ($n == 0) {
-					echo '<p><div class="segment"><strong>Student education history</strong></div></p>';
+					echo '<div class="segment">Education history</div>';
 					$n++;
 				} else {
 					echo '<div style="border-bottom: 1px solid #ccc; width:500px; margin-top: 15px; margin-bottom: 15px;" > </div>';
@@ -481,8 +507,8 @@ class information {
 		}
 	}
 
-	function editUser($id) {
-		$sql = "SELECT * FROM  `basic-information` as bi, `access` as ac WHERE ac.`ID` = '" . $id . "' AND ac.`ID` = bi.`ID`";
+	function editUser($item) {
+		$sql = "SELECT * FROM  `basic-information` as bi, `access` as ac WHERE ac.`ID` = '" . $item . "' AND ac.`ID` = bi.`ID`";
 		$run = $this->core->database->doSelectQuery($sql);
 
 		$function = __FUNCTION__;
@@ -492,34 +518,37 @@ class information {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		while ($row = $run->fetch_row()) {
+		while ($row = $run->fetch_assoc()) {
 
-			$ID = $row[4];
-			$firstname = $row[0];
-			$middlename = $row[1];
-			$surname = $row[2];
-			$gender = $row[3];
-			$dob = $row[6];
-			$nationality = $row[8];
-			$street = $row[9];
-			$postal = $row[10];
-			$town = $row[11];
-			$country = $row[12];
-			$homephone = $row[13];
-			$celphone = $row[14];
-			$disability = $row[15];
-			$email = $row[17];
-			$relation = $row[18];
-			$status = $row[20];
-			$role = $row[23];
+			$id = $row['ID'];
+			$NID = $row['GovernmentID'];
+			$firstname = $row['FirstName'];
+			$middlename = $row['MiddleName'];
+			$surname = $row['Surname'];
+			$gender = $row['Sex'];
+			$dob = $row['DateOfBirth'];
+			$nationality = $row['Nationality'];
+			$street = $row['StreetName'];
+			$postal = $row['PostalCode'];
+			$town = $row['Town'];
+			$country = $row['Country'];
+			$homephone = $row['HomePhone'];
+			$celphone = $row['MobilePhone'];
+			$disability = $row['Disability'];
+			$email = $row['PrivateEmail'];
+			$relation = $row['MaritalStatus'];
+			$status = $row['Status'];
+			$role = $row['RoleID'];
 
 		}
-
-		include $this->core->conf['conf']['formPath'] . "edituser.form.php";
+		
 		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
-
+		
 		$select = new optionBuilder($this->core);
 		$select = $select->showRoles($role);
+		
+		include $this->core->conf['conf']['formPath'] . "edituser.form.php";
+
 
 	}
 }

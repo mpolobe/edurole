@@ -45,7 +45,7 @@ class item {
 	function showNewsOverview() {
 
 		$sql = "SELECT * FROM `content` WHERE `ContentCat` = 'news'";
-		$run = $this->database->mysqli->query($sql);
+		$run = $this->core->database->doInsertQuery($sql);
 
 		echo '<div class="newscontainers">	<h2>News and updates</h2> <p>';
 

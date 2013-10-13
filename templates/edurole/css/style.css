@@ -199,7 +199,9 @@ td {
 	padding-left: 40px;
 	font-size: 12px;
 	background-color: #EEEEEE;
-	margin-bottom: 20px;
+	margin-bottom: 10px;
+	font-weight: bold;
+	margin-top: 20px;
 }
 .mailcount {
 	height:13px;

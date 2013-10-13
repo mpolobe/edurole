@@ -18,10 +18,10 @@ class schools {
 	public function buildView($core) {
 		$this->core = $core;
 
-		if (empty($this->core->action) && $this->core->role > 2) {
+		if (empty($this->core->action) && $this->core->role > 102 || $this->core->action == "management" && $this->core->role > 102) {
 			$this->listSchools();
-		} elseif ($this->core->action == "view") {
-			$this->showSchool();
+		} elseif ($this->core->action == "view" && isset($this->core->item)) {
+			$this->showSchool($this->core->item);
 		} elseif ($this->core->action == "edit" && isset($this->core->item) && $this->core->role > 104) {
 			$this->editSchool($this->core->item);
 		} elseif ($this->core->action == "add" && $this->core->role > 104) {
@@ -62,7 +62,7 @@ class schools {
 
 	function deleteSchool($item) {
 		$sql = 'DELETE FROM `schools`  WHERE `ID` = "' . $item . '"';
-		$run = $this->database->doInsertQuery($sql);
+		$run = $this->core->database->doInsertQuery($sql);
 
 		$this->listSchools();
 		$this->core->showAlert("The school has been deleted");
@@ -80,7 +80,7 @@ class schools {
 			$sql = "INSERT INTO `schools` (`ID`, `ParentID`, `Established`, `Name`, `Description`, `Dean`) VALUES (NULL, '0', CURRENT_DATE(), '$name', '$description', '$dean');";
 		}
 
-		$run = $this->database->doInsertQuery($sql);
+		$run = $this->core->database->doInsertQuery($sql);
 		
 		$this->listSchools();
 	}
@@ -116,11 +116,11 @@ class schools {
 			}
 
 			echo '<tr ' . $bgc . '>
-                    <td><b><a href="' . $this->core->conf['conf']['path'] . 'schools/view/' . $fetch[0] . '"> ' . $fetch[3] . '</a></b></td>' .
-				'<td><a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $fetch[14] . '">' . $fetch[10] . ' ' . $fetch[12] . '</a></td>' .
+                    <td><b><a href="' . $this->core->conf['conf']['path'] . '/schools/view/' . $fetch[0] . '"> ' . $fetch[3] . '</a></b></td>' .
+				'<td><a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $fetch[14] . '">' . $fetch[10] . ' ' . $fetch[12] . '</a></td>' .
 				'<td>
-				<a href="' . $this->core->conf['conf']['path'] . 'schools/edit/' . $fetch[0] . '"> <img src="templates/default/images/edi.png"> edit</a>
-                    <a href="' . $this->core->conf['conf']['path'] . 'schools/delete/' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="templates/default/images/del.png"> delete </a>
+				<a href="' . $this->core->conf['conf']['path'] . '/schools/edit/' . $fetch[0] . '"> <img src="'.$this->core->fullTemplatePath.'/images/edi.png"> edit</a>
+                    <a href="' . $this->core->conf['conf']['path'] . '/schools/delete/' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="'.$this->core->fullTemplatePath.'/images/del.png"> delete </a>
                     </td>
                     </tr>';
 
@@ -130,10 +130,15 @@ class schools {
             </p>';
 	}
 
-	function showSchool() {
+	function showSchool($item) {
 
-		$item = $this->core->cleanGet['item'];
+		$function = __FUNCTION__;
+		$title = 'School information';
+		$description = 'The following attributes are saved in the school profile';
 
+		echo $this->core->breadcrumb->generate(get_class(), $function);
+		echo component::generateTitle($title, $description);
+			
 		$sql = "SELECT * FROM `schools`,`access`,`basic-information` WHERE Dean = `access`.ID AND `access`.ID = `basic-information`.ID AND `schools`.ID = $item";
 
 		$run = $this->core->database->doSelectQuery($sql);
@@ -149,13 +154,6 @@ class schools {
 				$i--;
 			}
 
-			$function = __FUNCTION__;
-			$title = ' . $fetch[3] . ';
-			$description = 'The following attributes are saved in the school profile';
-
-			echo $this->core->breadcrumb->generate(get_class(), $function);
-			echo component::generateTitle($title, $description);
-
 			echo '<table width="768" border="0" cellpadding="5" cellspacing="0">
                   <tr>
                     <td width="205" height="28" bgcolor="#EEEEEE"><strong>Information</strong></td>
@@ -164,7 +162,7 @@ class schools {
                   </tr>
                   <tr>
                     <td><strong>School name </strong></td>
-                    <td>' . $fetch[3] . '</td>
+                    <td>'. $fetch[3] .'</td>
                     <td></td>
                   </tr>
                   <tr>
