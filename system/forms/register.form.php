@@ -14,8 +14,9 @@
 			<input type="text" name="studentid" id="username"/>
 		</td>
 		<td>
-			<div id="status"></div>
+			<div id="status">
 			Please enter the ID number provided on your national identification card or passport
+			</div>
 		</td>
 	</tr>
 	<tr>

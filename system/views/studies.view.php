@@ -17,7 +17,7 @@ class studies {
 
 	public function buildView($core) {
 		$this->core = $core;
-
+				$this->view->menu = FALSE;
 		if (empty($this->core->action) && $this->core->role > 100) {
 			$this->listStudies($this->core->item);
 		} elseif ($this->core->action == "list" && $this->core->role > 100 || $this->core->action == "management" && $this->core->role > 100 ) {
@@ -34,7 +34,7 @@ class studies {
 			$this->deleteStudy($this->core->item);
 		}
 	}
-
+	
 	function editStudy($item) {
 		$function = __FUNCTION__;
 		$title = 'Edit study';
@@ -103,8 +103,7 @@ class studies {
 
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
-
-		echo '  | <a href="' . $this->core->conf['conf']['path'] . 'studies/add">Add study</a></p><p>' .
+		echo '<div class="toolbar"><a href="' . $this->core->conf['conf']['path'] . 'studies/add">Add study</a></div>'. 
 			'<table width="768" height="" border="0" cellpadding="3" cellspacing="0"><tr class="tableheader"><td><b>Study</b></td>' .
 			'<td><b>School</b></td>' .
 			'<td><b>Management tools</b></td>' .

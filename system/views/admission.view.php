@@ -87,7 +87,7 @@ class admission {
 
 	function promote($item) {
 
-		$sql = "UPDATE `edurole`.`access` SET `RoleID` = `RoleID`+1 WHERE `access`.`ID` = '" . $item . "'";
+		$sql = "UPDATE `edurole`.`access` SET `RoleID` = `RoleID`+1 WHERE `access`.`ID` = '" . $item . "' AND `RoleID` = '". $this->core->route[3]."'";
 		$run = $this->core->database->doInsertQuery($sql);
 
 		$this->admissionFlow();
@@ -125,10 +125,20 @@ class admission {
 		$sql = "SELECT * FROM `basic-information`, `access`, `student-study-link`, `study` WHERE `access`.`ID` = `basic-information`.`ID` AND  `access`.`RoleID` < 10 AND  `access`.`ID` = `student-study-link`.`StudentID` AND `student-study-link`.`StudyID` = `study`.ID AND `basic-information`.Status = 'Requesting'";
 		$run = $this->core->database->doSelectQuery($sql);
 
+		$sql = "SELECT Name, Value FROM `settings` WHERE `Name` LIKE 'AdmissionLevel%' ORDER BY Name ASC";
+		$go = $this->core->database->doSelectQuery($sql);
+		
+		$i=1;
+		while ($fetch = $go->fetch_row()) {
+			$name = substr($fetch[1],0,16).'...';
+			$statusName[$i] = $name;
+			$i++;
+		}
+		
 		echo '<table width="768" height="" border="0" cellpadding="5" cellspacing="0">
 		<tr>
 		<td bgcolor="#EEEEEE"></td>
-		<td bgcolor="#EEEEEE" width="200px"><b> Student Name</b></td>
+		<td bgcolor="#EEEEEE" width="180px"><b> Student Name</b></td>
 		<td bgcolor="#EEEEEE"><b> <b>National ID</b></td>
 		<td bgcolor="#EEEEEE"><b> Admission Phase</b></td>
 		<td bgcolor="#EEEEEE"><b> Study</b></td>
@@ -150,9 +160,9 @@ class admission {
 			$status = $fetch[23];
 
 			if ($status == 6) {
-				$next = '<a href="' . $this->core->conf['conf']['path'] . '/admission/complete/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/exleft.gif"> <b>Complete</b> </a>';
+				$next = '<a href="' . $this->core->conf['conf']['path'] . '/admission/complete/' . $uid . '/' . $status . '"><img src="' . $this->core->fullTemplatePath . '/images/exleft.gif"> <b>Complete</b> </a>';
 			} else {
-				$next = '<a href="' . $this->core->conf['conf']['path'] . '/admission/promote/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/exleft.gif"> Approve step </a>';
+				$next = '<a href="' . $this->core->conf['conf']['path'] . '/admission/promote/' . $uid . '/' . $status . '"><img src="' . $this->core->fullTemplatePath . '/images/exleft.gif"> Approve step </a>';
 			}
 
 			echo '<tr>
@@ -160,7 +170,7 @@ class admission {
 				<td><a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
 		
 				<td>' . $nrc . '</td>
-				<td><a href="' . $this->core->conf['conf']['path'] . '/admission/profile/' . $uid . '">Step ' . $status . '</a></td>
+				<td><a href="' . $this->core->conf['conf']['path'] . '/admission/profile/' . $uid . '">' . $status .' - '.$statusName[$status].'  </a> </td>
 				<td><b>' . $study . '</b></td>
 				<td>' . $next . ' </td>
 				<td> <a href="' . $this->core->conf['conf']['path'] . '/admission/reject/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> Deny</a></td>
@@ -180,10 +190,20 @@ class admission {
 		$sql = "SELECT * FROM `basic-information`, `access`, `student-study-link`, `study` WHERE `access`.`ID` = `basic-information`.`ID` AND  `access`.`RoleID` < 10 AND  `access`.`ID` = `student-study-link`.`StudentID` AND `student-study-link`.`StudyID` = `study`.ID AND `basic-information`.Status = 'Rejected'";
 		$run = $this->core->database->doSelectQuery($sql);
 
+		$sql = "SELECT Name, Value FROM `settings` WHERE `Name` LIKE 'AdmissionLevel%' ORDER BY Name ASC";
+		$go = $this->core->database->doSelectQuery($sql);
+		
+		$i=1;
+		while ($fetch = $go->fetch_row()) {
+			$name = substr($fetch[1],0,16).'...';
+			$statusName[$i] = $name;
+			$i++;
+		}
+		
 		echo '<table width="768" height="" border="0" cellpadding="5" cellspacing="0">
 		<tr>
 		<td bgcolor="#EEEEEE"></td>
-		<td bgcolor="#EEEEEE" width="200px"><b> Student Name</b></td>
+		<td bgcolor="#EEEEEE" width="180px"><b> Student Name</b></td>
 		<td bgcolor="#EEEEEE"><b> <b>National ID</b></td>
 		<td bgcolor="#EEEEEE"><b> Admission Phase</b></td>		
 		<td bgcolor="#EEEEEE"><b> Study</b></td>		
@@ -208,10 +228,10 @@ class admission {
 			<td><img src="' . $this->core->fullTemplatePath . '/images/user.png"></td>
 			<td><a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
 			<td>' . $nrc . '</td>
-			<td><a href="' . $this->core->conf['conf']['path'] . '/admission/profile/' . $uid . '">Step ' . $status . '</a></td>
+				<td><a href="' . $this->core->conf['conf']['path'] . '/admission/profile/' . $uid . '">' . $status .' - '.$statusName[$status].'  </a> </td>
 			<td><b>' . $study . '</b></td>
 			<td><a href="' . $this->core->conf['conf']['path'] . '/admission/continue/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/edit.gif"> Continue </a></td>
-			<td><a href="' . $this->core->conf['conf']['path'] . '/admission/reject/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> Delete</a></td>
+			<td><a href="' . $this->core->conf['conf']['path'] . '/admission/delete/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> Delete</a></td>
 			</tr>';
 
 		}

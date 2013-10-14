@@ -115,9 +115,7 @@ class programmes {
 		}
 
 		$run = $this->core->database->doSelectQuery($sql);
-
-		echo '<p><b>Overview of all programmes currently on offer</b>  | <a href="' . $this->core->conf['conf']['path'] . 'programmes/add">Add programme</a></p>
-                <p>
+		echo '<div class="toolbar"><a href="' . $this->core->conf['conf']['path'] . 'programmes/add">Add programme</a></div>
                 <table width="768" height="" border="0" cellpadding="3" cellspacing="0">
                 <tr class="tableheader">
                 <td><b>Programme name</b></td>' .
@@ -170,13 +168,13 @@ class programmes {
 				}
 
 				$out = '<tr ' . $bgc . '>
-						<td><b><a href="' . $this->core->conf['conf']['path'] . 'programmes/view/' . $fetch[0] . '"> ' . $fetch[1] . '</a></b></td>
+						<td><b><a href="' . $this->core->conf['conf']['path'] . '/programmes/view/' . $fetch[0] . '"> ' . $fetch[1] . '</a></b></td>
 						<td>';
 
 				$rest = ' </td><td> ' . $type . ' </td>
 						<td>
-						<a href="' . $this->core->conf['conf']['path'] . 'programmes/edit/' . $fetch[0] . '"> <img src="templates/default/images/edi.png"> edit</a>
-						<a href="' . $this->core->conf['conf']['path'] . 'programmes/delete/' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="templates/default/images/del.png"> delete </a>
+						<a href="' . $this->core->conf['conf']['path'] . '/programmes/edit/' . $fetch[0] . '"> <img src="'. $this->core->fullTemplatePath .'/images/edi.png"> edit</a>
+						<a href="' . $this->core->conf['conf']['path'] . '/programmes/delete/' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="'. $this->core->fullTemplatePath .'/images/del.png"> delete </a>
 						</td>
 						</tr>';
 
@@ -191,7 +189,7 @@ class programmes {
 		}
 		echo $out . $count . $rest;
 
-		echo '</table></p>';
+		echo '</table>';
 	}
 
 

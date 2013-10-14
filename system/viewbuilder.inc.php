@@ -30,7 +30,7 @@ class viewBuilder {
 				}
 			} elseif ($page == "template") {
 				$this->core->setTemplate();
-			} elseif ($page == "intake" || $page == "register" || $page == "studies") {
+			} elseif ($page == "intake" || $page == "register" || $page == "studies" || $page == "password") {
 				//admission flow
 				$this->initView($page);
 			} else {

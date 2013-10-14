@@ -17,7 +17,7 @@ class courses {
 	public function buildView($core) {
 		$this->core = $core;
 		
-		if ($this->core->action == "list") {
+		if ($this->core->action == "management" && $this->core->role > 103) {
 			$this->listCourses();
 		} elseif ($this->core->action == "view") {
 			$this->showCourse($this->core->item);
@@ -59,15 +59,13 @@ class courses {
 		echo component::generateTitle($title, $description);
 
 		include $this->core->conf['conf']['formPath'] . "addcourse.form.php";
-
 	}
 
 	function deleteCourse($item) {
-		$sql = 'DELETE FROM `schools`  WHERE `ID` = "' . $item . '"';
+		$sql = 'DELETE FROM `courses` WHERE `ID` = "' . $item . '"';
 		$run = $this->core->database->doSelectQuery($sql);
 
-		$sql = "SELECT * FROM `programmes`,`studies` WHERE `programmes`.ParentID = `studies`.ID AND `studies`.ID = $this->item ORDER BY `studies`.Name";
-		$this->listCourses($sql);
+		$this->listCourses();
 		$this->core->showAlert("The course has been deleted");
 	}
 
@@ -77,15 +75,14 @@ class courses {
 		$description = $this->core->cleanPost['description'];
 
 		if (isset($this->item)) {
-			$sql = "UPDATE `courses` SET `Description` = '$description', `Name` = '$name', `Dean` = '$dean' WHERE `ID` = $this->item;";
+			$sql = "UPDATE `courses` SET `Description` = '$description', `Name` = '$name', `CourseCoordinator` = '$dean' WHERE `ID` = $this->item;";
 		} else {
-			$sql = "INSERT INTO `courses` (`ID`, `ParentID`, `Established`, `Name`, `Description`, `Dean`) VALUES (NULL, '0', CURRENT_DATE(), '$name', '$description', '$dean');";
+			$sql = "INSERT INTO `courses` (`ID`, `ParentID`,  `Name`,  `CourseCoordinator`) VALUES (NULL, '0', CURRENT_DATE(), '$name', '$dean');";
 		}
 
 		$run = $this->core->database->doInsertQuery($sql);
 
-		$sql = "SELECT * FROM `courses`, `programmes`,`access`,`basic-information` WHERE Dean = `access`.ID AND `access`.ID = `basic-information`.ID ORDER BY Name";
-		$this->listSchools($sql);
+		$this->listCourses();
 	}
 
 	function listCourses($item) {
@@ -96,11 +93,10 @@ class courses {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		$sql = "SELECT * FROM `programmes`,`studies` WHERE `programmes`.ParentID = `studies`.ID AND `studies`.ID = $this->item ORDER BY `studies`.Name";
+		$sql = "SELECT * FROM `courses`, `basic-information` WHERE `courses`.CourseCoordinator = `basic-information`.ID ORDER BY `courses`.Name";
 		$run = $this->core->database->doSelectQuery($sql);
 
-		echo '<p><a href="' . $this->core->conf['conf']['path'] . 'courses/add">Add course</a></p>
-            <p>
+		echo '<div class="toolbar"><a href="' . $this->core->conf['conf']['path'] . '/courses/add">Add course</a></div>
             <table width="768" height="" border="0" cellpadding="3" cellspacing="0">
             <tr class="tableheader"><td width="400"><b>Course Name</b></td>' .
 			'<td><b>Course coordinator</b></td>' .
@@ -118,18 +114,18 @@ class courses {
 			}
 
 			echo '<tr ' . $bgc . '>
-                    <td><b><a href="' . $this->core->conf['conf']['path'] . 'courses/view/' . $fetch[0] . '"> ' . $fetch[2] . '</a></b></td>
+                    <td><b><a href="' . $this->core->conf['conf']['path'] . '/courses/view/' . $fetch[0] . '"> ' . $fetch[2] . '</a></b></td>
                     <td>
-                    <a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $fetch[3] . '">' . $fetch[4] . ' ' . $fetch[6] . '</a>
+                    <a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $fetch[3] . '">' . $fetch[4] . ' ' . $fetch[6] . '</a>
                     </td>
                     <td>
-                    <a href="' . $this->core->conf['conf']['path'] . 'courses/edit/' . $fetch[0] . '"> <img src="' . $this->core->fullTemplatePath . '/images/edit.png"> edit</a>
-                    <a href="' . $this->core->conf['conf']['path'] . 'courses/delete/' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> delete </a>
+                    <a href="' . $this->core->conf['conf']['path'] . '/courses/edit/' . $fetch[0] . '"> <img src="' . $this->core->fullTemplatePath . '/images/edi.png"> edit</a>
+                    <a href="' . $this->core->conf['conf']['path'] . '/courses/delete/' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> delete </a>
                     </td>
                     </tr>';
 		}
 
-		echo '</table></p>';
+		echo '</table>';
 	}
 
 	function showCourse($item) {
@@ -169,7 +165,7 @@ class courses {
 
 		}
 
-		echo '</table></p>';
+		echo '</table>';
 	}
 }
 

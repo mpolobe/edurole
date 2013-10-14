@@ -45,6 +45,9 @@ class register {
 		$action = $this->core->action;
 		$action = $this->core->page;
 
+		echo'<div id="templatepath" style="display:none">' . $this->core->fullTemplatePath .'</div>';
+		echo'<div id="path" style="display:none">' . $this->core->conf['conf']['path'] .'</div>';
+	
 		if ($item) {
 
 			$sql = "SELECT `study`.ID, `study`.Name FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID AND `study`.ID = $item";

@@ -24,10 +24,14 @@ class information {
 		$lastName = $this->core->cleanGet['studentlastname'];
 		$search = $this->core->cleanGet['search'];
 		
-		if (empty($this->core->item) || $this->core->action == "search") {
+		if(empty($this->core->item)){
+			$this->core->item = $this->core->cleanGet['uid'];
+		}
+		
+		if ($this->core->action == "search") {
 			$this->searchInformation();
 		} else if (isset($lastName) || isset($firstName)) {
-			$this->searchByNamme($firstName, $lastName, $listType);
+			$this->searchByName($firstName, $lastName, $listType);
 		} else if ($this->core->action == "search" && isset($this->core->item) && $search == "study") {
 			$this->searchByStudy($this->core->item, $listType);
 		} else if ($this->core->action == "search" && isset($this->core->item)  && $search == "programme") {

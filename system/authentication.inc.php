@@ -169,18 +169,25 @@ class auth {
 	}
 
 	public function mysqlChangePass($username, $oldpass, $newpass) {
-		$newpass = hash('sha512', $newpass . $this->core->conf['conf']['hash'] . $username);
-		$oldpass = hash('sha512', $oldpass . $this->core->conf['conf']['hash'] . $username);
-		
-		$sql = "UPDATE `access` SET `Password` = '$newpass' WHERE `Username` = '$username' AND `Password` = '$oldpass'";
 
-		if ($this->core->database->doInsertQuery($sql)) {
-			$this->core->throwSuccess("Your password has been changed! The next time you log-in you will need to use your new password.");
-			return true;
+		if($this->authenticateSQL($username, $oldpass)){
+			
+			$newpass = hash('sha512', $newpass . $this->core->conf['conf']['hash'] . $username);
+			$oldpass = hash('sha512', $oldpass . $this->core->conf['conf']['hash'] . $username);
+			
+			$sql = "UPDATE `access` SET `Password` = '$newpass' WHERE `Username` = '$username' AND `Password` = '$oldpass'";
+
+			if ($this->core->database->doInsertQuery($sql)) {
+				$this->core->throwSuccess("Your password has been changed! The next time you log-in you will need to use your new password.");
+				return true;
+			} else {
+				return false;
+			}
+			
 		} else {
 			return false;
 		}
-
+		
 	}
 
 	private function role($access) {

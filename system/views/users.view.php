@@ -28,11 +28,51 @@ class users {
 			$this->showStudentList();
 		} else if ($this->core->action == "saveedit") {
 			$this->saveEdit();
+		} elseif ($this->core->action == "password" && isset($core->role)) {
+			$this->changePassword();
 		} else if ($core->role >= 100) {
 			$this->showUserList();
 		}
 	}
 
+	public function changePassword() {
+		$function = __FUNCTION__;
+
+		$oldpass = $this->core->cleanPost["oldpass"];
+		$newpass = $this->core->cleanPost["newpass"];
+		$newpasscheck = $this->core->cleanPost["newpasscheck"];
+
+		$title = 'Change your account password';
+		$description = 'You are able to change your account password here.';
+
+		echo $this->core->breadcrumb->generate(get_class(), $function);
+		echo component::generateTitle($title, $description);
+
+		$auth = new auth($this->core);
+		
+		if (!empty($newpass) && !empty($oldpass)) {
+
+			if ($newpass == $newpasscheck) {
+
+				if (!$auth->ldapChangePass($this->core->username, $oldpass, $newpass)) {
+					$ldap = false;
+				}
+				if ($auth->mysqlChangePass($this->core->username, $oldpass, $newpass) == false && $ldap == false) {
+					$this->core->throwError("The information you have entered is incorrect.");
+				}
+
+			} else {
+				echo "<h2>The entered passwords do not match</h2>";
+			}
+
+		} else {
+
+			echo "<p>Please remember to enter all fields!</p>";
+			include $this->core->conf['conf']['formPath'] . "changepass.form.php";
+
+		}
+	}
+	
 	function saveUser() {
 		$function = __FUNCTION__;
 		$title = 'Add user account';
@@ -88,7 +128,7 @@ class users {
 			$status = $row[20];
 
 			echo '<tr>
-			<td><img src=' . $this->core->fullTemplatePath . '/images/user.png"></td>
+			<td><img src="' . $this->core->fullTemplatePath . '/images/user.png"></td>
 			<td><a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
 			<td><i>' . $role . '</i></td>
 			<td>' . $uid . '</td>

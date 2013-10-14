@@ -96,7 +96,7 @@ class schools {
 		$sql = "SELECT * FROM `schools`,`access`,`basic-information` WHERE Dean = `access`.ID AND `access`.ID = `basic-information`.ID ORDER BY Name";
 		$run = $this->core->database->doSelectQuery($sql);
 
-		echo '<p><b>Overview of all schools</b>  | <a href="' . $this->core->conf['conf']['path'] . 'schools/add">Add school</a></p><p>
+		echo'<div class="toolbar"><a href="' . $this->core->conf['conf']['path'] . 'schools/add">Add school</a></div>
             <table width="768" height="" border="0" cellpadding="3" cellspacing="0">
             <tr class="tableheader">
             <td width="350px"><b>School</b></td>
@@ -126,8 +126,7 @@ class schools {
 
 		}
 
-		echo '</table>
-            </p>';
+		echo '</table>';
 	}
 
 	function showSchool($item) {
