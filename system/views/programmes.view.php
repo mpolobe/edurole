@@ -54,13 +54,17 @@ class programmes {
 
 	function addProgram() {
 		$function = __FUNCTION__;
-		$title = 'Programme management';
-		$description = 'Add Programme';
+		$title = 'Add new programme';
+		$description = 'Add a new programme to the system';
 
-		echo component::generateBreadcrumb();
-
+		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
+		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
+		
+		$select = new optionBuilder($this->core);
+		$users = $select->showUsers("100", null);
+		
 		include $this->core->conf['conf']['formPath'] . "addprogramme.form.php";
 	}
 
@@ -115,7 +119,7 @@ class programmes {
 		}
 
 		$run = $this->core->database->doSelectQuery($sql);
-		echo '<div class="toolbar"><a href="' . $this->core->conf['conf']['path'] . 'programmes/add">Add programme</a></div>
+		echo '<div class="toolbar"><a href="' . $this->core->conf['conf']['path'] . '/programmes/add">Add programme</a></div>
                 <table width="768" height="" border="0" cellpadding="3" cellspacing="0">
                 <tr class="tableheader">
                 <td><b>Programme name</b></td>' .

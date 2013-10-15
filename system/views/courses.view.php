@@ -154,7 +154,7 @@ class courses {
                   </tr>
                   <tr>
                     <td><strong>Course coordinator</strong></td>
-                    <td><a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $fetch[3] . '">' . $fetch[4] . ' ' . $fetch[6] . '</a></td>
+                    <td><a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $fetch[3] . '">' . $fetch[4] . ' ' . $fetch[6] . '</a></td>
                     <td></td>
                   </tr>
                   <tr>

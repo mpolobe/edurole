@@ -59,6 +59,11 @@ class studies {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
+		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
+		
+		$select = new optionBuilder($this->core);
+		$schools = $select->showSchools();
+		
 		include $this->core->conf['conf']['formPath'] . "addstudy.form.php";
 	}
 
@@ -103,7 +108,7 @@ class studies {
 
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
-		echo '<div class="toolbar"><a href="' . $this->core->conf['conf']['path'] . 'studies/add">Add study</a></div>'. 
+		echo '<div class="toolbar"><a href="' . $this->core->conf['conf']['path'] . '/studies/add">Add study</a></div>'. 
 			'<table width="768" height="" border="0" cellpadding="3" cellspacing="0"><tr class="tableheader"><td><b>Study</b></td>' .
 			'<td><b>School</b></td>' .
 			'<td><b>Management tools</b></td>' .
@@ -180,7 +185,7 @@ class studies {
 					  </tr>
 					  <tr>
 						<td><strong>Part of school</strong></td>
-						<td><a href="' . $this->core->conf['conf']['path'] . 'schools/view/' . $fetch[13] . '">' . $fetch[16] . '</a>
+						<td><a href="' . $this->core->conf['conf']['path'] . '/schools/view/' . $fetch[13] . '">' . $fetch[16] . '</a>
 					  </td>
 						<td></td>
 					  </tr>

@@ -1,24 +1,3 @@
-<?php
-function showSchools() {
-	global $connection;
-
-	$sql = "SELECT `ID`, `Name` FROM `schools`";
-	$run = doSelectQuery($sql);
-
-	while ($fetch = mysql_fetch_row($run)) {
-
-		$name = $fetch[1];
-		$uid = $fetch[0];
-
-		$out = $out . '<option value="' . $uid . '">' . $name . '</option>';
-
-	}
-
-	return ($out);
-}
-
-$select = showSchools();
-?>
 <form id="addstudy" name="addstudy" method="post" action="/studies&action=save">
 	<p>
 		<b>This form creates a new study, the start and end of intake determine the days online registration will be
@@ -48,7 +27,7 @@ $select = showSchools();
 		<tr>
 			<td>School</td>
 			<td><select name="school" id="school">
-					<?php echo $select; ?>
+					<?php echo $schools; ?>
 				</select></td>
 			<td></td>
 		</tr>

@@ -1,9 +1,4 @@
 <?php
-include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
-
-$select = showUsers("100", null);
-
-
 echo '<script type="text/javascript">
 	Aloha.ready( function() {
 		var $ = Aloha.jQuery;
@@ -29,7 +24,7 @@ echo '<script type="text/javascript">
                 <td><strong>Dean/Rector of school</strong></td>
                 <td>
                   <select name="dean" id="dean">
-			' . $select . '
+			' . $dean . '
                   </select></td>
                 <td>Functional head of school</td>
               </tr>

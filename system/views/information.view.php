@@ -47,9 +47,25 @@ class information {
 			$this->getProfile();
 		} elseif (isset($this->core->item) && is_numeric($this->core->item)) {
 			$this->getStudentProfile($this->core->item);
+		} elseif($this->core->action == "students"){
+			$this->showStudents();
 		}
 	}
 
+	function showStudents(){
+
+		$function = __FUNCTION__;
+		$title = 'Student records';
+		$description = 'Overview of all students';
+
+		echo $this->core->breadcrumb->generate(get_class(), $function);
+		echo component::generateTitle($title, $description);
+		
+		$sql = "SELECT * FROM `basic-information` LEFT JOIN `access` ON `basic-information`.ID=`access`.ID;";
+		$run = $this->core->database->doSelectQuery($sql);
+		$this->showInfoList($run);
+	}
+	
 	function searchInformation() {
 		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
 
@@ -471,7 +487,7 @@ class information {
 	}
 
 	function showInfoList($run) {
-		echo '<br/> <table width="768" height="" border="0" cellpadding="5" cellspacing="0">
+		echo '<table width="768" height="" border="0" cellpadding="5" cellspacing="0">
 		<tr>
 		<td bgcolor="#EEEEEE"></td>
 		<td bgcolor="#EEEEEE"><b> Student Name</b></td>
@@ -494,8 +510,8 @@ class information {
 			$studentstatus = $row[20];
 
 			echo '<tr>
-			<td><img src="templates/default/images/bullet_user.png"></td>
-			<td><a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
+			<td><img src="'.$this->core->fullTemplatePath.'/images/bullet_user.png"></td>
+			<td><a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
 			<td><i>' . $uid . '</i></td>
 			<td>' . $nrc . '</td>
 			<td>' . $dob . '</td>

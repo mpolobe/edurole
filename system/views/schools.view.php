@@ -57,6 +57,11 @@ class schools {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
+		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
+		
+		$select = new optionBuilder($this->core);
+		$dean = $select->showUsers("100", null);
+	
 		include $this->core->conf['conf']['formPath'] . "addschool.form.php";
 	}
 
@@ -96,7 +101,7 @@ class schools {
 		$sql = "SELECT * FROM `schools`,`access`,`basic-information` WHERE Dean = `access`.ID AND `access`.ID = `basic-information`.ID ORDER BY Name";
 		$run = $this->core->database->doSelectQuery($sql);
 
-		echo'<div class="toolbar"><a href="' . $this->core->conf['conf']['path'] . 'schools/add">Add school</a></div>
+		echo'<div class="toolbar"><a href="' . $this->core->conf['conf']['path'] . '/schools/add">Add school</a></div>
             <table width="768" height="" border="0" cellpadding="3" cellspacing="0">
             <tr class="tableheader">
             <td width="350px"><b>School</b></td>
@@ -167,7 +172,7 @@ class schools {
                   <tr>
                     <td><strong>Dean/Rector of school</strong></td>
                     <td>
-                     <a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $fetch[14] . '">' . $fetch[10] . ' ' . $fetch[12] . '</a></td>
+                     <a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $fetch[14] . '">' . $fetch[10] . ' ' . $fetch[12] . '</a></td>
                     <td></td>
                   </tr>
                   <tr>
