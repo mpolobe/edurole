@@ -3,10 +3,11 @@
 		<div class="homeboxl">
 			<h2><strong>ONLINE STUDENT REGISTRATION</strong></h2>
 
-			<p>Trough the easy online registration form you can now complete your request for admission online. Click on
-				the link below to view the programs for which intake is currently open.</p>
+			<p>Through the easy online registration form you can now complete your request for admission online. Click on
+				the link below to view the studies for which intake is currently open.</p>
 
-			<p><a href="<? echo $this->core->conf['conf']['path']; ?>/intake"><strong> View current intake possibilities</strong></a></p>
+			<p><a href="<? echo $this->core->conf['conf']['path']; ?>/intake"><strong> 1. View current intake possibilities for applying students</strong></a></br>
+			<a href="<? echo $this->core->conf['conf']['path']; ?>/intake/register"><strong> 2. Registration of existing students</strong></a></p>
 		</div>
 	</div>
 

@@ -73,7 +73,13 @@ class home {
 		$this->core->logEvent("Initializing info-sheet", "3");
 
 		$sql = "SELECT * FROM `basic-information` as bi, `access` as ac WHERE ac.`ID` = '" . $this->core->userID . "' AND ac.`ID` = bi.`ID`";
+
 		$run = $this->core->database->doSelectQuery($sql);
+
+		if ($run->num_rows == 0) {
+			$this->core->throwSuccess("Please take the time to enter your profile information first, you can do this <a href='". $this->core->conf['conf']['path'] ."/information/edit/personal'>here</a>.");
+		}
+
 
 		while ($row = $run->fetch_row()) {
 
@@ -86,8 +92,14 @@ class home {
 			$nrc = $row[5];
 			$studytype = $row[22];
 
+			$username = $row[22];
+
+			if(empty($firstname) && empty($lastname)){
+				$this->core->throwSuccess("Please take the time to enter your profile information first, you can do this <a href='". $this->core->conf['conf']['path'] ."/information/edit/personal'>here</a>.");
+			}
+
 			echo '<div class="greeter">Welcome ' . $firstname . ' ' . $surname . ' </div><div class="homecontainers">
-                <table width="600" border="0" cellpadding="0" cellspacing="0"><tr>';
+               	 <table width="600" border="0" cellpadding="0" cellspacing="0"><tr>';
 
 			if ($this->core->role < 100) {
 				echo '<td  width="117">Student number</td>';
@@ -99,8 +111,12 @@ class home {
 			echo '<tr><td>Current role</td> <td>' . $this->core->roleName . '</td></tr>';
 			echo '<tr><td>Selected template</td> <td>' . $this->core->template . '</td></tr>';
 
-			$sql = "SELECT * FROM `access` as ac, `student-study-link` as ss, `study` as st, `student-program-link` as pl WHERE ac.`ID` = '" . $this->core->userID . "' AND ss.`StudyID` = st.`ID` AND pl.`StudentID` = $nrc AND ss.`StudentID` = $nrc";
-
+			$sql = "SELECT * FROM `access` as ac, `study` as st
+				LEFT JOIN  `student-study-link` as ss ON ss.`StudentID` = ''
+				LEFT JOIN  `student-program-link` as pl ON pl.`StudentID` = '$nrc'
+				WHERE ac.`ID` = '' 
+				AND ss.`StudyID` = st.`ID`";
+	
 			$run = $this->core->database->doSelectQuery($sql);
 
 			while ($row = $run->fetch_row()) {
@@ -109,9 +125,9 @@ class home {
 				$study = $row[14];
 
 				echo '<tr>
-                        <td>Selected study</td>
-                        <td><b><a href="' . $this->core->conf['conf']['path'] . 'studies/view/' . $row[8] . '">' . $study . '</a></b></td>
-                        </tr>';
+                        	td>Selected study</td>
+                        	td><b><a href="' . $this->core->conf['conf']['path'] . '/studies/view/' . $row[8] . '">' . $study . '</a></b></td>
+                        	/tr>';
 
 				$sql = "SELECT * FROM `programmes` as pr WHERE pr.`ID` = '$row[23]' OR pr.`ID` = '$row[24]'";
 				$run = $this->core->database->doSelectQuery($sql);
@@ -142,11 +158,12 @@ class home {
                                 <td>' . $programme . '</td>
                                 </tr>';
 				}
-
 			}
+
+			echo '</table></div>';
+
 		}
 
-		echo '</table></div>';
 	}
 
 	function newsoverview() {
@@ -157,7 +174,7 @@ class home {
 		echo '<div class="newscontainers">	<h2>News and updates</h2> <p>';
 
 		while ($row = $run->fetch_row()) {
-			echo ' <li> <b><a href="' . $this->core->conf['conf']['path'] . 'item/' . $row[0] . '">' . $row[1] . '</a></b></li>';
+			echo ' <li> <b><a href="' . $this->core->conf['conf']['path'] . '/item/' . $row[0] . '">' . $row[1] . '</a></b></li>';
 		}
 
 		echo '</p></div>';
@@ -172,7 +189,7 @@ class home {
 		echo '<div class="welcomecontainers">';
 
 		if ($this->core->role == 1000) {
-			echo '<div style="float: right;"><a href="' . $this->core->conf['conf']['path'] . 'item/edit/' . $id . '">edit</a></div>';
+			echo '<div style="float: right;"><a href="' . $this->core->conf['conf']['path'] . '/item/edit/' . $id . '">edit</a></div>';
 		}
 
 		while ($row = $run->fetch_row()) {

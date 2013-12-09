@@ -1,7 +1,25 @@
-<form id="addstudy" name="addstudy" method="post" action="/studies&action=save">
-	<p>
-		<b>This form creates a new study, the start and end of intake determine the days online registration will be
-			open</b>
+<script type="text/javascript">
+
+jQuery(document).ready(function(){
+
+	jQuery(function() {
+		jQuery('.datepicker').datepicker({
+			dateFormat : 'yy-mm-dd'
+		});
+	});	
+
+	jQuery('select').ddslick({width:280, height:300,
+	    onSelected: function(selectedData){
+	        console.log(selectedData.selectedData.text);
+	    }
+	});
+
+});
+
+</script>
+
+<form id="addstudy" name="addstudy" method="post" action="<? echo $this->core->conf['conf']['path'] . "/studies/save/" . $this->core->item; ?>">
+	<p>This form creates a new study, the start and end of intake determine the days online registration will be open
 	</p>
 
 	<p>
@@ -50,19 +68,21 @@
 			<td>Type of study</td>
 			<td><select name="studytype">
 
-					<option value="1">Bachelor of art</option>
-					<option value="2">Bachelor of Engineering</option>
-					<option value="3">Bachelor of science</option>
-					<option value="4">Diploma maths and science</option>
-					<option value="5">Diploma other than maths and science</option>
-					<option value="6">Doctor</option>
-					<option value="7">Licentiate</option>
-					<option value="8">Master of art</option>
-					<option value="9">Master of Business Administration</option>
-					<option value="10">Master of Engineering Science</option>
-					<option value="11">Master of science</option>
-					<option value="12">Master of Science Engineering</option>
-					<option value="13">Secondary school</option>
+				<option value="14">Bachelor of Education</option>
+				<option value="1">Bachelor of Arts</option>
+				<option value="2">Bachelor of Engineering</option>
+				<option value="3">Bachelor of Science</option>
+				<option value="3">Bachelor of Business Studies</option>
+				<option value="4">Diploma maths and science</option>
+				<option value="5">Diploma other than maths and science</option>
+				<option value="6">Doctor</option>
+				<option value="7">Licentiate</option>
+				<option value="8">Master of Art</option>
+				<option value="9">Master of Business Administration</option>
+				<option value="10">Master of Engineering Science</option>
+				<option value="11">Master of Science</option>
+				<option value="12">Master of Science Engineering</option>
+				<option value="13">Secondary school</option>
 
 				</select></td>
 			<td></td>

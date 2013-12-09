@@ -1,12 +1,11 @@
-<?php
-echo '<script type="text/javascript">
+<script type="text/javascript">
 	Aloha.ready( function() {
 		var $ = Aloha.jQuery;
-		$(\'.editable\').aloha();
+		$('.editable').aloha();
 	});
 </script>
 
-<form id="addschool" name="addschool" method="post" action="/schools&action=save">
+<form id="addschool" name="addschool" method="post" action="<? echo $this->core->conf['conf']['path'] . "/schools/save/" . $this->core->item; ?>">
 	<p>Please enter the following information</p>
 	<table width="768" border="0" cellpadding="5" cellspacing="0">
               <tr>
@@ -24,7 +23,7 @@ echo '<script type="text/javascript">
                 <td><strong>Dean/Rector of school</strong></td>
                 <td>
                   <select name="dean" id="dean">
-			' . $dean . '
+					<? echo $dean; ?>
                   </select></td>
                 <td>Functional head of school</td>
               </tr>
@@ -36,10 +35,9 @@ echo '<script type="text/javascript">
                 <td></td>
               </tr>
             </table>
-	<br />
+		<br />
 
 	  <input type="submit" class="submit" name="submit" id="submit" value="Create school" />
         <p>&nbsp;</p>
 
-      </form>';
-?>
+      </form>

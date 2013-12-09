@@ -32,16 +32,37 @@ class menuConstruct {
 
 		$menu = NULL;
 		
-		$sql = "SELECT * 
-		FROM `permission-link`, `permissions`, `pages`, `page-segment` 
-		WHERE `pages`.`PageSegmentID` =  `page-segment`.`ID`
-		AND `page-segment`.`SegmentRequiredPermission` = `permission-link`.`ID`
-		AND `permission-link`.`PermissionsRangeID` =  `permissions`.`ID` 
-		AND `permissions`.`RequiredRoleMin` <= " . $this->core->role . "
-		AND `permissions`.`RequiredRoleMax` <= " . $this->core->role . "
-		ORDER BY `page-segment`.`SegmentPosition`,  `pages`.`PagePosition`";
+		if($this->core->role < 1000){
+			$sql = "SELECT * 
+			FROM `permission-link`, `permissions`, `pages`, `page-segment` 
+			WHERE `pages`.`PageSegmentID` =  `page-segment`.`ID`
+			AND `page-segment`.`SegmentRequiredPermission` = `permission-link`.`ID`
+			AND `permission-link`.`PermissionsRangeID` =  `permissions`.`ID` 
+			AND `permissions`.`RequiredRoleMin` <= " . $this->core->role . "
+			AND " . $this->core->role . " <= `permissions`.`RequiredRoleMax`
+			ORDER BY `page-segment`.`SegmentPosition`,  `pages`.`PagePosition`";
+			
+		}else{
+			$sql = "SELECT * 
+			FROM `permission-link`, `permissions`, `pages`, `page-segment` 
+			WHERE `pages`.`PageSegmentID` =  `page-segment`.`ID`
+			AND `page-segment`.`SegmentRequiredPermission` = `permission-link`.`ID`
+			AND `permission-link`.`PermissionsRangeID` =  `permissions`.`ID` 
+			ORDER BY `page-segment`.`SegmentPosition`,  `pages`.`PagePosition`";
+			
+		}
 
 		$run = $this->core->database->doSelectQuery($sql);
+
+		$menu .= '<div class="menubar">';
+		$menu .= '<div class="menuusr"><strong>' . $this->core->username . '</strong> <i>(' . $this->core->roleName . ')</i> </div>';
+
+		if ($run->num_rows == 0) {
+			$menu .= '</div>';
+			return $menu;
+		}
+
+
 		$currentSegment = NULL;
 
 		while ($fetch = $run->fetch_assoc()) {
@@ -51,9 +72,6 @@ class menuConstruct {
 			$pageName = $fetch['PageName'];
 
 			if (!isset($currentSegment)) {
-
-				$menu .= '<div class="menubar">';
-				$menu .= '<div class="menuusr"><strong>' . $this->core->username . '</strong> <i>(' . $this->core->roleName . ')</i> </div>';
 
 				$menu .= $this->segmentHeader($segmentName);
 

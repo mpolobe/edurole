@@ -44,6 +44,10 @@ class schools {
 		$sql = "SELECT * FROM `schools` WHERE ID = $item";
 		$run = $this->core->database->doSelectQuery($sql);
 
+		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
+		$select = new optionBuilder($this->core);
+		$dean = $select->showUsers("100", null);
+		
 		while ($fetch = $run->fetch_row()) {
 			include $this->core->conf['conf']['formPath'] . "editschool.form.php";
 		}
@@ -58,7 +62,6 @@ class schools {
 		echo component::generateTitle($title, $description);
 
 		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
-		
 		$select = new optionBuilder($this->core);
 		$dean = $select->showUsers("100", null);
 	
@@ -74,12 +77,12 @@ class schools {
 	}
 
 	function saveSchool() {
-		$item = $this->core->cleanPost['item'];
+		$item = $this->core->item;
 		$name = $this->core->cleanPost['name'];
 		$dean = $this->core->cleanPost['dean'];
 		$description = $this->core->cleanPost['description'];
 
-		if (isset($item)) {
+		if (!empty($item)) {
 			$sql = "UPDATE `schools` SET `Description` = '$description', `Name` = '$name', `Dean` = '$dean' WHERE `ID` = $item;";
 		} else {
 			$sql = "INSERT INTO `schools` (`ID`, `ParentID`, `Established`, `Name`, `Description`, `Dean`) VALUES (NULL, '0', CURRENT_DATE(), '$name', '$description', '$dean');";
@@ -90,7 +93,7 @@ class schools {
 		$this->listSchools();
 	}
 
-	function listSchools($item) {
+	function listSchools($item = null) {
 		$function = __FUNCTION__;
 		$title = 'Overview of schools';
 		$description = 'The following schools currently exist in the system';
@@ -98,7 +101,11 @@ class schools {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		$sql = "SELECT * FROM `schools`,`access`,`basic-information` WHERE Dean = `access`.ID AND `access`.ID = `basic-information`.ID ORDER BY Name";
+		$sql = "SELECT * FROM `schools` 
+			LEFT JOIN `access` ON Dean = `access`.ID
+			LEFT JOIN `basic-information` ON `access`.ID = `basic-information`.ID 
+			ORDER BY Name";
+
 		$run = $this->core->database->doSelectQuery($sql);
 
 		echo'<div class="toolbar"><a href="' . $this->core->conf['conf']['path'] . '/schools/add">Add school</a></div>
@@ -120,15 +127,14 @@ class schools {
 				$i--;
 			}
 
-			echo '<tr ' . $bgc . '>
-                    <td><b><a href="' . $this->core->conf['conf']['path'] . '/schools/view/' . $fetch[0] . '"> ' . $fetch[3] . '</a></b></td>' .
-				'<td><a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $fetch[14] . '">' . $fetch[10] . ' ' . $fetch[12] . '</a></td>' .
-				'<td>
+			echo'<tr ' . $bgc . '>
+                <td><b><a href="' . $this->core->conf['conf']['path'] . '/schools/view/' . $fetch[0] . '"> ' . $fetch[3] . '</a></b></td>
+				<td><a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $fetch[14] . '">' . $fetch[10] . ' ' . $fetch[12] . '</a></td>
+				<td>
 				<a href="' . $this->core->conf['conf']['path'] . '/schools/edit/' . $fetch[0] . '"> <img src="'.$this->core->fullTemplatePath.'/images/edi.png"> edit</a>
-                    <a href="' . $this->core->conf['conf']['path'] . '/schools/delete/' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="'.$this->core->fullTemplatePath.'/images/del.png"> delete </a>
-                    </td>
-                    </tr>';
-
+                <a href="' . $this->core->conf['conf']['path'] . '/schools/delete/' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="'.$this->core->fullTemplatePath.'/images/del.png"> delete </a>
+                </td>
+                </tr>';
 		}
 
 		echo '</table>';

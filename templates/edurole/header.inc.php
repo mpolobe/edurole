@@ -26,5 +26,5 @@ if(isset($this->jsConflict)){
 
 </head>
 <body>
- <div class="headercenter"><a href="."><img src="<? echo $this->core->conf['conf']['path']; ?>/templates/edurole/images/header.png" /></a></div>
+ <div class="headercenter"><a href="<? echo $this->core->conf['conf']['path']; ?>"><img src="<? echo $this->core->fullTemplatePath; ?>/images/header.png" /></a></div>
 		<div class="bodycontainer">

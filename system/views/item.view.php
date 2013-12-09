@@ -8,8 +8,8 @@ class item {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
 		$this->view->menu = TRUE;
-		$this->view->javascript = array(3);
-		$this->view->css = array(4);
+		$this->view->javascript = array('require', 'aloha');
+		$this->view->css = array('aloha');
 
 		return $this->view;
 	}
@@ -17,7 +17,7 @@ class item {
 	public function buildView($core) {
 		$this->core = $core;
 
-		$item = $this->core->cleanGet['item'];
+
 
 		if (empty($this->core->action)) {
 
@@ -28,16 +28,16 @@ class item {
 			echo $this->core->breadcrumb->generate(get_class(), $function);
 			echo component::generateTitle($title, $description);
 
-			$this->showItem($item);
+			$this->showItem($this->core->item);
 			$this->showNewsOverview();
 
 		} elseif ($this->core->action == "edit" && $this->core->role > 102) {
 
-			$this->edit($item);
+			$this->edit($this->core->item);
 
 		} elseif ($this->core->action == "save" && $this->core->role > 102) {
 
-			$this->editsave($item);
+			$this->editsave($this->core->item);
 
 		}
 	}
@@ -98,10 +98,15 @@ class item {
 			</script>";
 		}
 
+		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
+		$select = new optionBuilder($this->core);
+		$manager = $select->showUsers("100", null);
+		
 		while ($row = $run->fetch_row()) {
-			echo ' <p class="title2">Editing News Item</p> <p><b>Remember to click save</b><form name="form1" method="post" action="mo.php/save&atat="><input type=hidden name=filename value=>
-			<input name="itemname" class="editable" value="' . $row[1] . '"> <br> <textarea name="item" rows="30" cols="105" class="editable">
-			' . $row[2] . '</textarea>';
+			$name =  $row[1];
+			$content = $row[2];
+				
+			include $this->core->conf['conf']['formPath'] . "edititem.form.php";
 		}
 
 		echo '</div>';

@@ -22,20 +22,22 @@ class users {
 			$this->addUser();
 		} elseif ($this->core->action == "save" && $this->core->role >= 100) {
 			$this->saveUser();
-		} elseif ($this->core->action == "delete" && isset($this->core->item) && $core->role >= 100) {
+		} elseif ($this->core->action == "delete" && isset($this->core->item) && $this->core->role > 104) {
 			$this->deleteUser($this->core->item);
 		} else if ($this->core->role >= 100 & $this->core->action == "students") {
 			$this->showStudentList();
-		} else if ($this->core->action == "saveedit") {
-			$this->saveEdit();
-		} elseif ($this->core->action == "password" && isset($core->role)) {
-			$this->changePassword();
+		} elseif ($this->core->action == "password" && isset($core->role) && $this->core->role < 100 ) {
+			$this->changePassword($this->core->username, FALSE);
+		} elseif ($this->core->action == "password" && isset($core->role) && $this->core->role == 1000 && isset($this->core->item)) {
+			$this->changePassword($this->core->item, TRUE);
+		} elseif ($this->core->action == "password" && isset($core->role) && $this->core->role == 1000 && !isset($this->core->item)) {
+			$this->changePassword($this->core->username, FALSE);
 		} else if ($core->role >= 100) {
 			$this->showUserList();
 		}
 	}
 
-	public function changePassword() {
+	public function changePassword($item, $admin) {
 		$function = __FUNCTION__;
 
 		$oldpass = $this->core->cleanPost["oldpass"];
@@ -50,14 +52,14 @@ class users {
 
 		$auth = new auth($this->core);
 		
-		if (!empty($newpass) && !empty($oldpass)) {
+		if (!empty($newpass)) {
 
 			if ($newpass == $newpasscheck) {
 
-				if (!$auth->ldapChangePass($this->core->username, $oldpass, $newpass)) {
+				if (!$auth->ldapChangePass($item, $oldpass, $newpass)) {
 					$ldap = false;
 				}
-				if ($auth->mysqlChangePass($this->core->username, $oldpass, $newpass) == false && $ldap == false) {
+				if ($auth->mysqlChangePass($item, $oldpass, $newpass, $admin) == false && $ldap == false) {
 					$this->core->throwError("The information you have entered is incorrect.");
 				}
 
@@ -80,8 +82,16 @@ class users {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		include $this->core->conf['conf']['classPath'] . "adduser.inc.php";
-		$this->addUser();
+		$this->addUserSave();
+	}
+
+	public function password($length, $charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1') {
+		$str = '';
+		$count = strlen($charset);
+		while ($length--) {
+			$str .= $charset[mt_rand(0, $count - 1)];
+		}
+		return $str;
 	}
 
 	function addUser() {
@@ -91,7 +101,81 @@ class users {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
+		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
+
+		$select = new optionBuilder($this->core);
+		$roles = $select->showRoles();
+
 		include $this->core->conf['conf']['formPath'] . "adduser.form.php";
+	}
+
+	public function addUserSave() {
+
+		$password = $this->password(6);
+
+		if ($this->core->cleanPost["otherdissability"]) {
+			$dissabilitytype = $this->core->cleanPost["otherdissability"];
+		}
+
+
+		// ADDUSER QUERY NEEDS PREPARED STATEMENT
+
+		// Fields user account
+		$username = $this->core->cleanPost["username"];
+		$firstname = $this->core->cleanPost["firstname"];
+		$middlename = $this->core->cleanPost["middlename"];
+		$surname = $this->core->cleanPost["surname"];
+		$sex = $this->core->cleanPost["sex"];
+		$id = $this->core->cleanPost["studentid"];
+		$day = $this->core->cleanPost["day"];
+		$month = $this->core->cleanPost["month"];
+		$year = $this->core->cleanPost["year"];
+		$pob = $this->core->cleanPost["pob"];
+		$nationality = $this->core->cleanPost["nationality"];
+		$streetname = $this->core->cleanPost["streetname"];
+		$postalcode = $this->core->cleanPost["postalcode"];
+		$town = $this->core->cleanPost["town"];
+		$country = $this->core->cleanPost["country"];
+		$homephone = $this->core->cleanPost["homephone"];
+		$celphone = $this->core->cleanPost["celphone"];
+		$dissability = $this->core->cleanPost["dissability"];
+		$mstatus = $this->core->cleanPost["mstatus"];
+		$email = $this->core->cleanPost["email"];
+		$dissabilitytype = $this->core->cleanPost["dissabilitytype"];
+		$status = $this->core->cleanPost["status"];
+		$roleid = $this->core->cleanPost["role"];
+		$studytype = $this->core->cleanPost["studytype"];
+
+		$sql = "INSERT INTO `basic-information` (`FirstName`, `MiddleName`, `Surname`, `Sex`, `ID`, `GovernmentID`, `DateOfBirth`, `PlaceOfBirth`, `Nationality`, `StreetName`, `PostalCode`, `Town`, `Country`, `HomePhone`, `MobilePhone`, `Disability`, `DissabilityType`, `PrivateEmail`, `MaritalStatus`, `StudyType`, `Status`) VALUES ('$firstname', '$middlename', '$surname', '$sex', NULL, '$id', '$year-$month-$day', '$pob', '$nationality', '$streetname', '$postalcode', '$town', '$country', '$homephone', '$celphone', '$dissability', '$dissabilitytype', '$email', '$mstatus', '$studytype', 'Employed');";
+
+		if ($this->core->database->doInsertQuery($sql)) {
+
+			$sql = "SELECT * FROM `basic-information` WHERE `GovernmentID` = '$id'";
+			$run = $this->core->database->doSelectQuery($sql);
+
+			while ($fetch = $run->fetch_row()) {
+
+				$passenc = $this->hashPassword($username, $password);
+
+				$sql = "INSERT INTO `access` (`ID`, `Username`, `RoleID`, `Password`) VALUES ('$fetch[4]', '$username', '$roleid', '$passenc');";
+				$this->core->database->doInsertQuery($sql);
+
+				echo '<div class="successpopup">The requested user account has been created.<br/> WRITE THE FOLLOWING INFORMATION DOWN OR REMEMBER IT!</div>';
+				echo '<div class="successpopup">Username:  <b>' . $username . '</b><br>Password:  <b>' . $password . '</b></div>';
+
+			}
+
+		} else {
+
+			$this->core->throwError('An error occurred with the information you have entered. Please return to the form and verify your information. <a a href="javascript:" onclick="history.go(-1); return false">Go back</a>');
+
+		}
+
+	}
+
+	public function hashPassword($username, $password){
+		$passwordHashed = hash('sha512', $password . $this->core->conf['conf']['hash'] . $username);
+		return $passwordHashed;
 	}
 
 	function showUserList() {
@@ -102,6 +186,10 @@ class users {
 
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
+
+		echo '<div class="toolbar">
+			<a href="' . $this->core->conf['conf']['path'] . '/users/add">Add new user account</a>
+			</div>'; 
 
 		echo '<table width="768" height="" border="0" cellpadding="3" cellspacing="0">
 		<tr class="tableheader">
@@ -121,6 +209,13 @@ class users {
 			$firstname = $row[0];
 			$middlename = $row[1];
 			$surname = $row[2];
+
+			$username = $row[22];
+
+			if(empty($firstname) && empty($lastname)){
+				$firstname = $username;
+			}
+
 			$sex = $row[3];
 			$uid = $row[4];
 			$nrc = $row[5];
@@ -157,7 +252,13 @@ class users {
 		<td><b> Options</b></td>
 		</tr>';
 
-		$sql = "SELECT * FROM `basic-information`, `access`, `roles` WHERE `access`.`ID` = `basic-information`.`ID` AND `access`.`RoleID` = `roles`.`ID` AND `access`.`RoleID` = 10 ORDER BY Surname";
+		$sql = "SELECT * FROM `basic-information` 
+			LEFT JOIN `access` ON `access`.`ID` = `basic-information`.`ID` 
+			LEFT JOIN `roles` ON `roles`.`ID` = `access`.`RoleID` 
+			WHERE `basic-information`.`Status` = 'Distance' 
+			OR `basic-information`.`StudyType` = 'Fulltime' 
+			ORDER BY `Surname`";
+
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($row = $run->fetch_row()) {
@@ -185,12 +286,13 @@ class users {
 	}
 
 	function deleteUser($id) {
-		$sql = 'START TRANSACTION; 
-			DELETE FROM `basic-information`  WHERE `ID` = "' . $id . '";
-			DELETE FROM `access`  WHERE `ID` = "' . $id . '";
-			COMMIT;';
-
+		$sql = 'UPDATE `basic-information` SET `Status` = "Removed" WHERE `ID` = "' . $id . '";';
 		$run = $this->core->database->doInsertQuery($sql);
+
+		$sql = 'DELETE FROM `access`  WHERE `ID` = "' . $id . '";';
+		$run = $this->core->database->doInsertQuery($sql);
+
+		$this->core->logEvent("Removed user $id", "4");
 
 		$this->showUserList();
 		$this->core->showAlert("The account has been deleted");

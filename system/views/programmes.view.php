@@ -43,10 +43,21 @@ class programmes {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 		
-		$sql = "SELECT `programmes`.ID, ProgramName, ProgramCoordinator, ProgramType, `basic-information`.ID, FirstName, Surname FROM `programmes`, `basic-information` WHERE `programmes`.ID = $item AND ProgramCoordinator = `basic-information`.ID";
+		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
+		$sql = "SELECT  `programmes`.ID, ProgramName, ProgramCoordinator, ProgramType, `basic-information`.ID, FirstName, Surname 
+			FROM `programmes`
+			LEFT JOIN `basic-information`
+			ON ProgramCoordinator = `basic-information`.ID
+			WHERE `programmes`.ID = $item";
+
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($fetch = $run->fetch_row()) {
+			$select = new optionBuilder($this->core);
+			$users = $select->showUsers("100", $fetch[4]);
+			$notselectedcourses = $select->showCourses();
+			$selectedcourses = $select->showCourses($fetch[0]);
+
 			include $this->core->conf['conf']['formPath'] . "editprogramme.form.php";
 		}
 
@@ -70,7 +81,7 @@ class programmes {
 
 	function deleteProgram($item) {
 		$sql = 'DELETE FROM `programmes`  WHERE `ID` = "' . $item . '"';
-		$run = $this->database->doInsertQuery($sql);
+		$run = $this->core->database->doInsertQuery($sql);
 
 		$this->listProgrammes();
 		$this->core->showAlert("The programme has been deleted");
@@ -82,25 +93,26 @@ class programmes {
 		$type = $this->core->cleanPost['programtype'];
 		$coordinator = $this->core->cleanPost['coordinator'];
 		$description = $this->core->cleanPost['description'];
+
 		$selected = $this->core->cleanPost['selected'];
 		$nselected = $this->core->cleanPost['nselected'];
 
-		if (isset($nselected)) {
+		if (!empty($nselected)) {
 			foreach ($nselected as $nsel) {
 				$sql = "INSERT INTO `program-course-link` (`ID`, `ProgramID`, `CourseID`, `Manditory`, `Year`) VALUES (NULL, '$item', '$nsel', '', '');";
-				$run = $this->database->doInsertQuery($sql);
+				$run = $this->core->database->doInsertQuery($sql);
 			}
-		} elseif (isset($selected)) {
+		} elseif (!empty($selected)) {
 			foreach ($selected as $sel) {
 				$sql = "DELETE FROM `program-course-link` WHERE `ProgramID` = $item AND `CourseID` = $sel";
-				$run = $this->database->doInsertQuery($sql);
+				$run = $this->core->database->doInsertQuery($sql);
 			}
-		} elseif (isset($item)) {
+		} elseif (!empty($item)) {
 			$sql = "UPDATE `edurole`.`programmes` SET `ProgramType` = '$type', `ProgramName` = '$name', `ProgramCoordinator` = '$coordinator' WHERE `programmes`.`ID` = $item;";
-			$run = $this->database->doInsertQuery($sql);
+			$run = $this->core->database->doInsertQuery($sql);
 		} else {
 			$sql = "INSERT INTO `programmes` (`ID`, `ProgramType`, `ProgramName`, `ProgramCoordinator`) VALUES (NULL, '$type', '$name', '$coordinator');";
-			$run = $this->database->doInsertQuery($sql);
+			$run = $this->core->database->doInsertQuery($sql);
 		}
 	}
 
@@ -119,14 +131,14 @@ class programmes {
 		}
 
 		$run = $this->core->database->doSelectQuery($sql);
-		echo '<div class="toolbar"><a href="' . $this->core->conf['conf']['path'] . '/programmes/add">Add programme</a></div>
-                <table width="768" height="" border="0" cellpadding="3" cellspacing="0">
-                <tr class="tableheader">
-                <td><b>Programme name</b></td>' .
-			'<td><b>Number of Courses</b></td>' .
-			'<td><b>Programme Type</b></td>' .
-			'<td><b>Management tools</b></td>' .
-			'</tr>';
+		echo '<div class="toolbar"><a href="' . $this->core->conf['conf']['path'] . '/programmes/add">Add programme</a></div>' .
+              '<table width="768" height="" border="0" cellpadding="3" cellspacing="0">' .
+              '<tr class="tableheader">' .
+              '<td><b>Programme name</b></td>' .
+		'<td><b>Number of Courses</b></td>' .
+		'<td><b>Programme Type</b></td>' .
+		'<td><b>Management tools</b></td>' .
+		'</tr>';
 
 		$count = 0;
 		$first = 1;
@@ -136,7 +148,6 @@ class programmes {
 		while ($fetch = $run->fetch_row()) {
 
 			if ($first == 1) {
-				$temp = $fetch[0];
 				$first = 2;
 			}
 
@@ -167,6 +178,8 @@ class programmes {
 					$type = "Major & Minor";
 				} else if ($fetch[3] == "4") {
 					$type = "Compulsory";
+				} else if ($fetch[3] == "5") {
+					$type = "Diploma";
 				} else {
 					$type = "Unknown";
 				}
@@ -191,9 +204,11 @@ class programmes {
 		if ($count == 0) {
 			$count = "-";
 		}
+
 		echo $out . $count . $rest;
 
 		echo '</table>';
+			$temp = $fetch[0];
 	}
 
 
@@ -205,7 +220,7 @@ class programmes {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		$sql = "SELECT `programmes`.ID, ProgramName, ProgramCoordinator, ProgramType, `basic-information`.ID, FirstName, Surname FROM `programmes`, `basic-information` WHERE `programmes`.ID = $item AND ProgramCoordinator = `basic-information`.ID";
+		$sql = "SELECT * FROM `programmes` LEFT JOIN `basic-information` ON  ProgramCoordinator = `basic-information`.ID WHERE `programmes`.ID = '$item'";
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($fetch = $run->fetch_row()) {
@@ -218,27 +233,27 @@ class programmes {
 				  </tr>
 					<tr>
 					<td width="150"><b>Name of Programme</b></td>
-					<td><b>' . $fetch[1] . '</b></td>
+					<td><b>' . $fetch[2] . '</b></td>
 					<td></td>
 					</tr>
 					<tr>
 					<td width="150"><b>Programme Coordinator</b></td>
-					<td><a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $fetch[4] . '">' . $fetch[5] . ' ' . $fetch[6] . '</b></td>
+					<td><a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $fetch[8] . '">' . $fetch[4] . ' ' . $fetch[6] . '</b></td>
 					<td></td>
 					</tr>
 					<tr><td>Programme Type</td>
 					<td>';
 
-			if ($fetch[3] == "0") {
+			if ($fetch[1] == "0") {
 				echo 'No type selected';
 			}
-			if ($fetch[3] == "1") {
+			if ($fetch[1] == "1") {
 				echo 'Minor';
 			}
-			if ($fetch[3] == "2") {
+			if ($fetch[1] == "2") {
 				echo 'Major';
 			}
-			if ($fetch[3] == "3") {
+			if ($fetch[1] == "3") {
 				echo 'Available as both';
 			}
 
@@ -253,9 +268,9 @@ class programmes {
 
 			$i = 1;
 
-			while ($fetch = $run->fetch_row()) {
+			while ($fetch = $run->fetch_assoc()) {
 
-				echo '<li><a href="' . $this->core->conf['conf']['path'] . 'courses/view/' . $fetch[0] . '">' . $fetch[2] . '</a></li>';
+				echo '<li><a href="' . $this->core->conf['conf']['path'] . 'courses/view/' . $fetch[0] . '">' . $fetch['Name'] . ' - ' . $fetch['CourseDescription'] . '</a></li>';
 				$i++;
 
 			}

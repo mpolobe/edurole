@@ -24,7 +24,6 @@ class auth {
 
 		} else {
 			$this->core->setViewError('Please enter all fields', 'Please <a href=".">return to the login page</a> and try again.');
-			var_dump($this->core);
 			$this->core->builder->initView("error");
 			return FALSE;
 		}
@@ -33,59 +32,110 @@ class auth {
 	}
 
 	private function authenticateLDAP($username, $password) {
-		if ($this->core->conf['ldap']['ldapEnabled'] == TRUE) {
+		if ($this->core->conf['ldap']['ldapEnabled'] == TRUE && function_exists('ldap_connect')) {
 
-			if (is_numeric($username)) { //Student usernames are numeric
-				$ou = $this->core->conf['ldap']['studentou']; //Use student OU
+			if (is_numeric($username)) {
+				$ou = $this->core->conf['ldap']['studentou'];
 			} else {
 				$ou = $this->core->conf['ldap']['staffou'];
 			}
 
-			if (function_exists('ldap_connect')) {
+			$ldapconn = ldap_connect($this->core->conf['ldap']['server'], $this->core->conf['ldap']['port']);
+			$this->accounting->sysLog($message, $level);
+			ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
 
-				$ldapconn = ldap_connect($this->core->conf['ldap']['server'], $this->core->conf['ldap']['port']);
-				ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
+			$ldapbind = @ldap_bind($ldapconn, "uid=" . $username . "," . $ou, $password);
 
-				$ldapbind = @ldap_bind($ldapconn, "uid=" . $username . "," . $ou, $password);
+			if ($ldapbind) {
 
-				if ($ldapbind) { //successful login
-				
-					$this->core->logEvent("User '$username' authenticated successfully", "3");
-					$this->authenticateSQL($username, $password);
-					return TRUE;
+				$this->core->logEvent("User '$username' authenticated successfully", "4");
+				return $this->authenticateAccess($username, $password);
 					
-				} else {
-				
-					$this->core->logEvent("User '$username' authentication failed", "2");
-					return FALSE;
-					
-				}
-
 			} else {
-				$this->core->logEvent("PHP-LDAP module missing or not enabled", "1");
+				
+				$this->core->logEvent("User '$username' authentication failed", "4");
+				return FALSE;
+					
 			}
 
+		} else {
+			$this->core->logEvent("PHP-LDAP module missing or not enabled", "1");
 		}
 		
 		return FALSE;
 	}
 
-	private function authenticateSQL($username, $password) {
+	private function authenticateAccess($username, $password, $nologin = FALSE) {
+	
+		$passwordHashed = $this->hashPassword($username, $password);
 
+		$sql = "SELECT RoleID FROM `access` LEFT JOIN `roles` ON `access`.`RoleID` = `roles`.`ID` WHERE Username = '$username'";
+		$run = $this->core->database->doSelectQuery($sql);
+
+		if ($run->num_rows == 0) {
+
+			$this->core->logEvent("User '$username' not present in ACCESS table, perhaps added through LDAP, now adding", "3");
+
+			if (is_numeric($username)) {
+				$roleID = "10";
+				$sql = "INSERT INTO `access` (`ID`, `Username`, `RoleID`, `Password`) VALUES ('$username', '$username', '$roleID', '$passwordHashed');";
+			} else {
+				$roleID = "101";
+				$sql = "INSERT INTO `access` (`ID`, `Username`, `RoleID`, `Password`) VALUES (NULL, '$username', '$roleID', '$passwordHashed');";
+				$this->core->database->doInsertQuery($sql);
+			}
+
+			$this->core->database->doInsertQuery($sql);
+
+		}
+
+		$sql = "SELECT `access`.RoleID, `access`.ID FROM `access` LEFT JOIN `roles` ON `access`.`RoleID` = `roles`.`ID` WHERE Username = '$username'";
+		$mbs = $this->core->database->doSelectQuery($sql);
+
+		while ($row = $mbs->fetch_assoc()) {
+
+			$roleID = $row['RoleID'];
+			$userID = $row['ID'];
+			$rolename = $this->role($roleID);
+
+			$sql = "SELECT * FROM `basic-access` WHERE `ID` = '$userID'";
+			$mkb = $this->core->database->doSelectQuery($sql);
+	
+			if ($mkb->num_rows == 0) {
+				$sql = "INSERT INTO `basic-information` (`FirstName`, `MiddleName`, `Surname`, `Sex`, `ID`, `GovernmentID`, `DateOfBirth`, `PlaceOfBirth`, `Nationality`, `StreetName`, `PostalCode`, `Town`, `Country`, `HomePhone`, `MobilePhone`, `Disability`, `DissabilityType`, `PrivateEmail`, `MaritalStatus`, `StudyType`, `Status`) 
+					VALUES (NULL, NULL, NULL, NULL, NULL, '$id', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Employed');";
+
+				$this->core->database->doInsertQuery($sql);
+			}
+
+		}
+
+
+		return $this->authenticateSession($username, $password, $userID, $roleID, $rolename, FALSE);
+
+	}
+
+	public function hashPassword($username, $password){
 		$passwordHashed = hash('sha512', $password . $this->core->conf['conf']['hash'] . $username);
-		
+		return $passwordHashed;
+	}
+
+	private function authenticateSQL($username, $password, $nologin = FALSE) {
+	
+		$passwordHashed = hash('sha512', $password . $this->core->conf['conf']['hash'] . $username);
+
 		$sql = "SELECT access.ID as UserID, RoleID FROM `access` LEFT JOIN `basic-information` ON `basic-information`.`ID`=`access`.`Username` WHERE `access`.Username = '$username' AND `access`.Password = '$passwordHashed'";
 		$run = $this->core->database->doSelectQuery($sql);
 
 		if ($run->num_rows > 0) { //successful login
-			$this->core->logEvent("User '$username' authenticated successfully", "3");
+			$this->core->logEvent("User '$username' authenticated successfully", "4");
 			
 			while ($row = $run->fetch_assoc()) {
 				$userID = $row['UserID'];
 				$role = $row['RoleID'];
 				$rolename = $this->role($role);
 								
-				if(empty($role)) {
+				if(empty($role) || $role==0) {
 					// User does not have any permissions
 					$this->core->setViewError('Unauthorized access', "You do not have permissions to access this system, please contact the academic office", "LOGIN");
 					$this->core->builder->initView("error");
@@ -97,7 +147,12 @@ class auth {
 			return FALSE;
 		}
 
-		if(isset($username, $password, $userID, $role, $rolename)){
+		return $this->authenticateSession($username, $password, $userID, $role, $rolename, $nologin);
+	}
+
+	private function authenticateSession($username, $password, $userID, $role, $rolename, $nologin = FALSE) {
+
+		if(isset($username, $password, $userID, $role, $rolename) && $nologin == FALSE){
 		
 			$_SESSION['userid'] = $userID;
 			$_SESSION['username'] = $username;
@@ -111,7 +166,9 @@ class auth {
 			$this->core->setUserID($userID);
 			$this->core->setRoleName($rolename);
 			$this->core->setRole($role);
-		
+
+			return TRUE;
+		}else if($nologin == TRUE){
 			return TRUE;
 		} else {
 			return FALSE;
@@ -129,6 +186,8 @@ class auth {
 	}
 
 	public function ldapChangePass($username, $oldpass, $newpass) {
+
+		if (function_exists('ldap_connect')) {
 
 		// Select correct organizational unit from LDAP tree configuration
 		if ($this->core->role > 1) {
@@ -155,6 +214,7 @@ class auth {
 			$userpassword = "{SHA}" . base64_encode(pack("H*", sha1($newpass)));
 			if (ldap_mod_replace($ldapconn, "uid=" . $username . "," . $ou, array('userpassword' => $userpassword))) {
 				echo "<p><h2>YOUR PASSWORD IS NOW CHANGED</h2></p>";
+				$this->core->logEvent("User '$username' changed password", "4");
 				return TRUE;
 			} else {
 				return FALSE;
@@ -165,33 +225,65 @@ class auth {
 			$this->core->throwError("Could not bind to LDAP server using user credentials.");
 		}
 
+		} else{
+
+			return FALSE;
+		}
 
 	}
 
-	public function mysqlChangePass($username, $oldpass, $newpass) {
 
-		if($this->authenticateSQL($username, $oldpass)){
-			
-			$newpass = hash('sha512', $newpass . $this->core->conf['conf']['hash'] . $username);
-			$oldpass = hash('sha512', $oldpass . $this->core->conf['conf']['hash'] . $username);
-			
-			$sql = "UPDATE `access` SET `Password` = '$newpass' WHERE `Username` = '$username' AND `Password` = '$oldpass'";
+	public function getUsername($item) {
+		$sql = "SELECT * FROM `access` WHERE `ID` = $item";
 
-			if ($this->core->database->doInsertQuery($sql)) {
-				$this->core->throwSuccess("Your password has been changed! The next time you log-in you will need to use your new password.");
-				return true;
-			} else {
+		$run = $this->core->database->doSelectQuery($sql);
+		$fetch = $run->fetch_assoc();
+
+		return $fetch['Username'];
+	}
+
+	public function getUserID($item) {
+		$sql = "SELECT * FROM `access` WHERE `Username` = '$item'";
+
+		$run = $this->core->database->doSelectQuery($sql);
+		$fetch = $run->fetch_assoc();
+
+		return $fetch['ID'];
+	}
+
+
+	public function mysqlChangePass($username, $oldpass, $newpass, $admin) {
+
+		if(!is_numeric($username)){
+			$id = $this->getUserID($username);
+		} else {
+			$id = $username;
+			$username = $this->getUsername($id);
+		}
+
+		if($admin != TRUE){
+			if(!$this->authenticateSQL($username, $oldpass)){
 				return false;
 			}
-			
+		}
+
+		$password = hash('sha512', $newpass . $this->core->conf['conf']['hash'] . $username);
+
+		$sql = "UPDATE `access` SET `Password` = '$password' WHERE `ID` = '$id'";
+
+		if ($this->core->database->doInsertQuery($sql)) {
+			if($this->authenticateSQL($username, $newpass, TRUE)){
+				$this->core->logEvent("User '$username' changed password", "4");
+				$this->core->throwSuccess("Your password has been changed! The next time you log-in you will need to use your new password.");
+				return TRUE;
+			}
 		} else {
 			return false;
 		}
-		
 	}
 
 	private function role($access) {
-		$sql = "SELECT * FROM `roles` WHERE RoleLevel LIKE '$access'";
+		$sql = "SELECT * FROM `roles` WHERE ID LIKE '$access'";
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($row = $run->fetch_assoc()) {

@@ -1,9 +1,11 @@
-<?php
-include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
+<script type="text/javascript">
+	Aloha.ready( function() {
+		var $ = Aloha.jQuery;
+		$('.editable').aloha();
+	});
+</script>
 
-$select = showUsers("100", null);
-
-echo '<form id="addschool" name="addschool" method="post" action="/schools&action=save">
+<form id="addcourse" name="addcourse" method="post" action="<? echo $this->core->conf['conf']['path'] . "/courses/save"; ?>">
 	<p>Please enter the following information</p>
 	<table width="768" border="0" cellpadding="5" cellspacing="0">
               <tr>
@@ -12,32 +14,38 @@ echo '<form id="addschool" name="addschool" method="post" action="/schools&actio
                 <td  bgcolor="#EEEEEE"><strong>Description</strong></td>
               </tr>
               <tr>
-                <td><strong>School name </strong></td>
+                <td><strong>Course name </strong></td>
                 <td>
                   <input type="text" name="name" /></td>
-                <td>Name of school</td>
+                <td>Name of course</td>
               </tr>
               <tr>
-                <td><strong>Dean/Rector of school</strong></td>
+                <td><strong>Course coordinator - Internal</strong></td>
                 <td>
-                  <select name="dean" id="dean">
-			' . $select . '
+                  <select name="internal" id="internal">
+			<? echo $internal; ?>
                   </select></td>
-                <td>Functional head of school</td>
+                <td>Functional head of course</td>
+              </tr>
+              <tr>
+                <td><strong>Course coordinator - Distance</strong></td>
+                <td>
+                  <select name="distance" id="distance">
+			<? echo $distance; ?>
+                  </select></td>
+                <td>Functional head of course</td>
               </tr>
               <tr>
                 <td><strong>Optional description</strong></td>
                 <td>
-			<textarea rows="4" cols="37" name="description"></textarea>
+			<textarea rows="4" cols="37" class="editable" name="description"></textarea>
 		  </td>
                 <td></td>
               </tr>
             </table>
 	<br />
 
-	  <input type="submit" class="submit" name="submit" id="submit" value="Create school" />
+	  <input type="submit" class="submit" name="submit" id="submit" value="Create course" />
         <p>&nbsp;</p>
 
-      </form>';
-
-?>
+      </form>

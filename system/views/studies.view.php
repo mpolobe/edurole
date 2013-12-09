@@ -9,15 +9,15 @@ class studies {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
 		$this->view->menu = TRUE;
-		$this->view->javascript = array(3);
-		$this->view->css = array(4);
+		$this->view->javascript = array('jquery.ui.datepicker');
+		$this->view->css = array('jquery.ui');
 
 		return $this->view;
 	}
 
 	public function buildView($core) {
 		$this->core = $core;
-				$this->view->menu = FALSE;
+
 		if (empty($this->core->action) && $this->core->role > 100) {
 			$this->listStudies($this->core->item);
 		} elseif ($this->core->action == "list" && $this->core->role > 100 || $this->core->action == "management" && $this->core->role > 100 ) {
@@ -29,7 +29,7 @@ class studies {
 		} elseif ($this->core->action == "add" && $this->core->role > 100) {
 			$this->addStudy();
 		} elseif ($this->core->action == "save" && $this->core->role > 100) {
-			$this->saveStudy();
+			$this->saveStudy($this->core->item);
 		} elseif ($this->core->action == "delete" && isset($this->core->item)) {
 			$this->deleteStudy($this->core->item);
 		}
@@ -43,10 +43,19 @@ class studies {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID AND `study`.ParentID = `schools`.ID AND `study`.ID = $item";
-		$run = $this->core->database->doInsertQuery($sql);
+		$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID AND `study`.ID = '$item'";
+		$run = $this->core->database->doSelectQuery($sql);
+
+
+		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
+		
+		$select = new optionBuilder($this->core);
+		$schools = $select->showSchools();
 
 		while ($fetch = $run->fetch_row()) {
+			$notselectedprogrammes = $select->showPrograms();
+			$selectedprogrammes = $select->showPrograms($fetch[0]);
+
 			include $this->core->conf['conf']['formPath'] . "editstudy.form.php";
 		}
 	}
@@ -68,14 +77,14 @@ class studies {
 	}
 
 	function deleteStudy($item) {
-		$sql = 'DELETE FROM `study`  WHERE `ID` = "' . $item . '"';
-		$run = $this->database->doInsertQuery($sql);
+		$sql = 'DELETE FROM `study` WHERE `ID` = "' . $item . '"';
+		$run = $this->core->database->doInsertQuery($sql);
 
 		$this->listStudies();
 		$this->core->showAlert("The study has been deleted");
 	}
 
-	function saveStudy() {
+	function saveStudy($item) {
 		$fullname = $this->core->cleanPost['fullname'];
 		$shortname = $this->core->cleanPost['shortname'];
 		$school = $this->core->cleanPost['school'];
@@ -88,33 +97,46 @@ class studies {
 		$maxintake = $this->core->cleanPost['maxintake'];
 		$intensity = $this->core->cleanPost['intensity'];
 		$description = $this->core->cleanPost['description'];
-		$item = $this->core->item;
 
-		if (isset($item)) {
+		$selected = $this->core->cleanPost['selected'];
+		$nselected = $this->core->cleanPost['nselected'];
+		
+		if (!empty($nselected)) {
+			foreach ($nselected as $nsel) {
+				$sql = "INSERT INTO `study-program-link` (`ID`, `StudyID`, `ProgramID`, `Manditory`, `Year`) VALUES (NULL, '$item', '$nsel', '', '');";
+				$run = $this->core->database->doInsertQuery($sql);
+			}
+		} elseif (!empty($selected)) {
+			foreach ($selected as $sel) {
+				$sql = "DELETE FROM `study-program-link` WHERE `StudyID` = $item AND `ProgramID` = $sel";
+				$run = $this->core->database->doInsertQuery($sql);
+			}
+		} elseif (!empty($item)) {
 			$sql = "UPDATE `edurole`.`study` SET `ParentID` = '$school', `IntakeStart` = '$startintake', `IntakeEnd` = '$endintake', `Delivery` = '$delivery', `IntakeMax` = '$maxintake', `Name` = '$fullname', `ShortName` = '$shortname', `Active` = '$active', `StudyType` = '$type', `TimeBlocks` = '$duration', `StudyIntensity` = '$intensity' WHERE `ID` = $item;";
+			$run = $this->core->database->doInsertQuery($sql);
 		} else {
 			$sql = "INSERT INTO `study` (`ID`, `ParentID`, `IntakeStart`, `IntakeEnd`, `Delivery`, `IntakeMax`, `Name`, `ShortName`, `Active`, `StudyType`, `TimeBlocks`, `StudyIntensity`) VALUES (NULL, '$school', '$startintake', '$endintake', '$delivery', '$maxintake', '$fullname', '$shortname', '$active', '$type', '$duration', '$intensity');";
-		}
+			$run = $this->core->database->doInsertQuery($sql);
 
-		$run = $this->core->database->doInsertQuery($sql);
+		}
 		
 		$this->listStudies();
 	}
 
-	public function listStudies($item) {
+	public function listStudies($item=null) {
 		$function = __FUNCTION__;
 		$title = 'Overview of studies';
 		$description = 'Overview of all studies';
 
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
-		echo '<div class="toolbar"><a href="' . $this->core->conf['conf']['path'] . '/studies/add">Add study</a></div>'. 
+		echo   '<div class="toolbar"><a href="' . $this->core->conf['conf']['path'] . '/studies/add">Add study</a></div>'. 
 			'<table width="768" height="" border="0" cellpadding="3" cellspacing="0"><tr class="tableheader"><td><b>Study</b></td>' .
 			'<td><b>School</b></td>' .
 			'<td><b>Management tools</b></td>' .
 			'</tr>';
 
-		if(isset($item)){
+		if(!empty($item)){
 			$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID AND `study`.ID = $item ORDER BY `study`.Name";
 		}else{
 			$sql = "SELECT `study`.ID, `study`.Name, `schools`.name, `schools`.id FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID ORDER BY `study`.Name";

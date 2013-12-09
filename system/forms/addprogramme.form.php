@@ -1,4 +1,11 @@
-<form id="editprogramme" name="editprogramme" method="post" action="/programmes&action=save">
+<script type="text/javascript">
+	Aloha.ready( function() {
+		var $ = Aloha.jQuery;
+		$('.editable').aloha();
+	});
+</script>
+
+<form id="addhousing" name="addhousing" method="post" action="<? echo $this->core->conf['conf']['path'] . "/programmes/save/" . $this->core->item; ?>">
 	<p>Please enter the following information</p>
         <table cellspacing="0" >
           <tr>
@@ -28,6 +35,8 @@
 		<option value="0">-choose-</option>
 		<option value="1">Minor</option>
 		<option value="2">Major</option>
+		<option value="5" >Diploma</option>
+		<option value="4" >Compulsory</option>
 		<option value="3" >Available as both</option>
 
 		</select></td>

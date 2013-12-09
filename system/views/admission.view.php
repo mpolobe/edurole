@@ -18,7 +18,7 @@ class admission {
 	public function buildView($core) {
 		$this->core = $core;
 
-		if (empty($this->core->action) && $this->core->role < 100 || $this->core->action == "profile" && isset($this->core->item)) {
+		if ($this->core->action == "profile" && isset($this->core->item)) {
 			$this->admissionProfile($this->core->item);
 		} elseif ($this->core->action == "promote" && $this->core->role >= 103 && isset($this->core->item)) {
 			$this->promote($this->core->item);
@@ -30,6 +30,8 @@ class admission {
 			$this->delete($this->core->item);
 		} elseif ($this->core->action == "complete" && $this->core->role >= 103 && isset($this->core->item)) {
 			$this->complete($this->core->item);
+		}else if (empty($this->core->action) && $this->core->role < 100) {
+			$this->admissionProfile($this->core->username);
 		} elseif (empty($this->core->action) && $this->core->role >= 103 || $this->core->action == "management" && $this->core->role >= 103) {
 			$this->admissionFlow();
 		}
@@ -38,7 +40,7 @@ class admission {
 	function admissionFlow() {
 		$function = __FUNCTION__;
 		$title = 'Admission management';
-		$description = 'Overview of all users with privileges higher than student';
+		$description = 'Overview of all students currently in admission';
 
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
@@ -47,7 +49,7 @@ class admission {
 		$this->admissionManagerDenied();
 	}
 
-	function admissionProfile() {
+	function admissionProfile($item) {
 
 		$function = __FUNCTION__;
 		$title = 'Student admission progress';
@@ -57,7 +59,7 @@ class admission {
 		echo component::generateTitle($title, $description);
 
 		if ($this->core->role < 100) {
-			$sql = "SELECT * FROM `basic-information` as bi, `roles` as rl, `access` as ac WHERE ac.`ID` = '" . $this->core->userid . "' AND ac.`ID` = bi.`ID` AND ac.`RoleID` = rl.`ID`";
+			$sql = "SELECT * FROM `basic-information` as bi, `roles` as rl, `access` as ac WHERE ac.`ID` = '" . $this->core->username . "' AND ac.`ID` = bi.`ID` AND ac.`RoleID` = rl.`ID`";
 		} else {
 			$sql = "SELECT * FROM `basic-information` as bi, `roles` as rl, `access` as ac WHERE ac.`ID` = '" . $this->core->item . "' AND ac.`ID` = bi.`ID` AND ac.`RoleID` = rl.`ID`";
 		}
@@ -67,6 +69,7 @@ class admission {
 	}
 
 	function complete($item) {
+
 		$sql = "UPDATE `access` SET `RoleID` = 10 WHERE `access`.`ID` = '" . $item . "'";
 		$run = $this->core->database->doInsertQuery($sql);
 
@@ -122,12 +125,17 @@ class admission {
 
 		echo '<p class="title1">Currently active admission requests</p> ';
 
-		$sql = "SELECT * FROM `basic-information`, `access`, `student-study-link`, `study` WHERE `access`.`ID` = `basic-information`.`ID` AND  `access`.`RoleID` < 10 AND  `access`.`ID` = `student-study-link`.`StudentID` AND `student-study-link`.`StudyID` = `study`.ID AND `basic-information`.Status = 'Requesting'";
+		$sql = "SELECT * FROM `basic-information`,  `access`, `student-study-link`, `study`
+			WHERE `access`.ID = `basic-information`.ID
+			AND `basic-information`.`Status` = 'Requesting' 
+			AND  `basic-information`.`ID` = `student-study-link`.`StudentID` 
+			AND `student-study-link`.`StudyID` = `study`.ID ";
+
 		$run = $this->core->database->doSelectQuery($sql);
 
 		$sql = "SELECT Name, Value FROM `settings` WHERE `Name` LIKE 'AdmissionLevel%' ORDER BY Name ASC";
 		$go = $this->core->database->doSelectQuery($sql);
-		
+
 		$i=1;
 		while ($fetch = $go->fetch_row()) {
 			$name = substr($fetch[1],0,16).'...';
@@ -158,7 +166,7 @@ class admission {
 			$nrc = $fetch[5];
 			$role = $fetch[25];
 			$status = $fetch[23];
-
+		
 			if ($status == 6) {
 				$next = '<a href="' . $this->core->conf['conf']['path'] . '/admission/complete/' . $uid . '/' . $status . '"><img src="' . $this->core->fullTemplatePath . '/images/exleft.gif"> <b>Complete</b> </a>';
 			} else {
@@ -300,11 +308,12 @@ class admission {
 			<td>' . $studentid . '</td>
 			 </tr>';
 
+			echo '</table></div>';
+
+			$this->admissionProgress($role, $status);
+
 		}
 
-		echo '</table></div>';
-
-		$this->admissionProgress($role, $status);
 
 	}
 }

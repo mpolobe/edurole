@@ -1,26 +1,14 @@
-<?php
-function showRoleSelect() {
-	global $connection;
+<script type="text/javascript">
+jQuery(document).ready(function(){
+	jQuery('select').ddslick({width:280, height:300,
+	    onSelected: function(selectedData){
+	        console.log(selectedData.selectedData.text);
+	    }
+	});
+});
+</script>
 
-	$sql = "SELECT * FROM `roles`";
-	$run = doSelectQuery($sql);
-
-	while ($fetch = mysql_fetch_row($run)) {
-
-		$uid = $fetch[0];
-		$RoleName = $fetch[1];
-
-		$out = $out . '<option value="' . $uid . '">' . $RoleName . '</option>';
-
-	}
-
-	return ($out);
-}
-
-$select = showRoleSelect();
-?>
-
-<form id="adduser" name="adduser" method="post" action="/users&action=save">
+<form id="adduser" name="adduser" method="post" action="<? echo $this->core->conf['conf']['path'] . "/users/save/" . $this->core->item; ?>">
 <p>All fields are required to proceed with the creation of the user</p>
 <table cellspacing="0">
 <tr>
@@ -42,7 +30,7 @@ $select = showRoleSelect();
 	<td>
 		<select name="role" id="role">
 			<option value="0" selected="selected">- Please select</option>
-			<?php echo $select; ?>
+			<?php echo $roles; ?>
 		</select></td>
 	<td>Select an organizational role</td>
 </tr>
@@ -105,7 +93,7 @@ $select = showRoleSelect();
 </tr>
 <tr>
 	<td><strong>Date of Birth</strong></td>
-	<td><label for="textfield74"></label>
+	<td>
 		<select name="day">
 			<option selected> Day</option>
 			<option value="1">1</option>
@@ -273,7 +261,7 @@ $select = showRoleSelect();
 </tr>
 <tr>
 	<td><strong>Nationality</strong></td>
-	<td><label for="textfield76"></label>
+	<td>
 		<select name="nationality">
 			<option value="Other">Other</option>
 			<option value="afghan">Afghan</option>
@@ -473,25 +461,25 @@ $select = showRoleSelect();
 </tr>
 <tr>
 	<td><strong>Streetname / Plot number</strong></td>
-	<td><label for="textfield77"></label>
+	<td>
 		<input type="text" name="streetname" id="textfield77"/></td>
 	<td>For example: Jambo drive 115</td>
 </tr>
 <tr>
 	<td><strong>P.O Box</strong></td>
-	<td><label for="textfield78"></label>
+	<td>
 		<input type="text" name="postalcode" id="textfield78"/></td>
 	<td>For example: P.O Box 2169</td>
 </tr>
 <tr>
 	<td><strong>City/Town</strong></td>
-	<td><label for="textfield79"></label>
+	<td>
 		<input type="text" name="town" id="textfield79"/></td>
 	<td></td>
 </tr>
 <tr>
 <td><strong>Country</strong></td>
-<td><label for="textfield80"></label>
+<td>
 <select name="country" id="country">
 <option value="USA">USA</option>
 <option value="UK">UK</option>
@@ -554,8 +542,7 @@ $select = showRoleSelect();
 <option value="Equatorial Guinea">Equatorial Guinea</option>
 <option value="Eritrea">Eritrea</option>
 <option value="Estonia">Estonia</option>
-<option value="ethiopia=" Ethiopia
-"">Ethiopia</option>
+<option value="ethiopia=">Ethiopia</option>
 <option value="Faeroe isl">Faeroe Islands</option>
 <option value="Fiji">Fiji</option>
 <option value="Finland">Finland</option>
@@ -654,7 +641,7 @@ $select = showRoleSelect();
 <option value="Saudi Arabia">Saudi Arabia</option>
 <option value="Scotland">Scotland</option>
 <option value="Senegal">Senegal</option>
-<option value="" seychelles="Seychelles">Seychelles</option>
+<option value="seychelles">Seychelles</option>
 <option value="Sierra Leone">Sierra Leone</option>
 <option value="Singapore">Singapore</option>
 <option value="Slovac Republic">Slovak Republic</option>
@@ -731,7 +718,7 @@ $select = showRoleSelect();
 </tr>
 <tr>
 	<td><strong>Marital Status</strong></td>
-	<td><label for="textfield88"></label>
+	<td>
 		<select name="mstatus" id="mstatus">
 			<option value="Married">Married</option>
 			<option value="Single" selected="selected">Single</option>

@@ -1,39 +1,19 @@
-<?php
-$item = $this->core->cleanGet['item'];
-if (!isset($item)) {
-	$item = $this->core->cleanPost['item'];
-}
-$dean = $fetch[2];
-function showUserSelect($role, $dean) {
-	global $connection;
+<script type="text/javascript">
 
-	if (empty($role)) {
-		$role = 2;
-	}
-	$sql = "SELECT * FROM `basic-information`, `access`, `roles` WHERE `access`.`ID` = `basic-information`.`ID` AND `access`.`RoleID` = `roles`.`ID` AND `access`.`RoleID` >= $role";
-	$run = doSelectQuery($sql);
+jQuery(document).ready(function(){
 
-	while ($fetch = mysql_fetch_row($run)) {
+	jQuery('.ddsel').ddslick({width:280, height:300,
+	    onSelected: function(selectedData){
+	        console.log(selectedData.selectedData.text);
+	    }
+	});
 
-		$firstname = $fetch[0];
-		$surname = $fetch[2];
-		$uid = $fetch[4];
-		if ($uid == $dean) {
-			$sel = 'selected="selected"';
-		} else {
-			$sel = "";
-		}
+});
 
-		$out = $out . '<option value="' . $uid . '"  ' . $sel . '>' . $firstname . ' ' . $surname . '</option>';
+</script>
 
-	}
 
-	return ($out);
-}
-
-$select = showUserSelect("4", $dean);
-
-echo '<form id="editprogramme" name="editprogramme" method="post" action="/programmes&action=save">
+<form id="editprogramme" name="editprogramme" method="post" action="<? echo $this->core->conf['conf']['path'] . "/programmes/save/" . $this->core->item; ?>">
 	<p>Please enter the following information</p>
 	<table width="768" border="0" cellpadding="5" cellspacing="0">
               <tr>
@@ -44,58 +24,44 @@ echo '<form id="editprogramme" name="editprogramme" method="post" action="/progr
               <tr>
 		<td width="150"><b>Name of Programme</b></td>
                 <td colspan="2">
-                  <input type="text" name="name" value="' . $fetch[1] . '" /></td>
+                  <input type="text" name="name" value="<?php echo $fetch[1]; ?>" /></td>
                 <td></td>
               </tr>
               <tr>
 		<td width="150"><b>Programme Coordinator</b></td>
                 <td colspan="2">
-                  <select name="coordinator" id="coordinator">
-			' . $select . '
+                  <select name="coordinator" class="ddsel" id="coordinator">
+					<? echo $users; ?>
                   </select></td>
                 <td>Functional course coordinator</td>
               </tr>
 		<tr><td>Programme Type</td>
-		<td colspan="2"><select name="programtype">
-
-		<option value="0" ';
-if ($fetch[3] == "0") {
-	echo 'selected=""';
-}
-echo '>-choose-</option>
-		<option value="1" ';
-if ($fetch[3] == "1") {
-	echo 'selected=""';
-}
-echo '>Minor</option>
-		<option value="2" ';
-if ($fetch[3] == "2") {
-	echo 'selected=""';
-}
-echo '>Major</option>
-		<option value="3" ';
-if ($fetch[3] == "3") {
-	echo 'selected=""';
-}
-echo '>Available as both</option>
+		<td colspan="2"><select name="programtype" class="ddsel">
+				
+		<?php
+			echo '<option value="0" ';	if ($fetch[3] == "0") {	echo 'selected=""';	}	echo '>-choose-</option> '; 
+			echo '<option value="1" ';	if ($fetch[3] == "1") {	echo 'selected=""';	}	echo '>Minor</option>';
+			echo '<option value="2" ';	if ($fetch[3] == "2") {	echo 'selected=""';	}	echo '>Major</option>';
+			echo '<option value="5" ';	if ($fetch[3] == "5") {	echo 'selected=""';	}	echo '>Diploma</option>';
+			echo '<option value="4" ';	if ($fetch[3] == "4") {	echo 'selected=""';	}	echo '>Compulsory</option>';
+			echo '<option value="3" ';	if ($fetch[3] == "3") {	echo 'selected=""';	}	echo'>Available as both</option>';
+		?>
 
 		</select></td>
 		<td></td>
 		</tr>
 
-              <tr>
+		<tr>
 		<td width="150"></td>
-                <td colspan="2">
-                  	  <input type="hidden" name="item" value="' . $item . '" />
+		<td colspan="2">
+		<input type="hidden" name="item" value="<? echo $item; ?>" />
 	 		 <input type="submit" class="submit" name="submit" id="submit" value="Save changes to programme" /></td>
                 <td></td>
-              </tr>';
+              </tr></table>
 
-echo '</table>
+		</form><br /><br /> <p class="title2">Manage courses in programme</p><p>Please enter the following information</p>
 
-	 </form><br /><br /> <p class="title2">Manage courses in programme</p><p>Please enter the following information</p>';
-
-echo '	<table width="700" border="0" cellpadding="5" cellspacing="0">
+	 <table width="700" border="0" cellpadding="5" cellspacing="0">
               <tr>
                 <td width="205" height="28" bgcolor="#EEEEEE"><strong>Information</strong></td>
                 <td  width="130" bgcolor="#EEEEEE"><strong>Currently selected</strong></td>
@@ -105,58 +71,23 @@ echo '	<table width="700" border="0" cellpadding="5" cellspacing="0">
 
  	<tr >
 	<td>Select which courses should be part of this programme</td>
-	<td width="100"> <form id="selected" name="selectedfr" method="post" action="/programmes&action=savecourses">
-	<input type="hidden" name="item" value="' . $item . '" />
-	<select name="selected[]" multiple="multiple" size="10" style="width: 130px">';
-
-
-$sql = "SELECT * FROM `courses`, `programmes`, `program-course-link` WHERE `program-course-link`.CourseID = `courses`.ID AND `program-course-link`.ProgramID = `programmes`.ID AND `program-course-link`.ProgramID = $item";
-
-if (!$srd = mysql_query($sql, $connection)) {
-	die('Error: ' . mysql_error());
-}
-
-$i = 1;
-
-while ($fetchw = mysql_fetch_row($srd)) {
-
-	echo '<option value="' . $fetchw[0] . '">' . $fetchw[2] . '</option>';
-	$i++;
-
-}
-
-if ($i == 1) {
-	echo 'No courses have been added to the program yet. Please <a href="' . $this->core->conf['conf']['path'] . 'programmes/edit/' . $fetch[0] . '">add some.</a>';
-}
-
-echo '</select>   <input type="submit" class="submit" name="submit" id="submit" value="Remove Selected" style="width: 130px" /></form></td>
+	<td width="100"> 
+	<form id="selected" name="selectedfr" method="post" action="<? echo $this->core->conf['conf']['path'] . "/programmes/save/" . $this->core->item; ?>">
+	<input type="hidden" name="item" value="<? echo $item; ?>" />
+		<select name="selected[]" multiple="multiple" size="10" style="width: 130px">
+			<?php echo $selectedcourses;  ?> 
+		</select>
+		<input type="submit" class="submit" name="submit" id="submit" value="Remove Selected" style="width: 130px" />
+	</form>
+	</td>
+	
 	<td  width="100">
-	<form id="nselected" name="nselectedfr" method="post" action="/programmes/savecourses">
-	<input type="hidden" name="item" value="' . $item . '" />
+	<form id="nselected" name="nselectedfr" method="post" action="<? echo $this->core->conf['conf']['path'] . "/programmes/save/" . $this->core->item; ?>">
+	<input type="hidden" name="item" value="<? echo $item; ?>" />
 	<select name="nselected[]" multiple="multiple" size="10" style="width: 130px">';
-
-$sql = "SELECT * FROM `courses` ORDER BY `courses`.Name";
-
-if (!$srd = mysql_query($sql, $connection)) {
-	die('Error: ' . mysql_error());
-}
-
-$i = 1;
-
-while ($fetchw = mysql_fetch_row($srd)) {
-
-	echo '<option value="' . $fetchw[0] . '">' . $fetchw[2] . '</option>';
-	$i++;
-
-}
-
-if ($i == 1) {
-	echo 'No courses have been added to the program yet. Please <a href="' . $this->core->conf['conf']['path'] . 'programmes/edit/' . $fetch[0] . '">add some.</a>';
-}
-
-echo '</select>  <input type="submit" class="submit" name="submit" id="submit" value="Add Selected" style="width: 130px" /></form>
+		<?php echo $notselectedcourses;  ?> 
+	</select>  
+	<input type="submit" class="submit" name="submit" id="submit" value="Add Selected" style="width: 130px" /></form>
 	</td>
 	<td></td>
-	</tr></table>';
-
-?>
+	</tr></table>

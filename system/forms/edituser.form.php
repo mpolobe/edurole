@@ -1,8 +1,28 @@
-<form id="edituser" name="edituser" method="post" action="save">
+<form id="edituser" name="edituser" method="post" action="<? echo $this->core->conf['conf']['path'] . "/information/save/" . $this->core->item; ?>">
 <input type="hidden" name="id" value="update-account">
 <input type="hidden" name="studentid" id="studentid" value="<?php echo $id; ?>"/>
 
 <p> Static information such as names and birth dates can not be changed unless a request for change is filed with the administrator.</p>
+
+<?php
+if($this->core->role > 104){
+	echo'<div class="toolbar"><a href="'.$this->core->conf['conf']['path'].'/users/password/'. $id .'">Change Users Password</a></div>';
+}
+?>
+
+<script type="text/javascript">
+
+jQuery(document).ready(function(){
+
+	jQuery('select').ddslick({width:280, height:300,
+	    onSelected: function(selectedData){
+	        console.log(selectedData.selectedData.text);
+	    }
+	});
+
+});
+
+</script>
 
 <div class="formElement">
 
@@ -13,14 +33,17 @@
 	<td bgcolor="#EEEEEE"><strong>Description</strong></td>
 </tr>
 
-<tr>
+<?php
+if($this->core->role == 1000){
+echo'<tr>
 	<td><strong>Role</strong></td>
 	<td>
 		<select name="role" id="role">
-			<?php echo $select; ?>
+			'. $select .'
 		</select></td>
 	<td>Select an organizational role</td>
 </tr>
+
 <tr>
 	<td><strong>User status</strong></td>
 	<td>
@@ -39,23 +62,25 @@
 			<option value="Failed">Failed</option>
 		</select></td>
 	<td>&nbsp;</td>
-</tr>
+</tr>';
+}
+?>
 <tr>
 	<td><strong>Surname </strong></td>
 	<td>
-		<input type="text" name="surname" value="<?php echo $surname; ?>" disabled="disabled"/></td>
+		<input type="text" name="surname" value="<?php echo $surname; ?>" /></td>
 	<td></td>
 </tr>
 <tr>
 	<td height="19"><strong>First Name</strong></td>
 	<td>
-		<input type="text" name="firstname" value="<?php echo $firstname; ?>" disabled="disabled"/></td>
+		<input type="text" name="firstname" value="<?php echo $firstname; ?>" /></td>
 	<td></td>
 </tr>
 <tr>
 	<td><strong>Middle name</strong></td>
 	<td>
-		<input type="text" name="middlename" value="<?php echo $middlename; ?>" disabled="disabled"/></td>
+		<input type="text" name="middlename" value="<?php echo $middlename; ?>" /></td>
 	<td></td>
 </tr>
 <tr>
@@ -559,6 +584,8 @@
 		$sql = "SELECT * FROM `emergency-contact` WHERE `emergency-contact`.`StudentID` = '" . $NID . "'";
 		$run = $this->core->database->doSelectQuery($sql);
 
+		$n=0;
+
 		while ($row = $run->fetch_assoc()) {
 
 			$name = $row['FullName'];
@@ -567,9 +594,9 @@
 			$street = $row['Street'];
 			$town = $row['Town'];
 			$postalcode = $row['Postalcode'];
-			
+	
 			echo'<div class="emergencycontact">
-					<input type="hidden" name="contact[0][id]" data-pattern-name="contact[++][id]" data-pattern-id="contact_++_index"/>
+				<input type="hidden" name="contact[0][id]" data-pattern-name="contact[++][id]" data-pattern-id="contact_++_index"/>
 					
 					<table width="768" height="135" border="0" cellpadding="5" cellspacing="0">
 						<tr>
@@ -638,25 +665,29 @@
 
 				</div>';
 
+			if($n==0){
+				echo"<script type=\"text/javascript\">
+					$('.emergencycontacts').repeater({
+					btnAddClass: 'addemergencycontact',
+					btnRemoveClass: 'deleteemergencycontact',
+					groupClass: 'emergencycontact',
+					minItems: 1,
+					maxItems: 0,
+					startingIndex: 0,
+					reindexOnDelete: true,
+					repeatMode: 'append',
+					animation: null,
+					animationSpeed: 600,
+					animationEasing: 'swing',
+					clearValues: true
+					});
+				</script>";
+			}
+			$n++;
+
 		}
 		?>
 
-<script type="text/javascript">
- $('.emergencycontacts').repeater({
-	btnAddClass: 'addemergencycontact',
-	btnRemoveClass: 'deleteemergencycontact',
-	groupClass: 'emergencycontact',
-	minItems: 1,
-	maxItems: 0,
-	startingIndex: 0,
-	reindexOnDelete: true,
-	repeatMode: 'append',
-	animation: null,
-	animationSpeed: 600,
-	animationEasing: 'swing',
-	clearValues: true
-});
-</script>
 	</div>
 </div>
 

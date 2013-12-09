@@ -27,8 +27,17 @@ class mail {
 
 		echo '<div style="margin-top: 15px; height: 100%;">';
 
+
+
+
+		if ( ! filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) ){
+			$url = "http://mail.nkrumah.edu.zm/roundcube";
+		}else{
+			$url = "http://nkrumah.edu.zm:8080/roundcube";
+		}
+
 		// PROOF OF CONCEPT ROUNDCUBE INTEGRATION, NEEDS OVERHAUL TO SHARED SESSION AUTHENTICATION
-		echo '<iframe scrolling="no" width="768" height="100%" frameborder="0" src="' . $conf['conf']['path'] . '/lib/roundcube?_autologin=1&username=' . $_SESSION['username'] . '&password=' . $_SESSION['password'] . '" seamless="seamless"></iframe>';
+		echo '<iframe scrolling="no" width="768" height="100%" frameborder="0" src="'.$url.'/?_autologin=1&username=' . $_SESSION['username'] . '&password=' . $_SESSION['password'] . '" seamless="seamless"></iframe>';
 		// NOT PRODUCTION CODE
 
 		echo '</div>';

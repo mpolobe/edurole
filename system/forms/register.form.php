@@ -8,6 +8,17 @@
 		<td width="200" bgcolor="#EEEEEE"><strong>Input fields</strong></td>
 		<td bgcolor="#EEEEEE"><strong>Description</strong></td>
 	</tr>
+	<?php
+		if($existing==TRUE){
+			echo'<tr>
+			<td><strong>Student number</strong></td>
+			<td>
+			<input type="text" name="studentno" id="studentno"/>
+			</td>
+			<td>Please enter the student number that was given to you</td>
+			</tr>';
+		}
+	?>
 	<tr>
 		<td><strong>National ID number</strong></td>
 		<td>
@@ -712,7 +723,7 @@
 <p>In this section you can provide contact information that should be used in case of an emergency, in general this should be a family member or legal guardian. Use the add button to add as many emergency contacts as you wish.</p>
 	
 	<div class="emergencycontact">
-		<input type="hidden" name="contact[0][id]" data-pattern-name="contact[++][id]" data-pattern-id="contact_++_index"/>
+		<input type="hidden" name="econtact[0][id]" data-pattern-name="econtact[++][id]" data-pattern-id="econtact_++_index"/>
 		
 		<table width="768" height="135" border="0" cellpadding="5" cellspacing="0">
 			<tr>

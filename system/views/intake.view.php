@@ -27,6 +27,7 @@ class intake {
 				<a href="' . $this->core->conf['conf']['path'] . '">Home</a>
 				<a href="' . $this->core->conf['conf']['path'] . '/intake/studies">Overview of all studies</a>
 				<a href="' . $this->core->conf['conf']['path'] . '/intake">Studies open for intake</a>
+				<a href="' . $this->core->conf['conf']['path'] . '/intake/register">Current student registration</a>
 				<a href="' . $this->core->conf['conf']['path'] . '/password">Recover lost password</a>
 				</div>
 				</div>
@@ -40,10 +41,44 @@ class intake {
 			$this->showitem($item);
 		} else if ($this->core->action == "studies") {
 			$this->showStudies();
+		} else if ($this->core->action == "register") {
+			$this->showRegistration();
 		} else {
 			$this->showIntake();
 		}
 
+	}
+
+	function showRegistration($item) {
+	
+		$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID ORDER BY `study`.Name";
+		
+		$function = __FUNCTION__;
+		$title = 'Registration for existing students';
+		$description = 'The following studies are given at the institution';
+
+		echo $this->core->breadcrumb->generate(get_class(), $function);
+		echo component::generateTitle($title, $description);
+		
+		echo '<p> All students need to register electronicaly for the new student information system. </p>
+		<p>
+		<table width="768" cellspacing="0" cellpadding="5" >
+		<tr><td bgcolor="#EEEEEE"> <b>Study</b></td>' .
+			'<td bgcolor="#EEEEEE"><b>School</b></td>' .
+			'<td bgcolor="#EEEEEE"><b>Years</b></td>' .
+			'</tr>';
+
+		$run = $this->core->database->doSelectQuery($sql);
+
+		while ($row = $run->fetch_row()) {
+			echo '<tr><td><b><a href="' . $this->core->conf['conf']['path'] . '/register/study/' . $row[0] . '?existing=yes"> ' . $row[6] . '</a></b></td>' .
+				'<td>' . $row[16] . '</td>' .
+				'<td>2009/2013</td>' .
+				'</tr>';
+		}
+
+		echo '</table>
+		</p>';
 	}
 
 	function showIntake($item) {

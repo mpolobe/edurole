@@ -18,6 +18,23 @@ class register {
 	public function buildView($core) {
 		$this->core = $core;
 
+		if ($this->core->action == "submit") {
+			$this->submitRegistration();
+		} else {
+			$this->registrationForm();
+		}
+	}
+
+	public function submitRegistration() {
+
+		include $this->core->conf['conf']['classPath'] . "students.inc.php";
+		$students = new students($this->core);
+
+		$students->registerStudent();
+	}
+
+	public function registrationForm() {
+
 		if ($this->view->internalMenu == TRUE) {
 		
 			echo '<div class="menucontainer">
@@ -25,13 +42,13 @@ class register {
 				<div class="menuhdr"><strong>Home menu</strong></div>
 				<div class="menu">
 				<a href="' . $this->core->conf['conf']['path'] . '">Home</a>
-				<a href="' . $this->core->conf['conf']['path'] . '/studies">Overview of all studies</a>
+				<a href="' . $this->core->conf['conf']['path'] . '/intake/studies">Overview of all studies</a>
 				<a href="' . $this->core->conf['conf']['path'] . '/intake">Studies open for intake</a>
+				<a href="' . $this->core->conf['conf']['path'] . '/intake/register">Current student registration</a>
 				<a href="' . $this->core->conf['conf']['path'] . '/password">Recover lost password</a>
 				</div>
 				</div>
 				</div><div class="contentpadfull">';
-
 		}
 
 		$function = __FUNCTION__;
@@ -50,6 +67,10 @@ class register {
 	
 		if ($item) {
 
+			if($_GET['existing'] == yes){
+				$existing = TRUE;
+			}
+
 			$sql = "SELECT `study`.ID, `study`.Name FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID AND `study`.ID = $item";
 
 			$run = $this->core->database->doSelectQuery($sql);
@@ -57,19 +78,18 @@ class register {
 			while ($fetch = $run->fetch_row()) {
 
 				echo '<form id="enroll" name="enroll" method="post" action="' . $this->core->conf['conf']['path'] . '/register/submit" enctype="multipart/form-data" >
-							 <input type="hidden" name="studyid" value="' . $fetch['0'] . '">
-							 <p>You are requesting admission to the following study: <b> ' . $fetch[1] . ' </b> <br>Please complete the following form entirely to successfully complete your request for admission.</p>';
+				<input type="hidden" name="studyid" value="' . $fetch['0'] . '">
+				<p>You are requesting admission to the following study: <b> ' . $fetch[1] . ' </b> <br>Please complete the following form entirely to successfully complete your request for admission.</p>';
 
 				include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
 
 				$study = $fetch[0];
 
-				$optionBuilder = new optionBuilder($core);
+				$optionBuilder = new optionBuilder($this->core);
 
-				$paymenttypes = $optionBuilder->showPaymentTypes();
-
-				$major = $optionBuilder->showPrograms($study, 1, null);
-				$minor = $optionBuilder->showPrograms($study, 2, null);
+				$paymenttypes = 	$optionBuilder->showPaymentTypes();
+				$major = 		$optionBuilder->showPrograms($study, 1, null);
+				$minor = 		$optionBuilder->showPrograms($study, 2, null);
 
 				include $this->core->conf['conf']['formPath'] . "register.form.php";
 

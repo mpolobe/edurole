@@ -1,11 +1,4 @@
-<?php
-$dean = $fetch[5];
-
-include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
-
-$select = new optionBuilder($core);
-$select->showUsers("4", $dean);
-echo '<form id="editschool" name="editschool" method="post" action="/schools&action=save">
+<form id="editschool" name="editschool" method="post" action="<? echo $this->core->conf['conf']['path'] . "/schools/save/" . $this->core->item; ?>">
 	<p>Please enter the following information</p>
         <table 	cellspacing="0" >
           <tr>
@@ -18,21 +11,21 @@ echo '<form id="editschool" name="editschool" method="post" action="/schools&act
               <tr>
                 <td><strong>School name </strong></td>
                 <td>
-                  <input type="text" name="name" value="' . $fetch[3] . '" /></td>
+                  <input type="text" name="name" value="<? echo $fetch[3]; ?>" /></td>
                 <td>Name of school</td>
               </tr>
               <tr>
                 <td><strong>Dean/Rector of school</strong></td>
                 <td>
                   <select name="dean" id="dean">
-			' . $select . '
+					<? echo $dean; ?>
                   </select></td>
                 <td>Functional head of school</td>
               </tr>
               <tr>
                 <td><strong>Optional description</strong></td>
                 <td>
-			<textarea rows="4" cols="37" name="description">' . $fetch[4] . '</textarea>
+			<textarea rows="4" cols="37" name="description"><? echo $fetch[4]; ?></textarea>
 		  </td>
                 <td></td>
               </tr>
@@ -40,9 +33,7 @@ echo '<form id="editschool" name="editschool" method="post" action="/schools&act
           </tr>
         </table>
 	<br />
-	  <input type="hidden" name="item" value="' . $this->core->cleanGet['item'] . '" />
 	  <input type="submit" class="submit" name="submit" id="submit" value="Save changes to school" />
         <p>&nbsp;</p>
 
-      </form>';
-?>
+      </form>

@@ -9,8 +9,8 @@ class mailOperations{
 	
 	function mailCount() {
 
-		imap_timeout(IMAP_READTIMEOUT, 1);
-		imap_timeout(IMAP_OPENTIMEOUT, 1);
+		imap_timeout(IMAP_READTIMEOUT, 5);
+		imap_timeout(IMAP_OPENTIMEOUT, 5);
 		$mbox = @imap_open("{" . $this->core->conf['mail']['server'] . ":143/novalidate-cert}", $_SESSION['username'], $_SESSION['password'], OP_HALFOPEN);
 
 		if (!$mbox) {

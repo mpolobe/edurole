@@ -22,35 +22,51 @@ class information {
 		$listType = $this->core->cleanGet['listtype'];
 		$firstName = $this->core->cleanGet['studentfirstname'];
 		$lastName = $this->core->cleanGet['studentlastname'];
+		$studies = $this->core->cleanGet['studies'];
+		$programmes = $this->core->cleanGet['programmes'];
+
 		$search = $this->core->cleanGet['search'];
-		
+		$q = $this->core->cleanGet['q'];
+
 		if(empty($this->core->item)){
 			$this->core->item = $this->core->cleanGet['uid'];
 		}
 		
-		if ($this->core->action == "search") {
-			$this->searchInformation();
-		} else if (isset($lastName) || isset($firstName)) {
+
+		if (isset($lastName) || isset($firstName)) {
 			$this->searchByName($firstName, $lastName, $listType);
-		} else if ($this->core->action == "search" && isset($this->core->item) && $search == "study") {
-			$this->searchByStudy($this->core->item, $listType);
-		} else if ($this->core->action == "search" && isset($this->core->item)  && $search == "programme") {
-			$this->searchByProgram($this->core->item, $listType);
-		} elseif ($this->core->action == "edit" && !isset($this->core->item)) {
+		} else if ($this->core->action == "search" && isset($q) && $search == "study" || $this->core->action == "students" && isset($q) && $search == "study") {
+			$this->searchByStudy($q, $listType);
+		} else if ($this->core->action == "search" && isset($q) && $search == "programme" || $this->core->action == "students" && isset($q) && $search == "programme") {
+			$this->searchByProgram($q, $listType);
+		} else if ($this->core->action == "search" && isset($q) && $search == "courses" || $this->core->action == "students" && isset($q) && $search == "courses") {
+			$this->searchByCourse($q, $listType);
+		}else  if ($this->core->action == "search" || $this->core->action == "students") {
+			$this->searchInformation();
+		} elseif ($this->core->action == "edit" && $this->core->item == "personal") {
 			$this->editUser($this->core->userID);
-		} elseif ($this->core->action == "edit" && $this->core->item == "save") {
-			$users = new users($this->core);
-			$users->saveEdit();
 		} elseif ($this->core->action == "edit" && isset($this->core->item)) {
 			$this->editUser($this->core->item);
+		} elseif ($this->core->action == "edit" && $this->core->item == "save") {
+			$users = new users($this->core);
+			$users->saveEdit($this->core->userID);
+			$this->getProfile();
+		} elseif ($this->core->action == "save" && $this->core->role == 1000) {
+			$users = new users($this->core);
+			$users->saveEdit($this->core->item, TRUE);
+			$this->core->throwSuccess("The user account has been updated");
+		} elseif ($this->core->action == "save" && $this->core->role < 1000) {
+			$users = new users($this->core);
+			$users->saveEdit($this->core->item, FALSE);
+			$this->core->throwSuccess("The user account has been updated");
 		} elseif ($this->core->item == "personal") {
 			$this->getProfile();
 		} elseif (isset($this->core->item) && is_numeric($this->core->item)) {
 			$this->getStudentProfile($this->core->item);
-		} elseif($this->core->action == "students"){
+		} else{
 			$this->showStudents();
 		}
-	}
+	} 
 
 	function showStudents(){
 
@@ -61,7 +77,7 @@ class information {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 		
-		$sql = "SELECT * FROM `basic-information` LEFT JOIN `access` ON `basic-information`.ID=`access`.ID;";
+		$sql = "SELECT * FROM `basic-information` LEFT JOIN `access` ON `basic-information`.ID = `access`.ID;";
 		$run = $this->core->database->doSelectQuery($sql);
 		$this->showInfoList($run);
 	}
@@ -73,6 +89,7 @@ class information {
 
 		$study = $select->showStudies(null);
 		$program = $select->showPrograms(null, null, null);
+		$courses = $select->showCourses(null);
 
 		$function = __FUNCTION__;
 		$title = 'Search student records';
@@ -81,7 +98,7 @@ class information {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		if ($this->core->role > 100) {
+		if ($this->core->role >= 100) {
 			echo '<p>You can search for a single record or a group by utilizing the various search categories.</p>
 			<div class="heading">Search by student number</div>';
 
@@ -229,7 +246,7 @@ class information {
 				echo '<div class="none">No image available</div>';
 			}
 
-			if ($this->core->role > 103) {
+			if ($this->core->role >= 100) {
 				echo '<div style="margin-top: 1px; border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/information/edit/' . $uid . '">Edit user information</a></b></div>';
 				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/housing/edit/' . $uid . '">Edit housing information</a></b></div>';
 				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/grades/view/' . $uid . '">Show users grades</a></b></div>';
@@ -277,7 +294,12 @@ class information {
 
 			echo '</table>';
 
-			$sql = "SELECT * FROM `student-program-link` as sp, `programmes` as pr WHERE sp.`StudentID` = '" . $nrc . "' AND sp.`Major` = pr.`ID` OR sp.`StudentID` = '" . $nrc . "' AND sp.`Minor` = pr.`ID` ";
+			$sql = "SELECT * FROM `student-program-link` as sp, `programmes` as pr 
+				WHERE sp.`StudentID` = '" . $this->core->username . "' 
+				AND sp.`Major` = pr.`ID` 
+				OR sp.`StudentID` = '" . $nrc . "' 
+				AND sp.`Minor` = pr.`ID` ";
+	
 			$run = $this->core->database->doSelectQuery($sql);
 
 			while ($row = $run->fetch_row()) {
@@ -528,9 +550,9 @@ class information {
 	}
 
 	function editUser($item) {
-		$sql = "SELECT * FROM  `basic-information` as bi, `access` as ac WHERE ac.`ID` = '" . $item . "' AND ac.`ID` = bi.`ID`";
+		$sql = "SELECT * FROM  `basic-information` as bi LEFT JOIN `access` as ac ON ac.`ID` = '" . $item . "' WHERE bi.`ID` = '" . $item . "'";
 		$run = $this->core->database->doSelectQuery($sql);
-
+ 
 		$function = __FUNCTION__;
 		$title = 'Edit personal information';
 		$description = 'Editing student information';
@@ -560,13 +582,12 @@ class information {
 			$status = $row['Status'];
 			$role = $row['RoleID'];
 
+			include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
+
+			$select = new optionBuilder($this->core);
+			$select = $select->showRoles($role);
 		}
-		
-		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
-		
-		$select = new optionBuilder($this->core);
-		$select = $select->showRoles($role);
-		
+
 		include $this->core->conf['conf']['formPath'] . "edituser.form.php";
 
 

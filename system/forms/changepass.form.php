@@ -6,10 +6,14 @@
 				<td width="138" valign="top">&nbsp;</td>
 				<td width="669" valign="top">&nbsp;</td>
 			</tr>
-			<tr>
+			<?php
+			if($admin!=TRUE){
+			echo'<tr>
 				<td height="33" valign="top">Verify old password</td>
 				<td valign="top"><input type="password" name="oldpass" class="submit"/></td>
-			</tr>
+			</tr>';
+			}
+			?>
 			<tr>
 				<td valign="top"><strong>New password</strong></td>
 				<td valign="top"><input type="password" name="newpass" class="submit"/></td>

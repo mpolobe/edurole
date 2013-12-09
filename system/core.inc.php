@@ -25,8 +25,11 @@ class eduroleCore {
 
 	public $builder;
 
+	public $accounting;
+
 	public function __construct($conf, $initialize = TRUE) {
 		$this->conf = $conf;
+
 
 		$this->logEvent("Initializing EduRole core", "3");
 
@@ -35,9 +38,14 @@ class eduroleCore {
 			$this->cleanInput();
 		}
 
+		if (class_exists('accounting')) {
+			$this->accounting = new accounting($this);
+		}
+
 		if (class_exists('breadcrumb')) {
 			$this->breadcrumb = new breadcrumb($this);
 		}
+
 
 		$this->setTemplate();
 		$this->getSessions();
@@ -84,13 +92,10 @@ class eduroleCore {
 	}
 
 	private function cleanInput() {
-		foreach (array_keys($_POST) as $key) {
-			$this->cleanPost[$key] = $this->database->mysqli->real_escape_string($_POST[$key]);
-		}
 
-		foreach (array_keys($_GET) as $key) {
-			$this->cleanGet[$key] = $this->database->mysqli->real_escape_string($_GET[$key]);
-		}
+		$this->cleanGet   = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
+		$this->cleanPost  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
 	}
 
 	public function getSessions() {
@@ -174,11 +179,21 @@ class eduroleCore {
 			$this->log .= "WARNING: " . $message . "<br>\n";
 		} elseif ($level == 3) {
 			$this->log .= "INFO: " . $message . "<br>\n";
+		} elseif ($level == 4) {
+			$this->log .= "SECURITY: " . $message . "<br>\n";
+		}
+
+		if(isset($this->accounting)){
+		//	$this->accounting->sysLog($message, $level);
 		}
 	}
 
 	public function showAlert($message) {
-		echo '<script> alert("' . $message . '"); </script>';
+		echo '<script> 
+			jQuery(document).ready(function(){
+				alert("' . $message . '"); 
+			});
+		</script>';
 	}
 
 	public function throwError($message) {
@@ -188,6 +203,10 @@ class eduroleCore {
 
 	public function throwSuccess($message) {
 		echo '<div class="successpopup">' . $message . '</div>';
+	}
+
+	public function throwNotice($message) {
+		echo '<div class="noticepopup">' . $message . '</div>';
 	}
 	
 	/* Setters */

@@ -1,4 +1,4 @@
-<form id="login" name="login" method="get" action="">
+<form id="idsearch" name="idsearch" method="get" action="">
 	<input type="hidden" name="id" value="information">
 
 	<div class="label">Enter student number:</div>
@@ -6,7 +6,7 @@
 	<input type="submit" class="submit" value="Open record"/>
 </form>
 
-<form id="login" name="login" method="get" action="">
+<form id="namesearch" name="namesearch" method="get" action="">
 	<div class="heading">Search by name</div>
 	<input type="hidden" name="id" value="information">
 
@@ -26,11 +26,11 @@
 	</select>
 </form>
 
-<form id="login" name="login" method="get" action="">
+<form id="studysearch" name="studysearch" method="get" action="">
 	<div class="heading">View students by study</div>
 	<div class="label">Show all students from:</div>
-	<input type="hidden" name="id" value="information">
-	<select name="studies" id="studies" class="submit" width="250" style="width: 250px">
+	<input type="hidden" name="search" value="study">
+	<select name="q" id="studies" class="submit" width="250" style="width: 250px">
 		<?php echo $study; ?>
 	</select> <br/>
 
@@ -43,12 +43,30 @@
 </form>
 
 
-<form id="login" name="login" method="get" action="">
+<form id="programmesearch" name="programmesearch" method="get" action="">
 	<div class="heading">View students by programme</div>
 	<div class="label">Show all students from:</div>
-	<input type="hidden" name="id" value="information">
-	<select name="program" id="program" class="submit" width="250" style="width: 250px">
+	<input type="hidden" name="search" value="programme">
+	<select name="q" id="program" class="submit" width="250" style="width: 250px">
 		<?php echo $program; ?>
+	</select>
+	<br/>
+
+	<div class="label">Show as:</div>
+	<select name="listtype" class="submit">
+		<option value="list">List of students</option>
+		<option value="profiles">Profile view</option>
+	</select>
+	<input type="submit" class="submit" value="View records"/>
+</form>
+
+
+<form id="coursesearch" name="coursesearch" method="get" action="">
+	<div class="heading">View students by course</div>
+	<div class="label">Show all students from:</div>
+	<input type="hidden" name="search" value="course">
+	<select name="q" id="course" class="submit" width="250" style="width: 250px">
+		<?php echo $courses; ?>
 	</select>
 	<br/>
 

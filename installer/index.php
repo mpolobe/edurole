@@ -145,7 +145,7 @@ class installer {
 			echo "Failed to connect to MySQL: " . mysqli_connect_error();
 		}
 		
-		$sql="CREATE DATABASE $db;";
+		$sql="CREATE DATABASE $db";
 		if (mysqli_query($con,$sql)){
 			$sql = "INSERT INTO `access` (`ID`, `Username`, `RoleID`, `Password`) VALUES (100001, 'admin', 1000, '$passenc');";
 			mysqli_query($con,$sql);

@@ -45,8 +45,22 @@ class courses {
 		$sql = "SELECT * FROM `courses` WHERE `courses`.ID = $item";
 		$run = $this->core->database->doSelectQuery($sql);
 
-		while ($fetch = $run->fetch_row()) {
-			include $this->core->conf['conf']['classPath'] . "editcourse.form.php";
+		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
+		$optionBuilder = new optionBuilder($this->core);
+
+		while ($fetch = $run->fetch_assoc()) {
+			$name = $fetch['Name'];
+			$description = $fetch['CourseDescription'];
+			$item = $fetch['ID'];
+
+			$icoordinator = $fetch['CourseCoordinatorInternal'];
+			$dcoordinator = $fetch['CourseCoordinatorDistance'];
+
+			$internal = $optionBuilder->showUsers(99, $icoordinator);
+			$distance = $optionBuilder->showUsers(99, $dcoordinator);
+
+
+			include $this->core->conf['conf']['formPath'] . "editcourse.form.php";
 		}
 	}
 
@@ -57,6 +71,13 @@ class courses {
 
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
+
+
+		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
+		$optionBuilder = new optionBuilder($this->core);
+
+		$internal = $optionBuilder->showUsers(99);
+		$distance = $optionBuilder->showUsers(99);
 
 		include $this->core->conf['conf']['formPath'] . "addcourse.form.php";
 	}
@@ -71,13 +92,15 @@ class courses {
 
 	function saveCourse() {
 		$name = $this->core->cleanPost['name'];
-		$dean = $this->core->cleanPost['dean'];
+		$internal = $this->core->cleanPost['internal'];
+		$distance = $this->core->cleanPost['distance'];
 		$description = $this->core->cleanPost['description'];
+		$item = $this->core->cleanPost['item'];
 
-		if (isset($this->item)) {
-			$sql = "UPDATE `courses` SET `Description` = '$description', `Name` = '$name', `CourseCoordinator` = '$dean' WHERE `ID` = $this->item;";
+		if (isset($item)) {
+			$sql = "UPDATE `courses` SET `CourseDescription` = '$description', `Name` = '$name', `CourseCoordinatorInternal` = '$internal',  `CourseCoordinatorDistance` = '$distance'  WHERE `ID` = $item;";
 		} else {
-			$sql = "INSERT INTO `courses` (`ID`, `ParentID`,  `Name`,  `CourseCoordinator`) VALUES (NULL, '0', CURRENT_DATE(), '$name', '$dean');";
+			$sql = "INSERT INTO `courses` (`ID`, `Name`,  `CourseCoordinatorInternal`, `CourseCoordinatorDistance`, `CourseDescription`) VALUES (NULL, '$name', '$internal', '$distance', '$description');";
 		}
 
 		$run = $this->core->database->doInsertQuery($sql);
@@ -93,13 +116,18 @@ class courses {
 		echo $this->core->breadcrumb->generate(get_class(), $function);
 		echo component::generateTitle($title, $description);
 
-		$sql = "SELECT * FROM `courses`, `basic-information` WHERE `courses`.CourseCoordinator = `basic-information`.ID ORDER BY `courses`.Name";
+		$sql = "SELECT * FROM `courses` 
+			LEFT JOIN `basic-information` as `bi` ON `courses`.CourseCoordinatorInternal = `bi`.ID  
+			LEFT JOIN `basic-information` as `bd` ON `courses`.CourseCoordinatorDistance = `bd`.ID 
+			ORDER BY `courses`.Name";
+
 		$run = $this->core->database->doSelectQuery($sql);
 
 		echo '<div class="toolbar"><a href="' . $this->core->conf['conf']['path'] . '/courses/add">Add course</a></div>
             <table width="768" height="" border="0" cellpadding="3" cellspacing="0">
             <tr class="tableheader"><td width="400"><b>Course Name</b></td>' .
-			'<td><b>Course coordinator</b></td>' .
+			'<td><b>Internal Coordinator</b></td>' .
+			'<td><b>Distance Coordinator</b></td>' .
 			'<td><b>Management tools</b></td>' .
 			'</tr>';
 
@@ -114,9 +142,12 @@ class courses {
 			}
 
 			echo '<tr ' . $bgc . '>
-                    <td><b><a href="' . $this->core->conf['conf']['path'] . '/courses/view/' . $fetch[0] . '"> ' . $fetch[2] . '</a></b></td>
+                    <td><b><a href="' . $this->core->conf['conf']['path'] . '/courses/view/' . $fetch[0] . '"> ' . $fetch[1] . ' - ' . $fetch[4] . '</a></b></td>
                     <td>
-                    <a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $fetch[3] . '">' . $fetch[4] . ' ' . $fetch[6] . '</a>
+                    <a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $fetch[29] . '">' . $fetch[5] . ' ' . $fetch[7] . '</a>
+                    </td>
+                    <td>
+                    <a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $fetch[30] . '">' . $fetch[26] . ' ' . $fetch[28] . '</a>
                     </td>
                     <td>
                     <a href="' . $this->core->conf['conf']['path'] . '/courses/edit/' . $fetch[0] . '"> <img src="' . $this->core->fullTemplatePath . '/images/edi.png"> edit</a>
@@ -149,12 +180,12 @@ class courses {
                   </tr>
                   <tr>
                     <td><strong>Course name</strong></td>
-                    <td>' . $fetch[2] . '</td>
+                    <td> <b>' . $fetch[1] . '</b> - ' . $fetch[3] . '</td>
                     <td></td>
                   </tr>
                   <tr>
                     <td><strong>Course coordinator</strong></td>
-                    <td><a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $fetch[3] . '">' . $fetch[4] . ' ' . $fetch[6] . '</a></td>
+                    <td><a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $fetch[2] . '">' . $fetch[4] . ' ' . $fetch[6] . '</a></td>
                     <td></td>
                   </tr>
                   <tr>

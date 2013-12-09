@@ -76,7 +76,13 @@ class housing {
 			include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
 			$select = new optionBuilder($this->core);
 			$accommodation = $select->showAccommodation(null);
-		
+
+			include $this->core->conf['conf']['classPath'] . "users.inc.php";
+			$users = new users($this->core);
+			$student = $users->getStudent($item);
+			var_dump($student);
+	
+
 			include $this->core->conf['conf']['formPath'] . "edithousing.form.php";
 		}
 	}
