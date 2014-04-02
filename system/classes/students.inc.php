@@ -8,6 +8,7 @@ class students{
 	}
 	
 	public function registerStudent(){		
+print_r($_REQUEST);
 		$firstname = $this->core->cleanPost["firstname"];
 		$middlename = $this->core->cleanPost["middlename"];
 		$surname = $this->core->cleanPost["surname"];
@@ -54,7 +55,6 @@ class students{
 			$dms = $this->core->database->doSelectQuery($sql);
 
 			while ($fetch = $dms->fetch_row()) {
-				echo "YEEES";
 				$n=0;
 				$userID = $fetch[4];
 		
@@ -152,6 +152,8 @@ class students{
 				echo '<h2>Student record registration completed</h2>
 				<div class="successpopup">Your request for admission has been submitted to the registrar. You are able to monitor your enrollment progress with the following login information. WRITE THIS INFORMATION DOWN OR REMEMBER IT!</div>
 				<div class="successpopup">Username:  <b>' . $userID . '</b><br>Password:  <b>' . $password . '</b></div> <p>You can log in on the <a href=".">home page</a> to view your admission status</p>';
+				break;
+
 			}
 		
 		} else {

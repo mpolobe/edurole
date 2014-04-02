@@ -7,10 +7,11 @@ class eduroleCore {
 	public $page;
 	public $action;
 	public $item;
+	public $subitem;
 	
 	public $username;
 	public $userID;
-	public $role;
+	public $role = 0;
 	public $roleName;
 	
 	public $template;
@@ -20,16 +21,24 @@ class eduroleCore {
 	
 	public $cleanGet;
 	public $cleanPost;
+
+	public $limit = 50;
+	public $offset = 0;
+	public $pager = FALSE;
 	
 	public $log;
 
 	public $builder;
+	public $component;
 
 	public $accounting;
+
+	public $core;
 
 	public function __construct($conf, $initialize = TRUE) {
 		$this->conf = $conf;
 
+		$this->core = $this;
 
 		$this->logEvent("Initializing EduRole core", "3");
 
@@ -42,10 +51,9 @@ class eduroleCore {
 			$this->accounting = new accounting($this);
 		}
 
-		if (class_exists('breadcrumb')) {
-			$this->breadcrumb = new breadcrumb($this);
+		if (class_exists('component')) {
+			$this->component = new component($this);
 		}
-
 
 		$this->setTemplate();
 		$this->getSessions();
@@ -56,17 +64,74 @@ class eduroleCore {
 		}
 	}
 		
+
 	public function initializer() {
 		if ($this->conf['conf']['installed'] == FALSE) {
 			header('Location: installer/');
 		}
-		
+
+                if(isset($this->cleanGet['offset'])){
+                        $this->offset = $this->cleanGet['offset'];
+                        $this->pager = TRUE;
+                }
+
+                if(isset($this->cleanGet['limit'])){
+                        $this->limit = $this->cleanGet['limit'];
+                }
+
 		if ($this->page == "api") {
-			$this->builder = new serviceBuilder($this); // All service calls are processed in the service builder
+			$this->builder = new serviceBuilder($this);
 		} else {
-			$this->builder = new viewBuilder($this); // All views are processed in the view builder
+			$this->builder = new viewBuilder($this);
 			$this->builder($this->page);
 		}
+	}
+
+	public function translate($phrase, $output = TRUE) {
+
+		$this->language = 2;
+
+		if (isset($phrase)) {
+
+			$sql = 'SELECT ID, Phrase, TranslatedPhrase FROM `translation`
+				WHERE `translation`.`Phrase` = ?';
+
+			$run = $this->database->prepareQuery($sql);
+			$run->bind_param('s', $phrase);
+			$run->execute();
+
+			$run->bind_result($id, $phrase, $translatedphrase);
+			$run->store_result();
+
+			if($run->num_rows == 0){
+				$run->close();
+
+				$sql = "INSERT INTO `translation` (`ID`, `LanguageID`, `Phrase`, `TranslatedPhrase`) VALUES (NULL, 0, ?, '');";
+				$run = $this->database->prepareQuery($sql);
+				$run->bind_param('s', $phrase);
+				$run->execute();
+
+			} else {
+				while ($run->fetch()) {
+					if(empty($translatedphrase)){
+						return $phrase;
+					}
+
+					return $translatedphrase;
+				}
+			}
+		}
+	}
+
+	public function redirect($page, $action, $item = NULL) {
+		$base = $this->conf['conf']['path'];
+
+		$page = $page == NULL ? "" : $page . "/"; 
+		$item = $item == NULL ? "" : "/".$item; 
+
+		$url = $base ."/". $page . $action . $item;
+
+		header("Location: " . $url);
 	}
 
 	public function processRoute() {
@@ -85,6 +150,9 @@ class eduroleCore {
 		if (isset($this->route[2])) {
 			$this->item = $this->route[2];
 		}
+		if (isset($this->route[3])) {
+			$this->subitem = $this->route[3];
+		}
 	}
 	
 	public function builder($page) {
@@ -92,10 +160,49 @@ class eduroleCore {
 	}
 
 	private function cleanInput() {
-
 		$this->cleanGet   = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
 		$this->cleanPost  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+	}
 
+	public function getFunctionSettings($page, $action, $viewsettings){
+		$settings = new StdClass;
+
+		$viewsettings = json_encode($viewsettings);
+		
+		if (isset($page) && isset($action)) {
+			$sql = 'SELECT * FROM `functions`, `permissions` 
+				WHERE `functions`.`FunctionRequiredPermissions` = `permissions`.`ID` 
+				AND `Class` = "' . $page . '" AND `Function` = "' . $action . '" 
+				OR `functions`.`FunctionRequiredPermissions` = `permissions`.`ID` 
+				AND `Class` = "' . $page . '" AND `FunctionRoutes` 
+				LIKE "%/' . $action . '/%"';
+
+			$run = $this->database->doSelectQuery($sql);
+
+			if($run->num_rows == 0){
+
+				$sql = "INSERT INTO `functions` (`ID`, `Class`, `Function`, `FunctionRoutes`, `FunctionRequiredPermissions`, `Status`, `FunctionRequiredElements`) VALUES (NULL, '". $page ."', '". $action ."', '/".$action."/', '100', '1', '".$viewsettings."');";
+				$this->database->doInsertQuery($sql);
+
+				$settings = $this->getFunctionSettings($page, $action, NULL);
+
+			} else {
+
+				while ($fetch = $run->fetch_assoc()) {
+					$settings->class = $fetch['Class'];
+					$settings->function = $fetch['Function'];
+					$settings->minRole = $fetch['RequiredRoleMin'];
+					$settings->maxRole = $fetch['RequiredRoleMax'];
+					$settings->status = $fetch['Status'];
+					$settings->routes = $fetch['FunctionRoutes'];
+					$settings->functionRequiredElements = json_decode($fetch['FunctionRequiredElements']);
+					$settings->title = $fetch['FunctionTitle'];
+					$settings->description = $fetch['FunctionDescription'];
+				}	
+			}
+		}
+
+		return $settings;
 	}
 
 	public function getSessions() {
@@ -121,33 +228,17 @@ class eduroleCore {
 
 		if (isset($_SESSION['template'])) {
 			$template = $_SESSION['template'];
+			$template = $this->conf['conf']['templates'][$template];
 		}
 
 		if (!isset($template)) {
-			$template = 0;
+			$template = "0";
+			$template = $this->conf['conf']['templates']['0'];
 		}
 
-		$template = $this->conf['conf']['templates'][$template];
 
 		$this->template = $template;
 		$this->fullTemplatePath = $this->conf['conf']['path'] . '/' . $this->conf['conf']['templatePath'] . $this->template;
-
-	}
-
-	public function getNamespace($className) {
-
-		$sql = 'SELECT * FROM `pages` WHERE `PageRoute` = "' . $className . '"';
-		$run = $this->database->doSelectQuery($sql);
-
-		while ($fetch = $run->fetch_assoc()) {
-
-			$route = $fetch['PageRoute'];
-			$path = explode('/', $route);
-
-			$namespace = array("functionalname" => $fetch['PageName'], "executionpath" => $path);
-		}
-
-		return ($namespace);
 
 	}
 
@@ -164,12 +255,12 @@ class eduroleCore {
 	}
 
 	public function showDebugger() {
-		echo '</div><div class="contentpadlog"><p class="title2">System log is active:</p><p>' .
-			$this->log .
-			$this->database->log .
-			$this->view->log .
-			$this->view->database->log .
-			"</p></div>";
+		echo '</div><div class=""><h2>Debugging is activated in the config:</h2><p>';
+		if(isset($this->log)){			echo $this->log;			}
+		if(isset($this->database->log)){	echo $this->database->log;		}
+		if(isset($this->view->log)){		echo $this->view->log;			}
+		if(isset($this->view->database->log)){	echo $this->view->database->log;	}
+		echo"</p></div>";
 	}
 
 	public function logEvent($message, $level) {

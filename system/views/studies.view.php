@@ -9,43 +9,19 @@ class studies {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
 		$this->view->menu = TRUE;
-		$this->view->javascript = array('jquery.ui.datepicker');
-		$this->view->css = array('jquery.ui');
+		$this->view->javascript = array();
+		$this->view->css = array();
 
 		return $this->view;
 	}
 
 	public function buildView($core) {
 		$this->core = $core;
-
-		if (empty($this->core->action) && $this->core->role > 100) {
-			$this->listStudies($this->core->item);
-		} elseif ($this->core->action == "list" && $this->core->role > 100 || $this->core->action == "management" && $this->core->role > 100 ) {
-			$this->listStudies();
-		} elseif ($this->core->action == "view" && $this->core->role > 100) {
-			$this->showStudy($this->core->item);
-		} elseif ($this->core->action == "edit" && isset($this->core->item) && $this->core->role > 100) {
-			$this->editStudy($this->core->item);
-		} elseif ($this->core->action == "add" && $this->core->role > 100) {
-			$this->addStudy();
-		} elseif ($this->core->action == "save" && $this->core->role > 100) {
-			$this->saveStudy($this->core->item);
-		} elseif ($this->core->action == "delete" && isset($this->core->item)) {
-			$this->deleteStudy($this->core->item);
-		}
 	}
 	
-	function editStudy($item) {
-		$function = __FUNCTION__;
-		$title = 'Edit study';
-		$description = 'Edit the currently selected study';
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-
+	function editStudies($item) {
 		$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID AND `study`.ID = '$item'";
 		$run = $this->core->database->doSelectQuery($sql);
-
 
 		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
 		
@@ -53,21 +29,14 @@ class studies {
 		$schools = $select->showSchools();
 
 		while ($fetch = $run->fetch_row()) {
-			$notselectedprogrammes = $select->showPrograms();
+			$notselectedprogrammes = $select->showPrograms(NULL);
 			$selectedprogrammes = $select->showPrograms($fetch[0]);
 
 			include $this->core->conf['conf']['formPath'] . "editstudy.form.php";
 		}
 	}
 
-	function addStudy() {
-		$function = __FUNCTION__;
-		$title = 'Add study';
-		$description = 'Add a new study';
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-
+	function addStudies() {
 		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
 		
 		$select = new optionBuilder($this->core);
@@ -76,15 +45,14 @@ class studies {
 		include $this->core->conf['conf']['formPath'] . "addstudy.form.php";
 	}
 
-	function deleteStudy($item) {
+	function deleteStudies($item) {
 		$sql = 'DELETE FROM `study` WHERE `ID` = "' . $item . '"';
 		$run = $this->core->database->doInsertQuery($sql);
 
-		$this->listStudies();
-		$this->core->showAlert("The study has been deleted");
+		$this->core->redirect("studies", "manage", NULL);
 	}
 
-	function saveStudy($item) {
+	function saveStudies($item) {
 		$fullname = $this->core->cleanPost['fullname'];
 		$shortname = $this->core->cleanPost['shortname'];
 		$school = $this->core->cleanPost['school'];
@@ -120,16 +88,10 @@ class studies {
 
 		}
 		
-		$this->listStudies();
+		$this->core->redirect("studies", "manage", NULL);
 	}
 
-	public function listStudies($item=null) {
-		$function = __FUNCTION__;
-		$title = 'Overview of studies';
-		$description = 'Overview of all studies';
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
+	public function manageStudies($item=null) {
 		echo   '<div class="toolbar"><a href="' . $this->core->conf['conf']['path'] . '/studies/add">Add study</a></div>'. 
 			'<table width="768" height="" border="0" cellpadding="3" cellspacing="0"><tr class="tableheader"><td><b>Study</b></td>' .
 			'<td><b>School</b></td>' .
@@ -156,8 +118,8 @@ class studies {
 			}
 
 			echo '<tr ' . $bgc . '>
-			<td><b><a href="' . $this->core->conf['conf']['path'] . '/studies/view/' . $row[0] . '"> ' . $row[1] . '</a></b></td>' .
-				'<td><a href="' . $this->core->conf['conf']['path'] . '/schools/view/' . $row[3] . '">' . $row[2] . '</a></td>' .
+			<td><b><a href="' . $this->core->conf['conf']['path'] . '/studies/show/' . $row[0] . '"> ' . $row[1] . '</a></b></td>' .
+				'<td><a href="' . $this->core->conf['conf']['path'] . '/schools/show/' . $row[3] . '">' . $row[2] . '</a></td>' .
 				'<td>
 				<a href="' . $this->core->conf['conf']['path'] . '/studies/edit/' . $row[0] . '"> <img src="'.$this->core->fullTemplatePath.'/images/edi.png"> edit</a>
 			<a href="' . $this->core->conf['conf']['path'] . '/studies/delete/' . $row[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="'.$this->core->fullTemplatePath.'/images/del.png"> delete </a>
@@ -169,15 +131,7 @@ class studies {
 		</p>';
 	}
 
-	function showStudy($item) {
-			
-		$function = __FUNCTION__;
-		$title = 'Study information';
-		$description = 'Information about study';
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-	
+	function showStudies($item) {
 		$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID AND `study`.ParentID = `schools`.ID AND `study`.ID = $item";
 		
 		$run = $this->core->database->doSelectQuery($sql);
@@ -207,7 +161,7 @@ class studies {
 					  </tr>
 					  <tr>
 						<td><strong>Part of school</strong></td>
-						<td><a href="' . $this->core->conf['conf']['path'] . '/schools/view/' . $fetch[13] . '">' . $fetch[16] . '</a>
+						<td><a href="' . $this->core->conf['conf']['path'] . '/schools/show/' . $fetch[13] . '">' . $fetch[16] . '</a>
 					  </td>
 						<td></td>
 					  </tr>

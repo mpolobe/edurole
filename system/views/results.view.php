@@ -1,32 +1,17 @@
 <?php
-class transcript {
+class results {
 
 	public $core;
 	public $view;
 	public $item = NULL;
 
-	public function configView() {
-		$this->view->header = TRUE;
-		$this->view->footer = TRUE;
-		$this->view->menu = FALSE;
-		$this->view->javascript = array();
-		$this->view->css = array();
-
-		return $this->view;
-	}
-
 	public function buildView($core) {
 		$this->core = $core;
-
-		if ($this->core->action == "results" && $this->core->role > 104 && isset($this->core->item)) {
-			$this->resultsTranscript();
-		}
 	}
 
 	function academicyear($studentNo) {
 		global $remark, $count, $count1;
 	
-
 		$sql = "SELECT distinct academicyear, semester from grades WHERE StudentNo = '$studentNo' order by academicyear";
 		$run = $this->core->database->doSelectQuery($sql);
 
@@ -36,9 +21,7 @@ class transcript {
 			$semester = $fetch[1];
 
 			detail($studentNo, $acyr, $semester);
-
 		}
-
 	}
 
 	function detail($studentNo, $acyr, $semester) {
@@ -79,7 +62,12 @@ class transcript {
 		$studentID = $item;
 		$studentNo = $studentID;
 
-		$sql = "SELECT * FROM `basic-information`, as bi, `access` as ac, `student-study-link` as ss, `study` as st, `student-program-link` as pl WHERE ac.`ID` = '" . $item. "' AND ac.`ID` = bi.`ID` AND ss.`StudyID` = st.`ID` AND pl.`StudentID` = $nrc AND ss.`StudentID` = $nrc";
+		$sql = "SELECT * FROM `basic-information`, as bi, `access` as ac, `student-study-link` as ss, `study` as st, `nkrumah-student-program-link` as pl 
+			WHERE ac.`ID` = '" . $item. "' 
+			AND ac.`ID` = bi.`ID` 
+			AND ss.`StudyID` = st.`ID` 
+			AND pl.`StudentID` = $studentID 
+			AND ss.`StudentID` = $studentID";
 
 		$sql = "SELECT p1.studentname, p2.school, p1.repyear, p2.programname, p1.remark, p1.sex, p1.graduation, datediff(p1.graduation,curdate()) FROM students as p1, programmes as p2 WHERE p1.ProgramNo = p2.ProgramNo AND StudentNo = '$studentNo'";
 		$run = $this->core->database->doSelectQuery($sql);

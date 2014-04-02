@@ -121,7 +121,8 @@ class users{
 		$dissabilitytype = $this->core->cleanPost["dissabilitytype"];
 		$status = $this->core->cleanPost["status"];
 		$roleid = $this->core->cleanPost["role"];
-		$nrc = $this->core->cleanPost["studentid"];
+		$nrc = $this->core->cleanPost["nationalid"];
+		$studentid = $this->core->cleanPost["studentno"];
 
 		$sql = "UPDATE `basic-information` SET  `Surname` = '$surname', `FirstName` = '$firstname', `MiddleName` = '$middlename', `Sex` = '$sex', `GovernmentID` = '$nrc', `Nationality` = '$nationality ', `StreetName` = '$streetname ', `PostalCode` = '$postalcode', `Town` = '$town', `Country` = '$country', `HomePhone` = '$homephone', `MobilePhone` = '$celphone', `Disability` = '$dissability', `DissabilityType` = '$dissabilitytype', `PrivateEmail` = '$email', `MaritalStatus` = '$mstatus', `Status` = '$status' WHERE `ID` = '$item' ";
 		$run = $this->core->database->doInsertQuery($sql);

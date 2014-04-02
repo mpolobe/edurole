@@ -1,5 +1,5 @@
 <?php
-class housing {
+class rooms{
 
 	public $core;
 	public $view;
@@ -17,46 +17,38 @@ class housing {
 	public function buildView($core) {
 		$this->core = $core;
 	}
-	
-	function editHousing($item) {
-		$sql = "SELECT * FROM `accommodation`,`housing`,`rooms` WHERE `housing`.StudentID = '$item' AND `housing`.RoomID = `rooms`.ID AND `accommodation`.ID =  `rooms`.accommodationID";
 
+
+	public function showRooms($item) {
+
+	}
+
+	function editRooms($item) {
+		$sql = "SELECT * FROM `accommodation`,`housing`,`rooms` WHERE `housing`.StudentID = '$item' AND `housing`.RoomID = `rooms`.ID AND `accommodation`.ID =  `rooms`.accommodationID";
+	
 		$run = $this->core->database->doSelectQuery($sql);
 
-		while ($results = $run->fetch_assoc()) {
-		
-			$AccommodationID = $results['AccommodationID'];
-		
-			include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
-			$select = new optionBuilder($this->core);
-			$accommodation = $select->showAccommodation(null);
-
-			include $this->core->conf['conf']['classPath'] . "users.inc.php";
-			$users = new users($this->core);
-			$student = $users->getStudent($item);
-
+		while ($fetch = $run->fetch_row()) {
 			include $this->core->conf['conf']['formPath'] . "edithousing.form.php";
 		}
 	}
-
 	
-	function addHousing() {
-		include $this->core->conf['conf']['formPath'] . "addhousing.form.php";
+	function addRooms() {
+		include $this->core->conf['conf']['formPath'] . "addrooms.form.php";
 	}
-	
-	function deleteHousing($item) {
-		$sql = 'DELETE FROM `housing` WHERE `ID` = "' . $item . '"';
+
+	function deleteRooms($item) {
+		$sql = 'DELETE FROM `accommodation` WHERE `ID` = "' . $item . '"';
 		$run = $this->core->database->doInsertQuery($sql);
-		
-		$this->core->redirect("housing", "manage", NULL);
+
+		$this->core->redirect("rooms", "manage", NULL);
 	}
 
-	function saveHousing() {
+	function saveRooms() {
 		$fullname = $this->core->cleanPost['fullname'];
 		$shortname = $this->core->cleanPost['shortname'];
 
 		$item = $this->core->item;
-
 		if (isset($item)) {
 			$sql = "UPDATE `edurole`.`study` SET `ParentID` = '$school', `IntakeStart` = '$startintake', `IntakeEnd` = '$endintake', `Delivery` = '$delivery', `IntakeMax` = '$maxintake', `Name` = '$fullname', `ShortName` = '$shortname', `Active` = '$active', `StudyType` = '$type', `TimeBlocks` = '$duration', `StudyIntensity` = '$intensity' WHERE `ID` = $item;";
 		} else {
@@ -65,15 +57,15 @@ class housing {
 
 		$run = $this->core->database->doInsertQuery($sql);
 
-		$this->core->redirect("housing", "manage", NULL);
+		$this->core->redirect("rooms", "manage", NULL);
 	}
-		
-	public function manageHousing($item) {
+
+	public function manageRooms($item) {
 		echo'<a href="' . $this->core->conf['conf']['path'] . 'studies/add">Add housing record</a></p><p>' .
 			'<table width="768" height="" border="0" cellpadding="3" cellspacing="0">' .
 			'<tr class="tableheader">' .
 			'<td><b>Student</b></td>' .
-			'<td><b>Accommodation</b></td>' .
+			'<td><b>Rooms</b></td>' .
 			'<td><b>Room/Section</b></td>' .
 			'<td><b>Management tools</b></td>' .
 			'</tr>';
@@ -97,15 +89,15 @@ class housing {
 			}
 
 			echo'<tr ' . $bgc . '>' .
-				'<td><b><a href="' . $this->core->conf['conf']['path'] .'housing/show/' . $row[0] . '"> ' . $row[1] . '</a></b></td>' .
-				'<td><a href="' . $this->core->conf['conf']['path'] . 'accommodation/show/' . $row[3] . '">' . $row[2] . '</a></td>' .
+				'<td><b><a href="' . $this->core->conf['conf']['path'] . 'studies/show/' . $row[0] . '"> ' . $row[1] . '</a></b></td>' .
+				'<td><a href="' . $this->core->conf['conf']['path'] . 'schools/show/' . $row[3] . '">' . $row[2] . '</a></td>' .
 				'<td>' .
-				'<a href="' . $this->core->conf['conf']['path'] . 'housing/edit/' . $row[0] . '"> <img src="templates/default/images/edi.png"> edit</a>' .
-				'<a href="' . $this->core->conf['conf']['path'] . 'housing/delete/' . $row[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="templates/default/images/del.png"> delete </a>' .
+				'<a href="' . $this->core->conf['conf']['path'] . 'studies/edit/' . $row[0] . '"> <img src="templates/default/images/edi.png"> edit</a>' .
+				'<a href="' . $this->core->conf['conf']['path'] . 'studies/delete/' . $row[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="templates/default/images/del.png"> delete </a>' .
 				'</td></tr>';
 		}
 
 		echo '</table></p>';
 	}
-
 }
+?>

@@ -12,23 +12,39 @@ class transactions{
         public function runService($core) {
                 $this->core = $core;
 
-		if ($_SERVER['REMOTE_ADDR'] == '127.0.0.1'
-			|| $_SERVER['REMOTE_ADDR'] == '182.72.15.23'
-			|| $_SERVER['REMOTE_ADDR'] == '182.72.15.237' 
-			|| $_SERVER['REMOTE_ADDR'] == '72.229.186.130' 
-			|| $_SERVER['REMOTE_ADDR'] == '87.208.174.40' 
-			|| $_SERVER['REMOTE_ADDR'] == '41.72.96.130' 
-			|| $_SERVER['REMOTE_ADDR'] == '182.72.15.234' 
-			|| $_SERVER['REMOTE_ADDR'] == '41.133.54.17' 
-			|| $_SERVER['REMOTE_ADDR'] == '213.160.196.99') {
+		$status = $this->core->cleanGet['TranStatus'];	
 
-			if($this->core->item == "QueryStatus"){
-				$this->queryStatus();
-			}else {
-				$this->logAll();
-			}
+		if($this->core->item == "QueryStatus"){
+			$this->queryStatus();
+		} else if($status == "v" || $status == "V"){
+			$this->reverseTransaction();
+		} else {
+			$this->logAll();
 		}
         }
+
+	public function reverseTransaction() {
+
+		$sql = "SELECT `TransactionID` FROM `transactions` WHERE `TransactionID` = '$transactionid'";
+		$run = $this->core->database->doSelectQuery($sql);
+
+       	        $output = '<?xml version="1.0"?>'. "\n" .
+		'<QueryStatusResponse status="ERROR">' . "\n" .
+		'<Transaction id="'.$transactionid.'" status="ERROR" errorMessage="NO_SUCH_ENTRY"></Transaction>' . "\n" .
+		'</QueryStatusResponse>';
+
+		if($run->num_rows > 0){
+			$sql = "DELETE FROM `transactions` WHERE `TransactionID` = '$transactionid'";
+			$run = $this->core->database->doSelectQuery($sql);
+
+        	        $output = '<?xml version="1.0"?>'. "\n" .
+			'<QueryStatusResponse status="SUCCESS">' . "\n" .
+			'<Transaction id="'.$transactionid.'" status="SUCCESS" errorMessage="SUCCESS"></Transaction>' . "\n" .
+			'</QueryStatusResponse>';
+		}
+
+		echo $output;
+	}
 
 	public function saveTransAction($data, $statusheader, $status, $error){
 
@@ -41,7 +57,6 @@ class transactions{
 		$studentid = $this->core->cleanGet['StudentID'];
 		$phone = $this->core->cleanGet['Phone'];
 		$name = $this->core->cleanGet['Name'];
-
 
 		$sisstudentid = $this->getStudent($studentid);
 
@@ -65,18 +80,11 @@ class transactions{
 
 		$run = $this->core->database->doSelectQuery($sql);
 		$fetch = $run->fetch_assoc();
-
-		return $fetch['ID'];
 	}
 
 	public function logAll(){
 
 		$ipaddr = $_SERVER['REMOTE_ADDR']; 
-		$file = "/tmp/zanaco.txt";
-		$filetwo = "log/zanaco-live-insecure.txt";
-
-		$input = "\n\n" . date("Y-m-d H:i:s") . " STARTED input from: $ipaddr ============= \n";
-
 		$transactionid = $this->core->cleanGet['TranID'];
 
 		$keyset = $this->core->cleanGet['Key'];
@@ -88,7 +96,7 @@ class transactions{
 		$phone = $this->core->cleanGet['Phone'];
 
 
-		$calkey = base64_encode(sha1( $this->core->config['transactionkey'] . "$transactionid"));
+		$calkey = base64_encode(sha1($this->core->conf['bank']['token'] . "$transactionid"));
 
 		$status = "SUCCESS";
 		$error = "";
@@ -136,13 +144,6 @@ class transactions{
 			'</PostTranResponse>';
 
 
-		// TEMPORARY LOGGING FEATURE
-		file_put_contents($file, $input, FILE_APPEND);
-		file_put_contents($file, $output, FILE_APPEND);
-
-		file_put_contents($filetwo, $input, FILE_APPEND);
-		file_put_contents($filetwo, $output, FILE_APPEND);
-
 		echo $output;
 	}
 
@@ -154,7 +155,7 @@ class transactions{
 
 		$run = $this->core->database->doSelectQuery($sql);
 
-		while($run->fetch_assoc){
+		if($run->num_rows > 0){
 
 	                $output = '<?xml version="1.0"?>'. "\n" .
 			'<QueryStatusResponse status="SUCCESS">' . "\n" .

@@ -8,41 +8,17 @@ class programmes {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
 		$this->view->menu = TRUE;
-		$this->view->javascript = array(3);
-		$this->view->css = array(4);
+		$this->view->javascript = array();
+		$this->view->css = array();
 
 		return $this->view;
 	}
 
 	public function buildView($core) {
 		$this->core = $core;
-
-		if ($this->core->action == "list" && isset($this->core->item) && $this->core->role > 100) {
-			$this->listProgrammes($this->core->item);
-		} elseif ($this->core->action == "view") {
-			$this->showProgram($this->core->item);
-		} elseif ($this->core->action == "edit" && isset($this->core->item) && $this->core->role > 100) {
-			$this->editProgram($this->core->item);
-		} elseif ($this->core->action == "add" && $this->core->role > 100) {
-			$this->addProgram();
-		} elseif ($this->core->action == "save" && $this->core->role > 100) {
-			$this->saveProgram();
-			$this->listProgrammes();
-		} elseif ($this->core->action == "delete" && isset($this->core->item) && $this->core->role > 100) {
-			$this->deleteProgram($this->core->item);
-		} else {
-			$this->listProgrammes();
-		}
 	}
 
-	function editProgram($item) {
-		$function = __FUNCTION__;
-		$title = 'Programme management';
-		$description = 'Edit Programme';
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-		
+	public function editProgrammes($item) {
 		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
 		$sql = "SELECT  `programmes`.ID, ProgramName, ProgramCoordinator, ProgramType, `basic-information`.ID, FirstName, Surname 
 			FROM `programmes`
@@ -55,7 +31,7 @@ class programmes {
 		while ($fetch = $run->fetch_row()) {
 			$select = new optionBuilder($this->core);
 			$users = $select->showUsers("100", $fetch[4]);
-			$notselectedcourses = $select->showCourses();
+			$notselectedcourses = $select->showCourses(NULL);
 			$selectedcourses = $select->showCourses($fetch[0]);
 
 			include $this->core->conf['conf']['formPath'] . "editprogramme.form.php";
@@ -63,14 +39,7 @@ class programmes {
 
 	}
 
-	function addProgram() {
-		$function = __FUNCTION__;
-		$title = 'Add new programme';
-		$description = 'Add a new programme to the system';
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-
+	public function addProgrammes() {
 		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
 		
 		$select = new optionBuilder($this->core);
@@ -79,15 +48,14 @@ class programmes {
 		include $this->core->conf['conf']['formPath'] . "addprogramme.form.php";
 	}
 
-	function deleteProgram($item) {
+	public function deleteProgrammes($item) {
 		$sql = 'DELETE FROM `programmes`  WHERE `ID` = "' . $item . '"';
 		$run = $this->core->database->doInsertQuery($sql);
 
-		$this->listProgrammes();
-		$this->core->showAlert("The programme has been deleted");
+		$this->core->redirect("programmes", "manage", NULL);
 	}
 
-	function saveProgram() {
+	public function saveProgrammes() {
 		$item = $this->core->cleanPost['item'];
 		$name = $this->core->cleanPost['name'];
 		$type = $this->core->cleanPost['programtype'];
@@ -114,16 +82,11 @@ class programmes {
 			$sql = "INSERT INTO `programmes` (`ID`, `ProgramType`, `ProgramName`, `ProgramCoordinator`) VALUES (NULL, '$type', '$name', '$coordinator');";
 			$run = $this->core->database->doInsertQuery($sql);
 		}
+
+		$this->core->redirect("programmes", "manage", NULL);
 	}
 
-	function listProgrammes($item) {
-		$function = __FUNCTION__;
-		$title = 'Programme management';
-		$description = 'Overview of programmes';
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-
+	public function manageProgrammes($item = NULL) {
 		if(isset($item)){
 			$sql = "SELECT * FROM `programmes`, `program-course-link`, `studies`, WHERE `programmes`.ParentID = `studies`.ID AND `studies`.ID = $item ORDER BY `studies`.Name";
 		}else{
@@ -144,6 +107,7 @@ class programmes {
 		$first = 1;
 		$i = 0;
 		$rest = NULL;
+		$temp = NULL;
 
 		while ($fetch = $run->fetch_row()) {
 
@@ -185,7 +149,7 @@ class programmes {
 				}
 
 				$out = '<tr ' . $bgc . '>
-						<td><b><a href="' . $this->core->conf['conf']['path'] . '/programmes/view/' . $fetch[0] . '"> ' . $fetch[1] . '</a></b></td>
+						<td><b><a href="' . $this->core->conf['conf']['path'] . '/programmes/show/' . $fetch[0] . '"> ' . $fetch[1] . '</a></b></td>
 						<td>';
 
 				$rest = ' </td><td> ' . $type . ' </td>
@@ -212,15 +176,11 @@ class programmes {
 	}
 
 
-	function showProgram($item) {
-		$function = __FUNCTION__;
-		$title = 'View program';
-		$description = 'Overview of program';
+	public function showProgrammes($item) {
+		$sql = "SELECT * FROM `programmes` 
+			LEFT JOIN `basic-information` ON  ProgramCoordinator = `basic-information`.ID 
+			WHERE `programmes`.ID = '$item'";
 
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-
-		$sql = "SELECT * FROM `programmes` LEFT JOIN `basic-information` ON  ProgramCoordinator = `basic-information`.ID WHERE `programmes`.ID = '$item'";
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($fetch = $run->fetch_row()) {
@@ -238,7 +198,7 @@ class programmes {
 					</tr>
 					<tr>
 					<td width="150"><b>Programme Coordinator</b></td>
-					<td><a href="' . $this->core->conf['conf']['path'] . 'information/view/' . $fetch[8] . '">' . $fetch[4] . ' ' . $fetch[6] . '</b></td>
+					<td><a href="' . $this->core->conf['conf']['path'] . 'information/show/' . $fetch[8] . '">' . $fetch[4] . ' ' . $fetch[6] . '</b></td>
 					<td></td>
 					</tr>
 					<tr><td>Programme Type</td>
@@ -262,21 +222,23 @@ class programmes {
                 </tr><tr><td>Courses</td>
                 <td>';
 
-			$sql = "SELECT * FROM `courses`, `programmes`, `program-course-link` WHERE `program-course-link`.CourseID = `courses`.ID AND `program-course-link`.ProgramID = `programmes`.ID AND `program-course-link`.ProgramID = $fetch[0]";
+			$sql = "SELECT * FROM `courses`, `program-course-link` 
+				WHERE `program-course-link`.CourseID = `courses`.ID 
+				AND `program-course-link`.ProgramID = '$fetch[0]'";
 
 			$run = $this->core->database->doSelectQuery($sql);
 
 			$i = 1;
 
-			while ($fetch = $run->fetch_assoc()) {
+			while ($fetchs = $run->fetch_assoc()) {
 
-				echo '<li><a href="' . $this->core->conf['conf']['path'] . 'courses/view/' . $fetch[0] . '">' . $fetch['Name'] . ' - ' . $fetch['CourseDescription'] . '</a></li>';
+				echo '<li><a href="' . $this->core->conf['conf']['path'] . 'courses/show/' . $fetchs['ID'] . '">' . $fetchs['Name'] . ' - ' . $fetchs['CourseDescription'] . '</a></li>';
 				$i++;
 
 			}
 
 			if ($i == 1) {
-				echo 'No courses have been added to the program yet. Please <a href="' . $this->core->conf['conf']['path'] . 'programmes/edit/' . $fetch[0] . '">add some.</a>';
+				echo 'No courses have been added to the program yet. Please <a href="' . $this->core->conf['conf']['path'] . '/programmes/edit/' . $fetch[0] . '">add some.</a>';
 			}
 
 			echo '</td>

@@ -21,9 +21,13 @@ class menuConstruct {
 	}
 	
 	public function menuContainer($menu) {
-		$container = '<div class="menucontainer">';
+
+		$container = '<div class="collapse navbar-collapse  navbar-ex1-collapse">
+			<ul class="nav navbar-nav side-nav">
+					<li class="userinfo">Current user: <strong>' . $this->core->username . '</strong></li>';
+
 		$container .= $menu;
-		$container .= '</div><div class="contentpadfull">';
+		$container .= '</ul><div id="page-wrapper">';
 		
 		return $container;
 	}
@@ -34,31 +38,26 @@ class menuConstruct {
 		
 		if($this->core->role < 1000){
 			$sql = "SELECT * 
-			FROM `permission-link`, `permissions`, `pages`, `page-segment` 
-			WHERE `pages`.`PageSegmentID` =  `page-segment`.`ID`
-			AND `page-segment`.`SegmentRequiredPermission` = `permission-link`.`ID`
-			AND `permission-link`.`PermissionsRangeID` =  `permissions`.`ID` 
+			FROM `permissions`, `functions` 
+			WHERE `functions`.`FunctionRequiredPermissions` = `permissions`.`ID`
+			AND `functions`.`FunctionMenuVisible` > 0
 			AND `permissions`.`RequiredRoleMin` <= " . $this->core->role . "
 			AND " . $this->core->role . " <= `permissions`.`RequiredRoleMax`
-			ORDER BY `page-segment`.`SegmentPosition`,  `pages`.`PagePosition`";
+			ORDER BY `permissions`.`RequiredRoleMin`, `functions`.`FunctionRequiredPermissions`,  `functions`.`FunctionMenuVisible`";
 			
 		}else{
 			$sql = "SELECT * 
-			FROM `permission-link`, `permissions`, `pages`, `page-segment` 
-			WHERE `pages`.`PageSegmentID` =  `page-segment`.`ID`
-			AND `page-segment`.`SegmentRequiredPermission` = `permission-link`.`ID`
-			AND `permission-link`.`PermissionsRangeID` =  `permissions`.`ID` 
-			ORDER BY `page-segment`.`SegmentPosition`,  `pages`.`PagePosition`";
-			
+			FROM `permissions`, `functions` 
+			WHERE `functions`.`FunctionRequiredPermissions` = `permissions`.`ID`
+			AND `permissions`.`RequiredRoleMin` LIKE '%'
+			AND `permissions`.`RequiredRoleMax` NOT IN (2,3,4,5,7,8,9,10)
+			AND `functions`.`FunctionMenuVisible` > 0
+			ORDER BY `permissions`.`RequiredRoleMin`, `functions`.`FunctionRequiredPermissions`,  `functions`.`FunctionMenuVisible`";
 		}
 
 		$run = $this->core->database->doSelectQuery($sql);
 
-		$menu .= '<div class="menubar">';
-		$menu .= '<div class="menuusr"><strong>' . $this->core->username . '</strong> <i>(' . $this->core->roleName . ')</i> </div>';
-
 		if ($run->num_rows == 0) {
-			$menu .= '</div>';
 			return $menu;
 		}
 
@@ -67,9 +66,9 @@ class menuConstruct {
 
 		while ($fetch = $run->fetch_assoc()) {
 
-			$segmentName = $fetch['SegmentName'];
-			$pageRoute = $fetch['PageRoute'];
-			$pageName = $fetch['PageName'];
+			$segmentName = $fetch['PermissionDescription'];
+			$pageRoute = $fetch['Class'] . '/' . $fetch['Function'];
+			$pageName = $fetch['FunctionTitle'];
 
 			if (!isset($currentSegment)) {
 
@@ -77,8 +76,8 @@ class menuConstruct {
 
 			} else if ($segmentName != $currentSegment) {
 
-				$menu .= '</div>
-				<div class="menubar">';
+				$menu .= '</li>
+				<li class="menubar">';
 
 				$menu .= $this->segmentHeader($segmentName);
 
@@ -95,22 +94,22 @@ class menuConstruct {
 						$study = $fetch[1];
 						$school = $fetch[3];
 
-						$menu .= '<div class="menu"><a href="' . $this->core->conf['conf']['path'] . '/vle/school/1"> ' . $school . '</a></div>
-							<div class="menu"><a href="' . $this->core->conf['conf']['path'] . '/vle/school/1">
+						$menu .= '<li class="menu"><a href="' . $this->core->conf['conf']['path'] . '/vle/school/1"> ' . $school . '</a></li>
+							<li class="menu"><a href="' . $this->core->conf['conf']['path'] . '/vle/school/1">
 								<img src="' . $this->core->fullTemplatePath . '/images/expand.gif"> ' . $study . '</a>
-							</div>';
+							</li>';
 					}
 
-					$menu .= '<div class="menu"><div class="indent"><a href="' . $this->core->conf['conf']['path'] . 'vle&view=school&id=1"><img src="templates/default/images/expand.gif"> ' . $program . '</a></div></div>';
+					$menu .= '<li class="menu"><div class="indent"><a href="' . $this->core->conf['conf']['path'] . 'vle&view=school&id=1"><img src="templates/default/images/expand.gif"> ' . $program . '</a></div></li>';
 				}
 
 			} 
 
-			if ($pageName == "mail") {
+			if ($pageRoute == "mail/show") {
 
 				if ($this->core->conf['conf']['mailEnabled'] == TRUE) {
 
-					$pageName = 'Personal mail <div class="mailcount"><b><img src="'.$this->core->fullTemplatePath .'/images/mail.gif"></b></div>'.
+					$pageName = 'Personal Mailbox <div class="mailcount"><b><img src="'.$this->core->fullTemplatePath .'/images/mail.gif"></b></div>'.
 					'<script type="text/javascript">' . "\n" .
 					'	jQuery(document).ready(function(){' . "\n" .
 					'		url = \''.$this->core->conf['conf']['path'].'/api/mailcount/\';' . "\n".
@@ -134,15 +133,17 @@ class menuConstruct {
 	}
 
 	public function segmentHeader($segmentName) {
-		$menu = '<div class="menuhdr"><strong>' . $segmentName . '</strong></div>';
+		if(strlen($segmentName) > 25){
+			$segmentName = substr($segmentName, 0, 25) . "...";
+		}
+		$menu = '<li class="active"><strong>' . $segmentName . '</strong></li>';
 		return $menu;
 	}
 
 	public function pageItem($pageRoute, $pageName) {
-		$menu = '<div class="menu"><a href="' . $this->core->conf['conf']['path'] . '/' . $pageRoute . '">' . $pageName . '</a></div>';
+		$menu = '<li class="menu"><a href="' . $this->core->conf['conf']['path'] . '/' . $pageRoute . '">' . $pageName . '</a></li>';
 		return $menu;	
 	}
 
 }
-
 ?>

@@ -5,12 +5,13 @@ class intake {
 	public $view;
 
 	public function configView() {
+		$this->view->open = TRUE;
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
 		$this->view->menu = FALSE;
 		$this->view->internalMenu = TRUE;
-		$this->view->javascript = array(3);
-		$this->view->css = array(4);
+		$this->view->javascript = array();
+		$this->view->css = array();
 
 		return $this->view;
 	}
@@ -18,55 +19,27 @@ class intake {
 	public function buildView($core) {
 		$this->core = $core;
 
-		if ($this->view->internalMenu == TRUE) {
-
-			echo '<div class="menucontainer">
-				<div class="menubar">
-				<div class="menuhdr"><strong>Home menu</strong></div>
-				<div class="menu">
-				<a href="' . $this->core->conf['conf']['path'] . '">Home</a>
-				<a href="' . $this->core->conf['conf']['path'] . '/intake/studies">Overview of all studies</a>
-				<a href="' . $this->core->conf['conf']['path'] . '/intake">Studies open for intake</a>
-				<a href="' . $this->core->conf['conf']['path'] . '/intake/register">Current student registration</a>
-				<a href="' . $this->core->conf['conf']['path'] . '/password">Recover lost password</a>
-				</div>
-				</div>
-				</div><div class="contentpadfull">';
-				
-		}
-
-		$item = $this->core->item;
-					
-		if ($this->core->action == "view") {
-			$this->showitem($item);
-		} else if ($this->core->action == "studies") {
-			$this->showStudies();
-		} else if ($this->core->action == "register") {
-			$this->showRegistration();
-		} else {
-			$this->showIntake();
-		}
-
+		echo '<div class="collapse navbar-collapse  navbar-ex1-collapse">
+		<ul class="nav navbar-nav side-nav">
+		<li class="active"><strong>Home menu</strong></li>
+		<li class="menu"><a href="' . $this->core->conf['conf']['path'] . '">Home</a></li>
+		<li class="menu"><a href="' . $this->core->conf['conf']['path'] . '/intake/studies">Overview of all studies</a></li>
+		<li class="menu"><a href="' . $this->core->conf['conf']['path'] . '/intake">Studies open for intake</a></li>
+		<li class="menu"><a href="' . $this->core->conf['conf']['path'] . '/intake/register">Current student registration</a></li>
+		<li class="menu"><a href="' . $this->core->conf['conf']['path'] . '/password/recover">Recover lost password</a></li>
+		</ul><div id="page-wrapper">';
 	}
 
-	function showRegistration($item) {
-	
+	function registerIntake() {
 		$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID ORDER BY `study`.Name";
-		
-		$function = __FUNCTION__;
-		$title = 'Registration for existing students';
-		$description = 'The following studies are given at the institution';
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
 		
 		echo '<p> All students need to register electronicaly for the new student information system. </p>
 		<p>
 		<table width="768" cellspacing="0" cellpadding="5" >
 		<tr><td bgcolor="#EEEEEE"> <b>Study</b></td>' .
-			'<td bgcolor="#EEEEEE"><b>School</b></td>' .
-			'<td bgcolor="#EEEEEE"><b>Years</b></td>' .
-			'</tr>';
+		'<td bgcolor="#EEEEEE"><b>School</b></td>' .
+		'<td bgcolor="#EEEEEE"><b>Years</b></td>' .
+		'</tr>';
 
 		$run = $this->core->database->doSelectQuery($sql);
 
@@ -81,20 +54,12 @@ class intake {
 		</p>';
 	}
 
-	function showIntake($item) {
-	
+	function showIntake($item = NULL) {
 		if(isset($item)){
 			$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID AND `study`.ParentID = `schools`.ID AND `study`.ID = $item";
 		}else{
 			$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID AND CURRENT_TIMESTAMP <= `study`.IntakeEnd ORDER BY `study`.Name";
 		}
-		
-		$function = __FUNCTION__;
-		$title = 'Studies open for intake';
-		$description = 'The following studies are currently open for intake';
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
 		
 		echo '<p>Overview of all studies for which intake is currently open, click on the study to proceed to filing your request for admission. </p>
 		<p>
@@ -117,23 +82,15 @@ class intake {
 		</p>';
 	}
 	
-	function showStudies() {
-
-		$function = __FUNCTION__;
-		$title = 'Overview of studies';
-		$description = 'Overview of all studies.';
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-
+	function studiesIntake() {
 		$this->core->throwSuccess("PLEASE OBSERVE THE START AND END DATE FOR THE ONLINE INTAKE, ONLINE REGISTRATION WILL BE POSSIBLE BETWEEN THESE DATES ONLY.");
 
 		echo '<p>' .
-			'<table width="768">' .
-			'<tr class="tableheader"><td><b>Study</b></td>' .
-			'<td><b>School</b></td>' .
-			'<td><b>Intake start and end date</b></td>' .
-			'</tr>';
+		'<table width="768">' .
+		'<tr class="tableheader"><td><b>Study</b></td>' .
+		'<td><b>School</b></td>' .
+		'<td><b>Intake start and end date</b></td>' .
+		'</tr>';
 
 		$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID ORDER BY `study`.Name";
 		$run = $this->core->database->doSelectQuery($sql);
@@ -150,14 +107,13 @@ class intake {
 			}
 
 			echo '<tr ' . $bgc . '>' .
-				'<td><b>' . $fetch[6] . '</b></td>' .
-				'<td>' . $fetch[16] . '</td>' .
-				'<td>' . date("d-m-Y", strtotime($fetch[2])) . ' <b>until</b> ' . date("d-m-Y", strtotime($fetch[3])) . ' </td>' .
-				'</tr>';
+			'<td><b>' . $fetch[6] . '</b></td>' .
+			'<td>' . $fetch[16] . '</td>' .
+			'<td>' . date("d-m-Y", strtotime($fetch[2])) . ' <b>until</b> ' . date("d-m-Y", strtotime($fetch[3])) . ' </td>' .
+			'</tr>';
 		}
 
 		echo '</table></p>';
-		
 	}
 }
 

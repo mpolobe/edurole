@@ -9,13 +9,6 @@ class statement {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
 		$this->view->menu = TRUE;
-
-		if($_GET['print'] == TRUE){
-			$this->view->menu = FALSE;
-			$this->view->header = FALSE;
-			$this->view->footer = FALSE;
-		}
-
 		$this->view->javascript = array();
 		$this->view->css = array();
 
@@ -24,25 +17,13 @@ class statement {
 
 	public function buildView($core) {
 		$this->core = $core;
-		
-		if(!empty($this->core->cleanGet['uid'])){
-			$this->core->item = $this->core->cleanGet['uid'];
-		}
-
-		if ($this->core->action == "results" && $this->core->role > 100) {
-			$this->resultsStatement($this->core->item);
-		} else {
-			$this->resultsStatement($this->core->username);
-		}
-
 	}
 
-	function resultsStatement($studentNo) {
+	function resultsStatement($item) {
 
-		echo '<div class="toolbar">
-			<a href="' . $this->core->conf['conf']['path'] . '/grades/print">Print overview</a>
-			</div>'; 
-
+		if(!isset($item) || $this->core->role <= 10){
+			$item = $this->core->userID;
+		}
 
 		echo'<div id="print_div1">';
 
@@ -54,9 +35,7 @@ class statement {
 			<p><font size=2>';
 		}
 
-		$studentID = $studentNo;
-
-		$sql = "SELECT p1.studentname, p2.school, p1.repyear, p2.programname, p1.remark, p1.studentno FROM students as p1, programmes as p2 WHERE p1.ProgramNo = p2.ProgramNo AND StudentNo = '$studentNo'";
+		$studentID = $item;
 
 		$sql = "SELECT 
 				bi.Firstname, 
@@ -110,7 +89,7 @@ class statement {
 	}
 
 
-	function academicyear($studentNo) {
+	private function academicyear($studentNo) {
 
 		print "<br>Courses, Grades and Comment";
 		print "<table>\n";
@@ -133,7 +112,7 @@ class statement {
 		return $overallremark;
 	}
 
-	function detail($studentNo, $acyr, $semester, $remark) {
+	private function detail($studentNo, $acyr, $semester, $remark) {
 
 		print "<td>";
 		print "$acyr";

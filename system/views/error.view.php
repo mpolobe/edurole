@@ -5,35 +5,17 @@ class error {
 	public $view;
 
 	public function configView() {
-		$this->view->header = TRUE;
-		$this->view->footer = TRUE;
-		$this->view->menu = FALSE;
-		$this->view->javascript = array(3);
-		$this->view->css = array(4);
-
 		return $this->view;
 	}
 
 	public function buildView($core) {
 		$this->core = $core;
-
-		$error = $this->core->getViewError();
-		
-		if($error){
-			$this->showError($error->message, $error->description);		
-		}
-		
 	}
 	
-	public function showError($message, $description){
-	
-		$function = __FUNCTION__;
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($message);
-
-		$this->core->throwError($description);
-	
+	public function showError(){
+		$error = $this->core->getViewError();
+		echo "<h2>" . $error->message . "</h2>";
+		$this->core->throwError($error->description);
 	}
 }
 

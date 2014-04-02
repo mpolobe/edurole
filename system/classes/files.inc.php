@@ -203,14 +203,6 @@ function renameFile($path) {
 		return true;
 
 	} else {
-
-		$function = __FUNCTION__;
-		$title = 'Rename file';
-		$description = 'You are renaming: ' . $_GET["ren"];
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-
 		echo '<div class="easymencontainer"><form name="rename" method="post" action="/files&action=rename">
 		<input name="op" type="hidden" value=' . $path . '>
 		<input name="filend" type=hidden value="' . $filename . '">
@@ -268,14 +260,6 @@ function downloadFile($filename) {
 }
 
 function editFile($filename) {
-
-	$function = __FUNCTION__;
-	$title = 'Editing';
-	$description = 'Remember to click save';
-
-	echo $this->core->breadcrumb->generate(get_class(), $function);
-	echo component::generateTitle($title, $description);
-
 	$start = TRUE;
 	$home = getcwd();
 	$selected = $_GET['op'];

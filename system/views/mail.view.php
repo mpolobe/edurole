@@ -8,26 +8,19 @@ class mail {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
 		$this->view->menu = TRUE;
-		$this->view->javascript = array(3);
-		$this->view->css = array(4);
+		$this->view->javascript = array();
+		$this->view->css = array();
 
 		return $this->view;
 	}
 
 	public function buildView($core) {
-
 		$this->core = $core;
+	}
 
-		global $conf;
-
-		$function = __FUNCTION__;
-		$title = "Personal email";
-		echo breadcrumb::generate(get_class(), $function);
-		echo component::generateTitle($title, NULL);
+	public function showMail() {
 
 		echo '<div style="margin-top: 15px; height: 100%;">';
-
-
 
 
 		if ( ! filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) ){

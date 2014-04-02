@@ -9,55 +9,22 @@ class admission {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
 		$this->view->menu = TRUE;
-		$this->view->javascript = array(3);
-		$this->view->css = array(1, 4);
+		$this->view->javascript = array();
+		$this->view->css = array();
 
 		return $this->view;
 	}
 
 	public function buildView($core) {
 		$this->core = $core;
-
-		if ($this->core->action == "profile" && isset($this->core->item)) {
-			$this->admissionProfile($this->core->item);
-		} elseif ($this->core->action == "promote" && $this->core->role >= 103 && isset($this->core->item)) {
-			$this->promote($this->core->item);
-		} elseif ($this->core->action == "reject" && $this->core->role >= 103 && isset($this->core->item)) {
-			$this->reject($this->core->item);
-		} elseif ($this->core->action == "continue" && $this->core->role >= 103 && isset($this->core->item)) {
-			$this->continued($this->core->item);
-		} elseif ($this->core->action == "delete" && $this->core->role >= 103 && isset($this->core->item)) {
-			$this->delete($this->core->item);
-		} elseif ($this->core->action == "complete" && $this->core->role >= 103 && isset($this->core->item)) {
-			$this->complete($this->core->item);
-		}else if (empty($this->core->action) && $this->core->role < 100) {
-			$this->admissionProfile($this->core->username);
-		} elseif (empty($this->core->action) && $this->core->role >= 103 || $this->core->action == "management" && $this->core->role >= 103) {
-			$this->admissionFlow();
-		}
 	}
 
-	function admissionFlow() {
-		$function = __FUNCTION__;
-		$title = 'Admission management';
-		$description = 'Overview of all students currently in admission';
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-
-		$this->admissionManager();
-		$this->admissionManagerDenied();
+	public function manageAdmission() {
+		$this->activeAdmission();
+		$this->rejectedAdmission();
 	}
 
-	function admissionProfile($item) {
-
-		$function = __FUNCTION__;
-		$title = 'Student admission progress';
-		$description = 'Overview of students admission progress';
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-
+	public function profileAdmission($item) {
 		if ($this->core->role < 100) {
 			$sql = "SELECT * FROM `basic-information` as bi, `roles` as rl, `access` as ac WHERE ac.`ID` = '" . $this->core->username . "' AND ac.`ID` = bi.`ID` AND ac.`RoleID` = rl.`ID`";
 		} else {
@@ -65,11 +32,9 @@ class admission {
 		}
 
 		$this->showInfoProfile($sql);
-
 	}
 
-	function complete($item) {
-
+	public function completeAdmission($item) {
 		$sql = "UPDATE `access` SET `RoleID` = 10 WHERE `access`.`ID` = '" . $item . "'";
 		$run = $this->core->database->doInsertQuery($sql);
 
@@ -85,51 +50,46 @@ class admission {
 			$mailer->newMail("registrationSuccessful", $recipient);
 		}
 
-		$this->admissionFlow();
+		$this->core->redirect("admission", "manage", NULL);
 	}
 
-	function promote($item) {
-
+	public function promoteAdmission($item) {
 		$sql = "UPDATE `edurole`.`access` SET `RoleID` = `RoleID`+1 WHERE `access`.`ID` = '" . $item . "' AND `RoleID` = '". $this->core->route[3]."'";
 		$run = $this->core->database->doInsertQuery($sql);
 
-		$this->admissionFlow();
+		$this->core->redirect("admission", "manage", NULL);
 	}
 
-	function reject($item) {
-
+	public function rejectAdmission($item) {
 		$sql = "UPDATE `edurole`.`basic-information` SET `Status` = 'Rejected' WHERE `basic-information`.`ID` = '" . $item . "';";
 		$run = $this->core->database->doInsertQuery($sql);
 
-		$this->admissionFlow();
+		$this->core->redirect("admission", "manage", NULL);
 	}
 
-	function continued($item) {
-
+	public function continueAdmission($item) {
 		$sql = "UPDATE `edurole`.`basic-information` SET `Status` = 'Requesting' WHERE `basic-information`.`ID` = '" . $item . "';";
 		$run = $this->core->database->doInsertQuery($sql);
 
-		$this->admissionFlow();
+		$this->core->redirect("admission", "manage", NULL);
 	}
 
 
-	function delete($item) {
-
+	public function deleteAdmission($item) {
 		$sql = "UPDATE `edurole`.`basic-information` SET `Status` = 'Failed' WHERE `basic-information`.`ID` = '" . $item . "';";
 		$run = $this->core->database->doInsertQuery($sql);
 
-		$this->admissionFlow();
+		$this->core->redirect("admission", "manage", NULL);
 	}
 
-	function admissionManager() {
-
+	public function activeAdmission() {
 		echo '<p class="title1">Currently active admission requests</p> ';
 
-		$sql = "SELECT * FROM `basic-information`,  `access`, `student-study-link`, `study`
-			WHERE `access`.ID = `basic-information`.ID
-			AND `basic-information`.`Status` = 'Requesting' 
-			AND  `basic-information`.`ID` = `student-study-link`.`StudentID` 
-			AND `student-study-link`.`StudyID` = `study`.ID ";
+		$sql = "SELECT * FROM `basic-information`
+			LEFT JOIN `access` ON  `access`.ID = `basic-information`.ID
+			LEFT JOIN `student-study-link` ON `basic-information`.`ID` = `student-study-link`.`StudentID`
+			LEFT JOIN `study` ON `student-study-link`.`StudyID` = `study`.`ID` 
+			WHERE `basic-information`.`Status` = 'Requesting'";
 
 		$run = $this->core->database->doSelectQuery($sql);
 
@@ -175,7 +135,7 @@ class admission {
 
 			echo '<tr>
 				<td><img src="' . $this->core->fullTemplatePath . '/images/user.png"></td>
-				<td><a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
+				<td><a href="' . $this->core->conf['conf']['path'] . '/information/show/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
 		
 				<td>' . $nrc . '</td>
 				<td><a href="' . $this->core->conf['conf']['path'] . '/admission/profile/' . $uid . '">' . $status .' - '.$statusName[$status].'  </a> </td>
@@ -189,13 +149,17 @@ class admission {
 
 	}
 
-	function admissionManagerDenied() {
-
-		$id = $this->userid;
+	public function rejectedAdmission() {
 
 		echo '<p class="title1">Currently denied admission requests</p> ';
 
-		$sql = "SELECT * FROM `basic-information`, `access`, `student-study-link`, `study` WHERE `access`.`ID` = `basic-information`.`ID` AND  `access`.`RoleID` < 10 AND  `access`.`ID` = `student-study-link`.`StudentID` AND `student-study-link`.`StudyID` = `study`.ID AND `basic-information`.Status = 'Rejected'";
+		$sql = "SELECT * FROM `basic-information`, `access`, `student-study-link`, `study` 
+			WHERE `access`.`ID` = `basic-information`.`ID` 
+			AND  `access`.`RoleID` < 10 
+			AND  `access`.`ID` = `student-study-link`.`StudentID` 
+			AND `student-study-link`.`StudyID` = `study`.ID 
+			AND `basic-information`.Status = 'Rejected'";
+
 		$run = $this->core->database->doSelectQuery($sql);
 
 		$sql = "SELECT Name, Value FROM `settings` WHERE `Name` LIKE 'AdmissionLevel%' ORDER BY Name ASC";
@@ -234,7 +198,7 @@ class admission {
 
 			echo '<tr>
 			<td><img src="' . $this->core->fullTemplatePath . '/images/user.png"></td>
-			<td><a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
+			<td><a href="' . $this->core->conf['conf']['path'] . '/information/show/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
 			<td>' . $nrc . '</td>
 				<td><a href="' . $this->core->conf['conf']['path'] . '/admission/profile/' . $uid . '">' . $status .' - '.$statusName[$status].'  </a> </td>
 			<td><b>' . $study . '</b></td>
@@ -248,43 +212,7 @@ class admission {
 
 	}
 
-	function admissionProgress($role, $status) {
-
-		$i = 1;
-		echo '<p><b>To successfully complete your admission process you will need to complete ALL steps.</b></p>
-			<table width="768" border="0" cellpadding="3" cellspacing="0">';
-
-		$sql = "SELECT `Name`, `Value` FROM `settings` WHERE `Name` LIKE 'AdmissionLevel%'";
-		$run = $this->core->database->doSelectQuery($sql);
-
-		while ($fetch = $run->fetch_row()) {
-
-
-			if ($i == $role && $status == "Rejected") {
-				$background = 'style="background-color: #F2BFBF"';
-				$step = '<image src="' . $this->core->fullTemplatePath . '/images/error.png"> <b>FAILED TO MEET REQUIREMENTS</b>';
-			} elseif ($i <= $role) {
-				$background = 'style="background-color: #DFF2BF"';
-				$step = '<image src="' . $this->core->fullTemplatePath . '/images/check.png"> completed';
-			} elseif ($i > $role) {
-				$background = 'style="background-color: #fff"';
-				$step = '<image src="' . $this->core->fullTemplatePath . '/images/tviload.gif"> not yet completed';
-			}
-
-			echo '<tr ' . $background . '>
-				<td width="100"><b>Step ' . $i . '</b></td>
-				<td width="300"><em>' . $fetch[1] . '</em></td>
-				<td>' . $step . '</td>
-				</tr>';
-
-			$i++;
-		}
-
-		echo '</table>';
-
-	}
-
-	function showInfoProfile($sql) {
+	private function showInfoProfile($sql) {
 
 		$run = $this->core->database->doSelectQuery($sql);
 
@@ -306,11 +234,40 @@ class admission {
 			 <tr>
 			<td>Student number</td>
 			<td>' . $studentid . '</td>
-			 </tr>';
+			 </tr>
+			</table>';
 
-			echo '</table></div>';
+			$i = 1;
 
-			$this->admissionProgress($role, $status);
+			echo '<p><b>To successfully complete your admission process you will need to complete ALL steps.</b></p>
+			<table width="768" border="0" cellpadding="3" cellspacing="0">';
+
+			$sql = "SELECT `Name`, `Value` FROM `settings` WHERE `Name` LIKE 'AdmissionLevel%'";
+			$run = $this->core->database->doSelectQuery($sql);
+
+			while ($fetch = $run->fetch_row()) {
+
+				if ($i == $role && $status == "Rejected") {
+					$background = 'style="background-color: #F2BFBF"';
+					$step = '<image src="' . $this->core->fullTemplatePath . '/images/error.png"> <b>FAILED TO MEET REQUIREMENTS</b>';
+				} elseif ($i <= $role) {
+					$background = 'style="background-color: #DFF2BF"';
+					$step = '<image src="' . $this->core->fullTemplatePath . '/images/check.png"> completed';
+				} elseif ($i > $role) {
+					$background = 'style="background-color: #fff"';
+					$step = '<image src="' . $this->core->fullTemplatePath . '/images/tviload.gif"> not yet completed';
+				}
+
+				echo '<tr ' . $background . '>
+					<td width="100"><b>Step ' . $i . '</b></td>
+					<td width="300"><em>' . $fetch[1] . '</em></td>
+					<td>' . $step . '</td>
+					</tr>';
+
+				$i++;
+			}
+
+			echo '</table>';
 
 		}
 

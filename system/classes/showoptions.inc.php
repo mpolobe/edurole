@@ -8,30 +8,30 @@ class optionBuilder {
 		$this->core = $core;
 	}
 
-	public function buildSelect($sql, $selected = NULL) {
+	public function buildSelect($run, $selected = NULL) {
 
+		$begin = "";
 		$out = "";
-		$run = $this->core->database->doSelectQuery($sql);
 
-		if ($run->num_rows > 0) {
+		if (!empty($run)) {
 
-		while ($row = $run->fetch_row()) {
+			foreach ($run as $row) {
 
-			$name = $row[1];
-			$uid = $row[0];
-			if ($uid == $selected) {
-				$sel = 'selected="selected"';
-			} else {
-				$sel = "";
+				$name = $row[1];
+				$uid = $row[0];
+
+				if ($uid == $selected) {
+					$sel = 'selected="selected"';
+				} else {
+					$sel = "";
+				}
+
+				if ($uid == $selected) {
+					$begin = '<option value="' . $uid . '" ' . $sel . '>' . $name . '</option>';
+				}else{
+					$out = $out . '<option value="' . $uid . '" ' . $sel . '>' . $name . '</option>';
+				}
 			}
-
-			if ($uid == $selected) {
-				$begin = '<option value="' . $uid . '" ' . $sel . '>' . $name . '</option>';
-			}else{
-				$out = $out . '<option value="' . $uid . '" ' . $sel . '>' . $name . '</option>';
-			}
-
-		}
 
 		} else {
 
@@ -41,18 +41,19 @@ class optionBuilder {
 
 		$out = $begin . $out;
 		return $out;
-
 	}
 
 	function showPrograms($study, $selected = null) {
 
 		if ($study != null) {
-			$sql = "SELECT `programmes`.ID, `programmes`.ProgramName FROM `programmes`, `study-program-link` WHERE `study-program-link`.StudyID = '$study' AND `study-program-link`.ProgramID = `programmes`.ID";
+			$sql = "SELECT `programmes`.ID, `programmes`.ProgramName FROM `programmes`, `study-program-link` WHERE `study-program-link`.StudyID = '$study' AND `study-program-link`.ProgramID = `programmes`.ID ORDER BY `programmes`.`ProgramName`";
 		} else {
-			$sql = "SELECT `ID`, `ProgramName` FROM `programmes`";
+			$sql = "SELECT `ID`, `ProgramName` FROM `programmes` ORDER BY `ProgramName`";
 		}
 
-		$out = $this->buildSelect($sql, $selected);
+		$run = $this->core->database->doSelectQuery($sql);
+		$fetch = $this->core->database->fetch_all($run);
+		$out = $this->buildSelect($fetch, $selected);
 
 		return ($out);
 	}
@@ -60,12 +61,14 @@ class optionBuilder {
 	function showCourses($program, $selected = null) {
 
 		if ($program != null) {
-			$sql = "SELECT * FROM `courses`, `programmes`, `program-course-link` WHERE `program-course-link`.CourseID = `courses`.ID AND `program-course-link`.ProgramID = `programmes`.ID AND `program-course-link`.ProgramID = $program";
+			$sql = "SELECT * FROM `courses`, `programmes`, `program-course-link` WHERE `program-course-link`.CourseID = `courses`.ID AND `program-course-link`.ProgramID = `programmes`.ID AND `program-course-link`.ProgramID = $program ORDER BY `courses`.`Name`";
 		} else {
-			$sql = "SELECT `ID`, `Name` FROM `courses`";
+			$sql = "SELECT `ID`, `Name` FROM `courses` ORDER BY `courses`.`Name`";
 		}
 
-		$out = $this->buildSelect($sql, $selected);
+		$run = $this->core->database->doSelectQuery($sql);
+		$fetch = $this->core->database->fetch_all($run);
+		$out = $this->buildSelect($fetch, $selected);
 
 		return ($out);
 	}
@@ -73,7 +76,10 @@ class optionBuilder {
 	function showUsers($role, $selected = null) {
 
 		$sql = "SELECT `basic-information`.`ID`, CONCAT(`FirstName`, ' ', `Surname`) FROM `basic-information`, `access`, `roles` WHERE `access`.`ID` = `basic-information`.`ID` AND `access`.`RoleID` = `roles`.`ID` AND `access`.`RoleID` >= '$role'";
-		$out = $this->buildSelect($sql, $selected);
+
+		$run = $this->core->database->doSelectQuery($sql);
+		$fetch = $this->core->database->fetch_all($run);
+		$out = $this->buildSelect($fetch, $selected);
 
 		return ($out);
 	}
@@ -81,7 +87,10 @@ class optionBuilder {
 	function showPaymentTypes($selected = null) {
 
 		$sql = "SELECT `ID`, `Value`, `Name` FROM `settings` WHERE `Name` LIKE 'PaymentType%' ORDER BY `Name`";
-		$out = $this->buildSelect($sql, $selected);
+
+		$run = $this->core->database->doSelectQuery($sql);
+		$fetch = $this->core->database->fetch_all($run);
+		$out = $this->buildSelect($fetch, $selected);
 
 		return ($out);
 	}
@@ -89,7 +98,10 @@ class optionBuilder {
 	function showSchools($selected = null) {
 
 		$sql = "SELECT `ID`, `Name` FROM `schools`";
-		$out = $this->buildSelect($sql, $selected);
+
+		$run = $this->core->database->doSelectQuery($sql);
+		$fetch = $this->core->database->fetch_all($run);
+		$out = $this->buildSelect($fetch, $selected);
 
 		return ($out);
 	}
@@ -97,15 +109,32 @@ class optionBuilder {
 	function showStudies($selected = null) {
 
 		$sql = "SELECT `ID`, `Name` FROM `study`";
-		$out = $this->buildSelect($sql, $selected);
+
+		$run = $this->core->database->doSelectQuery($sql);
+		$fetch = $this->core->database->fetch_all($run);
+		$out = $this->buildSelect($fetch, $selected);
 
 		return ($out);
 	}
 
 	function showRoles($selected = null) {
 
-		$sql = "SELECT * FROM `roles`";
-		$out = $this->buildSelect($sql, $selected);
+		$sql = "SELECT `ID`, `PermissionDescription` FROM `permissions`";
+
+		$run = $this->core->database->doSelectQuery($sql);
+		$fetch = $this->core->database->fetch_all($run);
+		$out = $this->buildSelect($fetch, $selected);
+
+		return ($out);
+	}
+
+
+	function showMultipleRoles($selected = null) {
+
+		$sql = "SELECT `ID`, `PermissionDescription` FROM `permissions`";
+
+		$run = $this->core->database->doSelectQuery($sql);
+		$out = $this->core->database->fetch_all($run);
 
 		return ($out);
 	}
@@ -113,7 +142,10 @@ class optionBuilder {
 	function showAccommodation($selected = null) {
 
 		$sql = "SELECT `ID`, `Name` FROM `accommodation`";
-		$out = $this->buildSelect($sql, $selected);
+
+		$run = $this->core->database->doSelectQuery($sql);
+		$fetch = $this->core->database->fetch_all($run);
+		$out = $this->buildSelect($fetch, $selected);
 
 		return ($out);
 	}

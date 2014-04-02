@@ -5,6 +5,7 @@ class register {
 	public $view;
 
 	public function configView() {
+		$this->view->open = TRUE;
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
 		$this->view->menu = FALSE;
@@ -17,50 +18,30 @@ class register {
 
 	public function buildView($core) {
 		$this->core = $core;
-
-		if ($this->core->action == "submit") {
-			$this->submitRegistration();
-		} else {
-			$this->registrationForm();
-		}
+		$this->viewMenu();
 	}
 
-	public function submitRegistration() {
+	private function viewMenu(){
+		echo '<div class="collapse navbar-collapse  navbar-ex1-collapse">
+			<ul class="nav navbar-nav side-nav">
+				<li class="active"><strong>Home menu</strong></li>
+				<li class="menu"><a href="' . $this->core->conf['conf']['path'] . '">Home</a></li>
+				<li class="menu"><a href="' . $this->core->conf['conf']['path'] . '/intake/studies">Overview of all studies</a></li>
+				<li class="menu"><a href="' . $this->core->conf['conf']['path'] . '/intake">Studies open for intake</a></li>
+				<li class="menu"><a href="' . $this->core->conf['conf']['path'] . '/intake/register">Current student registration</a></li>
+				<li class="menu"><a href="' . $this->core->conf['conf']['path'] . '/password">Recover lost password</a></li>
+				</ul><div id="page-wrapper">';
+	}
 
+	public function submitRegister() {
+		
 		include $this->core->conf['conf']['classPath'] . "students.inc.php";
 		$students = new students($this->core);
 
 		$students->registerStudent();
 	}
 
-	public function registrationForm() {
-
-		if ($this->view->internalMenu == TRUE) {
-		
-			echo '<div class="menucontainer">
-				<div class="menubar">
-				<div class="menuhdr"><strong>Home menu</strong></div>
-				<div class="menu">
-				<a href="' . $this->core->conf['conf']['path'] . '">Home</a>
-				<a href="' . $this->core->conf['conf']['path'] . '/intake/studies">Overview of all studies</a>
-				<a href="' . $this->core->conf['conf']['path'] . '/intake">Studies open for intake</a>
-				<a href="' . $this->core->conf['conf']['path'] . '/intake/register">Current student registration</a>
-				<a href="' . $this->core->conf['conf']['path'] . '/password">Recover lost password</a>
-				</div>
-				</div>
-				</div><div class="contentpadfull">';
-		}
-
-		$function = __FUNCTION__;
-		$title = 'Register for study';
-		$description = 'Please enter the complete form to be eligible for admission';
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-
-		$item = $this->core->item;
-		$action = $this->core->action;
-		$action = $this->core->page;
+	public function studyRegister($item) {
 
 		echo'<div id="templatepath" style="display:none">' . $this->core->fullTemplatePath .'</div>';
 		echo'<div id="path" style="display:none">' . $this->core->conf['conf']['path'] .'</div>';
@@ -95,8 +76,8 @@ class register {
 
 			}
 
-			include $this->core->conf['conf']['path'] . "lib/edurole/footer.js";
-			include $this->core->conf['conf']['path'] . "lib/edurole/reg.js";
+			include $this->core->conf['conf']['path'] . "/lib/edurole/footer.js";
+			include $this->core->conf['conf']['path'] . "/lib/edurole/reg.js";
 
 		} else {
 

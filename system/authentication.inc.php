@@ -259,6 +259,9 @@ class auth {
 		} else {
 			$id = $username;
 			$username = $this->getUsername($id);
+			if(empty($username)){
+				$username = $id;
+			}
 		}
 
 		if($admin != TRUE){
@@ -271,7 +274,15 @@ class auth {
 
 		$sql = "UPDATE `access` SET `Password` = '$password' WHERE `ID` = '$id'";
 
-		if ($this->core->database->doInsertQuery($sql)) {
+		$run = $this->core->database->doSelectQuery($sql);
+
+		if($this->core->database->mysqli->affected_rows == 0){
+			$roleID = "10";
+			$sql = "INSERT INTO `access` (`ID`, `Username`, `RoleID`, `Password`) VALUES ('$id', '$username', '$roleID', '$password');";
+			$run = $this->core->database->doInsertQuery($sql);
+		}
+
+		if ($run) {
 			if($this->authenticateSQL($username, $newpass, TRUE)){
 				$this->core->logEvent("User '$username' changed password", "4");
 				$this->core->throwSuccess("Your password has been changed! The next time you log-in you will need to use your new password.");
@@ -300,7 +311,6 @@ class auth {
 		$this->core->setRole(NULL);
 			
 		$this->core->setPage(NULL);
-		$this->core->initializer();
 	}
 }
 

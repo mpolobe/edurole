@@ -6,7 +6,7 @@
 
 <?php
 if($this->core->role > 104){
-	echo'<div class="toolbar"><a href="'.$this->core->conf['conf']['path'].'/users/password/'. $id .'">Change Users Password</a></div>';
+	echo'<div class="toolbar"><a href="'.$this->core->conf['conf']['path'].'/password/change/'. $id .'">Change Users Password</a></div>';
 }
 ?>
 
@@ -95,8 +95,15 @@ echo'<tr>
 	<td>&nbsp;</td>
 </tr>
 <tr>
+	<td><strong>Government ID</strong></td>
+	<td>
+		<input type="text" name="nationalid" value="<?php echo $NID; ?>" /></td>
 	<td></td>
 </tr>
+<tr>
+	<td></td>
+</tr>
+
 <tr>
 	<td><strong>Nationality</strong></td>
 	<td>

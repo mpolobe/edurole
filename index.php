@@ -3,16 +3,16 @@ session_start();
 
 /*
 	If you have no clue what all these files do please use the EduRole installer.
-	-> wwww.yoursite.com/edurole/installler/
+	-> wwww.yoursite.com/edurole/installer/
 	Or manually open the system configuration:
 	-> system/config.inc.php
 
 	The application system are separated in the following directories:
 	system/				Core components, authentication, template-constructor, database connectors and the like.
-	system/forms		Input forms
-	system/views		View handlers
-	system/services		Service handlers
-	system/classes		Functional classes
+	system/forms			Input forms
+	system/views			View handlers
+	system/services			Service handlers
+	system/classes			Functional classes
 */
 require_once "system/config.inc.php";
 

@@ -10,13 +10,6 @@ class transcript {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
 		$this->view->menu = TRUE;
-
-		if($_GET['print'] == TRUE){
-			$this->iew->menu = FALSE;
-			$this->view->header = FALSE;
-			$this->view->footer = FALSE;
-		}
-
 		$this->view->javascript = array();
 		$this->view->css = array();
 
@@ -26,68 +19,14 @@ class transcript {
 
 	public function buildView($core) {
 		$this->core = $core;
-		
-		if(!empty($this->core->cleanGet['uid'])){
-			$this->core->item = $this->core->cleanGet['uid'];
-		}
-
-		if ($this->core->action == "results" && $this->core->role > 104) {
-			$this->resultsTranscript($this->core->item);
-		}
-
 	}
 
-	function academicyear($studentNo) {
-		global $remark, $count, $count1;
-	
-
-		$sql = "SELECT distinct academicyear, semester FROM `nkrumah-grades` WHERE StudentNo = '$studentNo' order by academicyear";
-		$run = $this->core->database->doSelectQuery($sql);
-
-
-		while ($fetch = $run->fetch_array()){
-
-			$acyr = $fetch[0];
-			$semester = $fetch[1];
-
-			$this->detail($studentNo, $acyr, $semester);
-
-		}
-
-	}
-
-	function detail($studentNo, $acyr, $semester) {
-
-		echo "<p> <span style=\"font-size: 14px; font-weight: bold;\"> $acyr &nbsp ($semester) </span></p>
-		<table width=\"100%\" border= \"1\" style=\"font-size: 12px\">\n <tr >\n <th >COURSENO</th>\n <th >COURSE NAME</th>\n  <th >GRADE</th>\n </tr>\n\n";
-
-		$sql = "SELECT 
-				p1.CourseNo,
-				p2.CourseDescription,
-				p1.Grade
-			FROM 
-				`nkrumah-grades` as p1,
-				`courses` as p2
-			WHERE 	p1.StudentNo = '$studentNo'
-			AND	p1.AcademicYear = '$acyr'
-			AND	p1.CourseNo = p2.Name  
-			AND	p1.Semester = '$semester' 
-			ORDER BY p1.courseNo";
-
-		$run = $this->core->database->doSelectQuery($sql);
-		
-		while ($fetch = $run->fetch_array()){
-			print "<tr>\n";
-			print "<td width=10%>$fetch[0]</td>\n";
-			print "<td width=80%>$fetch[1]</td>\n";
-			print "<td width=10%>$fetch[2]</td>\n";
-			print "</tr>\n\n";
-		}
-
-		print "</table>\n";
-	}
 
 	public function resultsTranscript($item){
+
+		if(!isset($item) || $this->core->role <= 10){
+			$item = $this->core->userID;
+		}
 
 		echo'<div id="exhibition" style="left:20px; top:5px; width:auto; z-index:90;">
 		<center>
@@ -295,5 +234,56 @@ echo'<h2 class="break">Key to Understanding Grades</h2>
 </div>';
 
 	}
+
+	private function academicyear($studentNo) {
+		global $remark, $count, $count1;
+	
+
+		$sql = "SELECT distinct academicyear, semester FROM `nkrumah-grades` WHERE StudentNo = '$studentNo' order by academicyear";
+		$run = $this->core->database->doSelectQuery($sql);
+
+
+		while ($fetch = $run->fetch_array()){
+
+			$acyr = $fetch[0];
+			$semester = $fetch[1];
+
+			$this->detail($studentNo, $acyr, $semester);
+
+		}
+
+	}
+
+	private function detail($studentNo, $acyr, $semester) {
+
+		echo "<p> <span style=\"font-size: 14px; font-weight: bold;\"> $acyr &nbsp ($semester) </span></p>
+		<table width=\"100%\" border= \"1\" style=\"font-size: 12px\">\n <tr >\n <th >COURSENO</th>\n <th >COURSE NAME</th>\n  <th >GRADE</th>\n </tr>\n\n";
+
+		$sql = "SELECT 
+				p1.CourseNo,
+				p2.CourseDescription,
+				p1.Grade
+			FROM 
+				`nkrumah-grades` as p1,
+				`courses` as p2
+			WHERE 	p1.StudentNo = '$studentNo'
+			AND	p1.AcademicYear = '$acyr'
+			AND	p1.CourseNo = p2.Name  
+			AND	p1.Semester = '$semester' 
+			ORDER BY p1.courseNo";
+
+		$run = $this->core->database->doSelectQuery($sql);
+		
+		while ($fetch = $run->fetch_array()){
+			print "<tr>\n";
+			print "<td width=10%>$fetch[0]</td>\n";
+			print "<td width=80%>$fetch[1]</td>\n";
+			print "<td width=10%>$fetch[2]</td>\n";
+			print "</tr>\n\n";
+		}
+
+		print "</table>\n";
+	}
+
 }
 ?>

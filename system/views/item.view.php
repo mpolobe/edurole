@@ -16,33 +16,9 @@ class item {
 
 	public function buildView($core) {
 		$this->core = $core;
-
-
-
-		if (empty($this->core->action)) {
-
-			$function = __FUNCTION__;
-			$title = 'News';
-			$description = 'The following stories are available';
-
-			echo $this->core->breadcrumb->generate(get_class(), $function);
-			echo component::generateTitle($title, $description);
-
-			$this->showItem($this->core->item);
-			$this->showNewsOverview();
-
-		} elseif ($this->core->action == "edit" && $this->core->role > 102) {
-
-			$this->edit($this->core->item);
-
-		} elseif ($this->core->action == "save" && $this->core->role > 102) {
-
-			$this->editsave($this->core->item);
-
-		}
 	}
 
-	function showNewsOverview() {
+	private function showNewsOverview() {
 
 		$sql = "SELECT * FROM `content` WHERE `ContentCat` = 'news'";
 		$run = $this->core->database->doInsertQuery($sql);
@@ -50,12 +26,27 @@ class item {
 		echo '<div class="newscontainers">	<h2>News and updates</h2> <p>';
 
 		while ($row = $run->fetch_row()) {
-			echo ' <li> <b><a href="' . $this->core->conf['conf']['path'] . 'item/' . $row[0] . '">' . $row[1] . '</a></b></li>';
+			echo ' <li> <b><a href="' . $this->core->conf['conf']['path'] . '/item/show/' . $row[0] . '">' . $row[1] . '</a></b></li>';
 		}
 
 		echo '</p></div>';
 	}
 
+        public function saveItem($item) {
+		$id = $this->core->cleanPost['itemid'];
+		$name = $this->core->cleanPost['name'];
+		$content = $this->core->cleanPost['content'];
+
+		if(!empty($id)){
+	                $sql = "UPDATE `content` SET `Content` = '".$content."', `Name` = '".$name."' WHERE `ContentID` = '".$id."';";
+		}else{
+	                $sql = "INSERT INTO `content` (`ContentID`, `Name`, `Content`, `ContentCat`) VALUES (NULL, '".$name."', '".$content."', '".$this->core->item."');";
+		}		
+echo $sql;
+                $run = $this->core->database->doInsertQuery($sql);
+
+		$this->core->redirect($this->core->item, "manage", NULL);
+	}
 
 	function showItem($id) {
 
@@ -65,7 +56,7 @@ class item {
 		echo '<div class="welcomecontainers">';
 
 		if ($this->core->role == 1000) {
-			echo '<div style="float: right;"><a href="' . $this->core->conf['conf']['path'] . 'item/edit/' . $id . '">edit</a></div>';
+			echo '<div style="float: right;"><a href="' . $this->core->conf['conf']['path'] . '/item/edit/' . $id . '">edit</a></div>';
 		}
 
 		while ($row = $run->fetch_row()) {
@@ -77,14 +68,29 @@ class item {
 
 	}
 
-	function edit($id) {
-		$function = __FUNCTION__;
-		$title = 'Edit item';
-		$description = 'Please remember to save your changes';
 
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
+	function addItem($item) {
 
+		if ($this->core->role == 1000) {
+			echo "<script type=\"text/javascript\">
+				Aloha.ready( function() {
+					var $ = Aloha.jQuery;
+					$('.editable').aloha();
+				});
+			</script>";
+		}
+
+		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
+		$select = new optionBuilder($this->core);
+		$manager = $select->showUsers("100", null);
+				
+		include $this->core->conf['conf']['formPath'] . "additem.form.php";
+
+		echo '</div>';
+
+	}
+
+	function editItem($id) {
 		$sql = "SELECT * FROM `content` WHERE `ContentID` = $id";
 
 		$run = $this->core->database->doSelectQuery($sql);
@@ -105,7 +111,7 @@ class item {
 		while ($row = $run->fetch_row()) {
 			$name =  $row[1];
 			$content = $row[2];
-				
+
 			include $this->core->conf['conf']['formPath'] . "edititem.form.php";
 		}
 

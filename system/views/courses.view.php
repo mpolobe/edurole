@@ -8,40 +8,17 @@ class courses {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
 		$this->view->menu = TRUE;
-		$this->view->javascript = array(3);
-		$this->view->css = array(4);
+		$this->view->javascript = array();
+		$this->view->css = array();
 
 		return $this->view;
 	}
 
 	public function buildView($core) {
 		$this->core = $core;
-		
-		if ($this->core->action == "management" && $this->core->role > 103) {
-			$this->listCourses();
-		} elseif ($this->core->action == "view") {
-			$this->showCourse($this->core->item);
-		} elseif ($this->core->action == "edit" && isset($this->core->item) && $this->core->role > 103) {
-			$this->editCourse($this->core->item);
-		} elseif ($this->core->action == "add" && $this->core->role > 103) {
-			$this->addCourse();
-		} elseif ($this->core->action == "save" && $this->core->role > 103) {
-			$this->saveCourse();
-		} elseif ($this->core->action == "delete" && isset($this->core->item) && $this->core->role > 103) {
-			$this->deleteCourse($this->core->item);
-		} else {
-			$this->listCourses();
-		}
 	}
 
-	function editCourse($item) {
-		$function = __FUNCTION__;
-		$title = 'Edit course';
-		$description = 'Remember to save changes after you are done';
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-
+	function editCourses($item) {
 		$sql = "SELECT * FROM `courses` WHERE `courses`.ID = $item";
 		$run = $this->core->database->doSelectQuery($sql);
 
@@ -64,15 +41,7 @@ class courses {
 		}
 	}
 
-	function addCourse() {
-		$function = __FUNCTION__;
-		$title = 'Add course';
-		$description = 'Please enter the required fields';
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-
-
+	function addCourses() {
 		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
 		$optionBuilder = new optionBuilder($this->core);
 
@@ -82,15 +51,14 @@ class courses {
 		include $this->core->conf['conf']['formPath'] . "addcourse.form.php";
 	}
 
-	function deleteCourse($item) {
+	function deleteCourses($item) {
 		$sql = 'DELETE FROM `courses` WHERE `ID` = "' . $item . '"';
 		$run = $this->core->database->doSelectQuery($sql);
 
-		$this->listCourses();
-		$this->core->showAlert("The course has been deleted");
+		$this->core->redirect("courses", "manage", NULL);
 	}
 
-	function saveCourse() {
+	function saveCourses() {
 		$name = $this->core->cleanPost['name'];
 		$internal = $this->core->cleanPost['internal'];
 		$distance = $this->core->cleanPost['distance'];
@@ -105,17 +73,10 @@ class courses {
 
 		$run = $this->core->database->doInsertQuery($sql);
 
-		$this->listCourses();
+		$this->core->redirect("courses", "manage", NULL);
 	}
 
-	function listCourses($item) {
-		$function = __FUNCTION__;
-		$title = 'Overview of courses';
-		$description = 'Overview of all courses currently on offer';
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-
+	function manageCourses() {
 		$sql = "SELECT * FROM `courses` 
 			LEFT JOIN `basic-information` as `bi` ON `courses`.CourseCoordinatorInternal = `bi`.ID  
 			LEFT JOIN `basic-information` as `bd` ON `courses`.CourseCoordinatorDistance = `bd`.ID 
@@ -142,12 +103,12 @@ class courses {
 			}
 
 			echo '<tr ' . $bgc . '>
-                    <td><b><a href="' . $this->core->conf['conf']['path'] . '/courses/view/' . $fetch[0] . '"> ' . $fetch[1] . ' - ' . $fetch[4] . '</a></b></td>
+                    <td><b><a href="' . $this->core->conf['conf']['path'] . '/courses/show/' . $fetch[0] . '"> ' . $fetch[1] . ' - ' . $fetch[4] . '</a></b></td>
                     <td>
-                    <a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $fetch[29] . '">' . $fetch[5] . ' ' . $fetch[7] . '</a>
+                    <a href="' . $this->core->conf['conf']['path'] . '/information/show/' . $fetch[9] . '">' . $fetch[5] . ' ' . $fetch[7] . '</a>
                     </td>
                     <td>
-                    <a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $fetch[30] . '">' . $fetch[26] . ' ' . $fetch[28] . '</a>
+                    <a href="' . $this->core->conf['conf']['path'] . '/information/show/' . $fetch[10] . '">' . $fetch[26] . ' ' . $fetch[28] . '</a>
                     </td>
                     <td>
                     <a href="' . $this->core->conf['conf']['path'] . '/courses/edit/' . $fetch[0] . '"> <img src="' . $this->core->fullTemplatePath . '/images/edi.png"> edit</a>
@@ -159,15 +120,11 @@ class courses {
 		echo '</table>';
 	}
 
-	function showCourse($item) {
-		$function = __FUNCTION__;
-		$title = 'View course information';
-		$description = 'Overview of all courses currently on offer';
+	function showCourses($item) {
+		$sql = "SELECT * FROM `courses` 
+			LEFT JOIN `basic-information` ON `courses`.CourseCoordinatorInternal = `basic-information`.ID 
+			WHERE `courses`.ID = $item";
 
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-
-		$sql = "SELECT * FROM `courses`, `basic-information` WHERE `courses`.ID = $item AND `courses`.CourseCoordinator = `basic-information`.ID";
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($fetch = $run->fetch_row()) {
@@ -180,12 +137,12 @@ class courses {
                   </tr>
                   <tr>
                     <td><strong>Course name</strong></td>
-                    <td> <b>' . $fetch[1] . '</b> - ' . $fetch[3] . '</td>
+                    <td> <b>' . $fetch[1] . '</b> - ' . $fetch[4] . '</td>
                     <td></td>
                   </tr>
                   <tr>
                     <td><strong>Course coordinator</strong></td>
-                    <td><a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $fetch[2] . '">' . $fetch[4] . ' ' . $fetch[6] . '</a></td>
+                    <td><a href="' . $this->core->conf['conf']['path'] . '/information/show/' . $fetch[2] . '">' . $fetch[5] . ' ' . $fetch[7] . '</a></td>
                     <td></td>
                   </tr>
                   <tr>
@@ -199,5 +156,4 @@ class courses {
 		echo '</table>';
 	}
 }
-
 ?>

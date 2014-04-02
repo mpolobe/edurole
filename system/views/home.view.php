@@ -9,17 +9,18 @@ class home {
 		$this->view->footer = TRUE;
 		$this->view->menu = TRUE;
 		$this->view->javascript = array();
-		$this->view->css = array(4);
+		$this->view->css = array();
 
 		return $this->view;
 	}
 
 	public function buildView($core) {
 		$this->core = $core;
+	}
 
-		$function = __FUNCTION__;
+	public function showHome() {
+
 		require_once "system/components.inc.php";
-		echo $this->core->breadcrumb->generate(get_class(), $function);
 
 		$this->infoSheet();
 
@@ -33,19 +34,14 @@ class home {
 		$this->newsoverview();
 	}
 
-	function globalStatistics() {
+	private function globalStatistics() {
 
 		$this->core->logEvent("Initializing global user statistics count", "3");
 
-		$sql = "SELECT  (
-                SELECT count(ID) FROM `basic-information` WHERE `StudyType` = 'Distance' AND `Status` = 'Enrolled'
-        ) AS distancestudents, (
-                SELECT count(ID) FROM `basic-information` WHERE `StudyType` = 'Fulltime' AND `Status` = 'Enrolled'
-        ) AS fulltimestudents, (
-                SELECT count(ID) FROM `basic-information` WHERE `StudyType` = 'Partime'  AND `Status` = 'Enrolled'
-        ) AS parttimestudents, (
-                SELECT count(ID) FROM `basic-information` WHERE `Status` = 'Requesting'
-        ) AS requestingstudents";
+		$sql = "SELECT  (SELECT count(ID) FROM `basic-information` WHERE `StudyType` = 'Distance' AND `Status` = 'Enrolled') AS distancestudents, 
+		(SELECT count(ID) FROM `basic-information` WHERE `StudyType` = 'Fulltime' AND `Status` = 'Enrolled') AS fulltimestudents, 
+		(SELECT count(ID) FROM `basic-information` WHERE `StudyType` = 'Partime'  AND `Status` = 'Enrolled') AS parttimestudents, 
+		(SELECT count(ID) FROM `basic-information` WHERE `Status` = 'Requesting') AS requestingstudents";
 
 		$run = $this->core->database->doSelectQuery($sql);
 
@@ -58,17 +54,17 @@ class home {
 			$total = $fulltime + $distance + $parttime;
 		}
 
-		echo '<div class="easymencontainer">
-        <div class="statistics">Total students: <div class="statistic" style="color: #2C89D4;">' . $total . '</div></div>
-        <div class="statistics">Fulltime students: <div class="statistic">' . $fulltime . '</div></div>
-        <div class="statistics">Distance students: <div class="statistic">' . $distance . '</div></div>
-        <div class="statistics">Part-time students: <div class="statistic">' . $parttime . '</div></div>
-        <div class="statistics">Currently in admission: <div class="statistic">' . $requesting . '</div></div>
+		echo '<div class="col-lg-12 padding20">
+        <div class="statistics">'.$this->core->translate("Total students").': <div class="statistic" style="color: #2C89D4;">' . $total . '</div></div>
+        <div class="statistics">'.$this->core->translate("Fulltime students").': <div class="statistic">' . $fulltime . '</div></div>
+        <div class="statistics">'.$this->core->translate("Distance students").': <div class="statistic">' . $distance . '</div></div>
+        <div class="statistics">'.$this->core->translate("Part-time students").': <div class="statistic">' . $parttime . '</div></div>
+        <div class="statistics">'.$this->core->translate("Currently in admission").': <div class="statistic">' . $requesting . '</div></div>
         </div>';
 
 	}
 
-	public function infoSheet() {
+	private function infoSheet() {
 
 		$this->core->logEvent("Initializing info-sheet", "3");
 
@@ -77,7 +73,7 @@ class home {
 		$run = $this->core->database->doSelectQuery($sql);
 
 		if ($run->num_rows == 0) {
-			$this->core->throwSuccess("Please take the time to enter your profile information first, you can do this <a href='". $this->core->conf['conf']['path'] ."/information/edit/personal'>here</a>.");
+			$this->core->throwSuccess($this->core->translate("Please take the time to enter your profile information first, you can do this <a href='". $this->core->conf['conf']['path'] ."/information/edit/personal'>here</a>."));
 		}
 
 
@@ -95,25 +91,36 @@ class home {
 			$username = $row[22];
 
 			if(empty($firstname) && empty($lastname)){
-				$this->core->throwSuccess("Please take the time to enter your profile information first, you can do this <a href='". $this->core->conf['conf']['path'] ."/information/edit/personal'>here</a>.");
+				$this->core->throwSuccess($this->core->translate("Please take the time to enter your profile information first, you can do this <a href='". $this->core->conf['conf']['path'] ."/information/edit/personal'>here</a>."));
 			}
 
-			echo '<div class="greeter">Welcome ' . $firstname . ' ' . $surname . ' </div><div class="homecontainers">
-               	 <table width="600" border="0" cellpadding="0" cellspacing="0"><tr>';
+			echo '<div class="col-lg-12 greeter">';
+			echo $this->core->translate("Welcome");
+			echo ' ' . $firstname . ' ' . $surname . ' </div>
+			<div class="col-lg-12 padding20 panel panel-default">
+               	 	<table width="600" border="0" cellpadding="0" cellspacing="0"><tr>';
 
 			if ($this->core->role < 100) {
-				echo '<td  width="117">Student number</td>';
+				echo'<td  width="117">';
+				echo $this->core->translate("Student number");
+				echo'</td>';
 			} else {
-				echo '<td  width="200">Employee number</td>';
+				echo '<td  width="200">';
+				echo $this->core->translate("Employee number");
+				echo '</td>';
 			}
 
 			echo '<td>' . $idnumber . '</td></tr>';
-			echo '<tr><td>Current role</td> <td>' . $this->core->roleName . '</td></tr>';
-			echo '<tr><td>Selected template</td> <td>' . $this->core->template . '</td></tr>';
+			echo '<tr><td>';
+			echo $this->core->translate("Current role");
+			echo'</td> <td>' . $this->core->roleName . '</td></tr>';
+			echo '<tr><td>';
+			echo $this->core->translate("Selected Template");
+			echo '</td> <td>' . $this->core->template . '</td></tr>';
 
 			$sql = "SELECT * FROM `access` as ac, `study` as st
 				LEFT JOIN  `student-study-link` as ss ON ss.`StudentID` = ''
-				LEFT JOIN  `student-program-link` as pl ON pl.`StudentID` = '$nrc'
+				LEFT JOIN  `nkrumah-student-program-link` as pl ON pl.`StudentID` = '$id'
 				WHERE ac.`ID` = '' 
 				AND ss.`StudyID` = st.`ID`";
 	
@@ -124,10 +131,10 @@ class home {
 				$status = $row[7];
 				$study = $row[14];
 
-				echo '<tr>
-                        	td>Selected study</td>
-                        	td><b><a href="' . $this->core->conf['conf']['path'] . '/studies/view/' . $row[8] . '">' . $study . '</a></b></td>
-                        	/tr>';
+				echo '<tr><td>';
+				echo $this->core->translate("Selected Study");
+                        	echo'</td><td><b><a href="' . $this->core->conf['conf']['path'] . '/studies/show/' . $row[8] . '">' . $study . '</a></b></td>
+                        	</tr>';
 
 				$sql = "SELECT * FROM `programmes` as pr WHERE pr.`ID` = '$row[23]' OR pr.`ID` = '$row[24]'";
 				$run = $this->core->database->doSelectQuery($sql);
@@ -146,17 +153,17 @@ class home {
 						$n = 1;
 					}
 
-					echo '<tr>
-                                <td>Selected ' . $majmin . '</td>
+				echo '<tr><td>';
+				echo $this->core->translate("Selected");
+                                echo ' ' . $majmin . '</td>
                                 <td>' . $programme . '</td>
                                 </tr>';
 				}
 
 				if ($majmin == "major") {
-					echo '<tr>
-                                <td>Selected minor</td>
-                                <td>' . $programme . '</td>
-                                </tr>';
+					echo '<tr><td>';
+					echo $this->core->translate("Selected Minor");
+					echo'</td><td>' . $programme . '</td></tr>';
 				}
 			}
 
@@ -166,27 +173,34 @@ class home {
 
 	}
 
-	function newsoverview() {
+	private function newsoverview() {
 
 		$sql = "SELECT * FROM `content` WHERE `ContentCat` = 'news'";
 		$run = $this->core->database->doSelectQuery($sql);
 
-		echo '<div class="newscontainers">	<h2>News and updates</h2> <p>';
+		echo '<div class="col-lg-6 padding20 panel panel-default fixedheightpanel">';
 
+		if ($this->core->role == 1000) {
+			echo '<div style="float: right;"><a href="' . $this->core->conf['conf']['path'] . '/item/add/news">add</a></div>';
+		}
+
+		echo '<h2>';
+		echo $this->core->translate("News and updates");
+		echo '</h2> <p>';
 		while ($row = $run->fetch_row()) {
-			echo ' <li> <b><a href="' . $this->core->conf['conf']['path'] . '/item/' . $row[0] . '">' . $row[1] . '</a></b></li>';
+			echo ' <li> <b><a href="' . $this->core->conf['conf']['path'] . '/item/show/' . $row[0] . '">' . $row[1] . '</a></b></li>';
 		}
 
 		echo '</p></div>';
 	}
 
 
-	function showItem($id) {
+	private function showItem($id) {
 
 		$sql = "SELECT * FROM `content` WHERE `ContentID` = $id";
 		$run = $this->core->database->doSelectQuery($sql);
 
-		echo '<div class="welcomecontainers">';
+		echo '<div class="col-lg-6 panel panel-default fixedheightpanel">';
 
 		if ($this->core->role == 1000) {
 			echo '<div style="float: right;"><a href="' . $this->core->conf['conf']['path'] . '/item/edit/' . $id . '">edit</a></div>';
@@ -201,18 +215,17 @@ class home {
 
 	}
 
-	public function easyMenu() {
-
+	private function easyMenu() {
 		if ($this->core->role >= 10) {
-			echo '<div class="easymencontainer">
-                 <div class="easymen"><a href="' . $this->core->conf['conf']['path'] . '/mail"><img src="' . $this->core->fullTemplatePath . '/images/mail.png"> <br>  Email</a></div>
-                 <div class="easymen"><a href="' . $this->core->conf['conf']['path'] . '/grades"><img src="' . $this->core->fullTemplatePath . '/images/chart.png"> <br> Grades</a></div>
-                 <div class="easymen"><a href="' . $this->core->conf['conf']['path'] . '/calendar"><img src="' . $this->core->fullTemplatePath . '/images/calendar.png"> <br> Calendar</a></div>
-                 <div class="easymen"><a href="' . $this->core->conf['conf']['path'] . '/books"><img src="' . $this->core->fullTemplatePath . '/images/books.png"> <br> Books</a></div>
-				 <div class="easymen"><a href="' . $this->core->conf['conf']['path'] . '/files"><img src="' . $this->core->fullTemplatePath . '/images/box.png"> <br>  Files</a></div>
-                 <div class="easymen"><a href="' . $this->core->conf['conf']['path'] . '/assignments"><img src="' . $this->core->fullTemplatePath . '/images/clipboard.png">  <br> Assignments</a></div>
-                 <div class="easymen"><a href="' . $this->core->conf['conf']['path'] . '/help"><img src="' . $this->core->fullTemplatePath . '/images/info.png">  <br> Help</a></div>
-                </div>';
+			echo '<div class="col-lg-12 padding20 panel panel-default">
+                 	<div class="easymen"><a href="' . $this->core->conf['conf']['path'] . '/mail"><img src="' . $this->core->fullTemplatePath . '/images/mail.png"> <br>  Email</a></div>
+                 	<div class="easymen"><a href="' . $this->core->conf['conf']['path'] . '/grades"><img src="' . $this->core->fullTemplatePath . '/images/chart.png"> <br> Grades</a></div>
+                 	<div class="easymen"><a href="' . $this->core->conf['conf']['path'] . '/calendar"><img src="' . $this->core->fullTemplatePath . '/images/calendar.png"> <br> Calendar</a></div>
+		 	<div class="easymen"><a href="' . $this->core->conf['conf']['path'] . '/files/personal"><img src="' . $this->core->fullTemplatePath . '/images/box.png"> <br>  Files</a></div>
+                 	<div class="easymen"><a href="' . $this->core->conf['conf']['path'] . '/assignments"><img src="' . $this->core->fullTemplatePath . '/images/clipboard.png">  <br> Assignments</a></div>
+                 	<div class="easymen"><a href="' . $this->core->conf['conf']['path'] . '/payments/balance"><img src="' . $this->core->fullTemplatePath . '/images/money.png"> <br> Payments</a></div>
+                 	<div class="easymen"><a href="' . $this->core->conf['conf']['path'] . '/help"><img src="' . $this->core->fullTemplatePath . '/images/info.png">  <br> Help</a></div>
+                	</div>';
 		}
 	}
 }

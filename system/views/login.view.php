@@ -5,6 +5,7 @@ class login {
 	public $view;
 
 	public function configView() {
+		$this->view->open = TRUE;
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
 		$this->view->menu = FALSE;
@@ -16,9 +17,10 @@ class login {
 
 	public function buildView($core) {
 		$this->core = $core;
+	}
 
+	public function showLogin() {
 		include $this->core->conf['conf']['formPath'] . "login.form.php";
 	}
 }
-
 ?>

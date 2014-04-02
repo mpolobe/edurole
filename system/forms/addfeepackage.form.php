@@ -5,9 +5,8 @@
 	});
 </script>
 
-<form id="addfee" name="addfee" method="post" action="<?php echo $this->core->conf['conf']['path']; ?>/fees/save/">
+<form id="addfee" name="addfee" method="post" action="<? echo $this->core->conf['conf']['path'] . "/feepackages/save/" . $this->core->item; ?>">
 	<p>Please enter the following information</p>
-                  <input type="hidden" name="packageid" value="<?php echo $this->core->item; ?>" /></td>
 	<table width="768" border="0" cellpadding="5" cellspacing="0">
               <tr>
                 <td width="205" height="28" bgcolor="#EEEEEE"><strong>Information</strong></td>
@@ -15,13 +14,13 @@
                 <td  bgcolor="#EEEEEE"><strong>Description</strong></td>
               </tr>
               <tr>
-                <td><strong>Fee Name </strong></td>
+                <td><strong>Fee Package Name </strong></td>
                 <td>
                   <input type="text" name="name" /></td>
                 <td>Name of fee</td>
               </tr>
               <tr>
-                <td><strong>Fee Manager</strong></td>
+                <td><strong>Fee Package Manager</strong></td>
                 <td>
                   <select name="owner" id="owner">
 					<? echo $owner; ?>
@@ -35,16 +34,10 @@
 		  </td>
                 <td></td>
               </tr>
-              <tr>
-                <td><strong>Ammount </strong></td>
-                <td>
-                  <input type="text" name="amount" /></td>
-                <td>How much needs to be payed</td>
-              </tr>
             </table>
 		<br />
 
-	  <input type="submit" class="submit" name="submit" id="submit" value="Add fee to package" />
+	  <input type="submit" class="submit" name="submit" id="submit" value="Create Fee Package" />
         <p>&nbsp;</p>
 
       </form>

@@ -18,7 +18,7 @@
 					<tr>
 						<td colspan="2" valign="top" style="padding-left:0px;"><h2><strong>LOGIN</strong></h2>
 
-							<p> In case you forgot your account password, click <a href="password">here</a>.</p></td>
+							<p> In case you forgot your account password, click <a href="<?php echo $this->core->conf['conf']['path'] . "/password/recover"; ?>">here</a>.</p></td>
 					</tr>
 					<tr>
 						<td width="124" valign="middle">Username</td>

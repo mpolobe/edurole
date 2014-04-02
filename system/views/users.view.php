@@ -9,83 +9,17 @@ class users {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
 		$this->view->menu = TRUE;
-		$this->view->javascript = array(3);
-		$this->view->css = array(4);
+		$this->view->javascript = array();
+		$this->view->css = array();
 
 		return $this->view;
 	}
 
 	public function buildView($core) {
 		$this->core = $core;
-
-		if ($this->core->action == "add" && $this->core->role >= 100) {
-			$this->addUser();
-		} elseif ($this->core->action == "save" && $this->core->role >= 100) {
-			$this->saveUser();
-		} elseif ($this->core->action == "delete" && isset($this->core->item) && $this->core->role > 104) {
-			$this->deleteUser($this->core->item);
-		} else if ($this->core->role >= 100 & $this->core->action == "students") {
-			$this->showStudentList();
-		} elseif ($this->core->action == "password" && isset($core->role) && $this->core->role < 100 ) {
-			$this->changePassword($this->core->username, FALSE);
-		} elseif ($this->core->action == "password" && isset($core->role) && $this->core->role == 1000 && isset($this->core->item)) {
-			$this->changePassword($this->core->item, TRUE);
-		} elseif ($this->core->action == "password" && isset($core->role) && $this->core->role == 1000 && !isset($this->core->item)) {
-			$this->changePassword($this->core->username, FALSE);
-		} else if ($core->role >= 100) {
-			$this->showUserList();
-		}
-	}
-
-	public function changePassword($item, $admin) {
-		$function = __FUNCTION__;
-
-		$oldpass = $this->core->cleanPost["oldpass"];
-		$newpass = $this->core->cleanPost["newpass"];
-		$newpasscheck = $this->core->cleanPost["newpasscheck"];
-
-		$title = 'Change your account password';
-		$description = 'You are able to change your account password here.';
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-
-		$auth = new auth($this->core);
-		
-		if (!empty($newpass)) {
-
-			if ($newpass == $newpasscheck) {
-
-				if (!$auth->ldapChangePass($item, $oldpass, $newpass)) {
-					$ldap = false;
-				}
-				if ($auth->mysqlChangePass($item, $oldpass, $newpass, $admin) == false && $ldap == false) {
-					$this->core->throwError("The information you have entered is incorrect.");
-				}
-
-			} else {
-				echo "<h2>The entered passwords do not match</h2>";
-			}
-
-		} else {
-
-			echo "<p>Please remember to enter all fields!</p>";
-			include $this->core->conf['conf']['formPath'] . "changepass.form.php";
-
-		}
 	}
 	
-	function saveUser() {
-		$function = __FUNCTION__;
-		$title = 'Add user account';
-		$description = 'The account information has been saved';
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-
-		$this->addUserSave();
-	}
-
-	public function password($length, $charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1') {
+	private function generatePassword($length, $charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1') {
 		$str = '';
 		$count = strlen($charset);
 		while ($length--) {
@@ -94,13 +28,7 @@ class users {
 		return $str;
 	}
 
-	function addUser() {
-		$function = __FUNCTION__;
-		$title = 'Add user account';
-		$description = 'Please provide the needed information to create a new user account';
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-
+	function addUsers() {
 		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
 
 		$select = new optionBuilder($this->core);
@@ -109,9 +37,9 @@ class users {
 		include $this->core->conf['conf']['formPath'] . "adduser.form.php";
 	}
 
-	public function addUserSave() {
+	function saveUsers() {
 
-		$password = $this->password(6);
+		$password = $this->generatePassword(6);
 
 		if ($this->core->cleanPost["otherdissability"]) {
 			$dissabilitytype = $this->core->cleanPost["otherdissability"];
@@ -173,43 +101,47 @@ class users {
 
 	}
 
-	public function hashPassword($username, $password){
+	private function hashPassword($username, $password){
 		$passwordHashed = hash('sha512', $password . $this->core->conf['conf']['hash'] . $username);
 		return $passwordHashed;
 	}
 
-	function showUserList() {
+	function manageUsers() {
 
-		$function = __FUNCTION__;
-		$title = 'User management';
-		$description = 'Overview of all users with privileges higher than student';
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-
-		echo '<div class="toolbar">
+		if($this->core->pager == FALSE){
+			echo '<div class="toolbar">
 			<a href="' . $this->core->conf['conf']['path'] . '/users/add">Add new user account</a>
 			</div>'; 
 
-		echo '<table width="768" height="" border="0" cellpadding="3" cellspacing="0">
-		<tr class="tableheader">
-		<td></td>
-		<td><b> Student Name</b></td>
-		<td><b> Access role</b></td>
-		<td><b> </b></td>
-		<td><b> Status</b></td>		
-		<td><b> Options</b></td>
-		</tr>';
+			echo '<table width="768" height="" border="0" cellpadding="3" cellspacing="0">
+			<tr class="tableheader">
+			<td><b> Student Name</b></td>
+			<td><b> Access role</b></td>
+			<td><b> </b></td>
+			<td><b> Status</b></td>		
+			<td><b> Options</b></td>
+			</tr>
+			</table>';
+		}
 
 		$sql = "SELECT * FROM `basic-information`, `access`, `roles` WHERE `access`.`ID` = `basic-information`.`ID` AND `access`.`RoleID` = `roles`.`ID` AND `access`.`RoleID` >= 100 ORDER BY `basic-information`.Surname";
+		$sql = $sql . " LIMIT ". $this->core->limit ." OFFSET ". $this->core->offset;
+
 		$run = $this->core->database->doSelectQuery($sql);
+
+		$sqlcount = "SELECT count(*) FROM `basic-information` WHERE `basic-information`.`Status` = 'Distance' OR `basic-information`.`StudyType` = 'Fulltime'";
+
+		$runcount = $this->core->database->doSelectQuery($sqlcount);
+
+		while ($row = $runcount->fetch_row()) {
+			$total = $row[0];
+		}
 
 		while ($row = $run->fetch_row()) {
 
 			$firstname = $row[0];
 			$middlename = $row[1];
 			$surname = $row[2];
-
 			$username = $row[22];
 
 			if(empty($firstname) && empty($lastname)){
@@ -222,35 +154,34 @@ class users {
 			$role = $row[26];
 			$status = $row[20];
 
-			echo '<tr>
-			<td><img src="' . $this->core->fullTemplatePath . '/images/user.png"></td>
-			<td><a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
-			<td><i>' . $role . '</i></td>
-			<td>' . $uid . '</td>
-			<td>' . $status . '</td>
-			<td><a href="' . $this->core->conf['conf']['path'] . '/information/edit/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/edi.png"> edit</a>  <a href="' . $this->core->conf['conf']['path'] . '/users/delete/' . $uid . '" onclick="return confirm(\'Are you sure?\')"><img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> delete</a></td>
-			</tr>';
+			echo '<div class="resultrow">
+				<div style="width: 20px; float:left;"><img src="' . $this->core->fullTemplatePath . '/images/user.png"></div>
+				<div style="width: 230px; float:left;"><a href="' . $this->core->conf['conf']['path'] . '/information/show/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></div>
+				<div style="width: 240px; float:left;"><i>' . $role . '</i></div>
+				<div style="width: 130px; float:left; height: 15px;">' . $status . '</div>
+				<div style="width: 100px; float:left;"><a href="' . $this->core->conf['conf']['path'] . '/information/edit/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/edi.png"> edit</a>  <a href="' . $this->core->conf['conf']['path'] . '/users/delete/' . $uid . '" onclick="return confirm(\'Are you sure?\')"><img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> delete</a></div>
+			</div>';
 		}
 
-		echo '</table>';
+		if($this->core->pager == FALSE){
+			echo'<div id="results">&nbsp;</div>';
+			include $this->core->conf['conf']['libPath'] . "edurole/autoload.js";
+		}
 	}
 
-	function showStudentList() {
-		$function = __FUNCTION__;
-		$title = 'User management';
-		$description = 'Overview of all students currently enrolled';
+	function studentsUsers() {
 
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
+		if($this->core->pager == FALSE){
 
-		echo '<table width="768" height="" border="0" cellpadding="3" cellspacing="0">
-		<tr class="tableheader">
-		<td></td>
-		<td><b> Student Name</b></td>
-		<td><b> Student ID</b></td>
-		<td><b> Status</b></td>		
-		<td><b> Options</b></td>
-		</tr>';
+			echo '<table width="768" height="" border="0" cellpadding="3" cellspacing="0">
+			<tr class="tableheader">
+			<td></td>
+			<td><b> Student Name</b></td>
+			<td><b> Student ID</b></td>
+			<td><b> Status</b></td>		
+			<td><b> Options</b></td>
+			</tr></table>';
+		}
 
 		$sql = "SELECT * FROM `basic-information` 
 			LEFT JOIN `access` ON `access`.`ID` = `basic-information`.`ID` 
@@ -259,7 +190,20 @@ class users {
 			OR `basic-information`.`StudyType` = 'Fulltime' 
 			ORDER BY `Surname`";
 
+		$sql = $sql . " LIMIT ". $this->core->limit ." OFFSET ". $this->core->offset;
+
 		$run = $this->core->database->doSelectQuery($sql);
+
+		$sqlcount = "SELECT count(*) FROM `basic-information` 
+			WHERE `basic-information`.`Status` = 'Distance' 
+			OR `basic-information`.`StudyType` = 'Fulltime'";
+
+		$runcount = $this->core->database->doSelectQuery($sqlcount);
+
+		while ($row = $runcount->fetch_row()) {
+			$total = $row[0];
+		}
+		
 
 		while ($row = $run->fetch_row()) {
 
@@ -271,28 +215,30 @@ class users {
 			$nrc = $row[5];
 			$status = $row[20];
 
-			echo '<tr>
-			<td><img src="' . $this->core->fullTemplatePath . '/images/bullet_user.png"></td>
-			<td><a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
-
-			<td>' . $uid . '</td>
-			<td>' . $status . '</td>
-			<td><a href="' . $this->core->conf['conf']['path'] . '/information/edit/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/edi.png"> edit</a>  <a href="' . $this->core->conf['conf']['path'] . '/users/delete/' . $uid . '" onclick="return confirm(\'Are you sure?\')"><img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> delete</a></td>
-		  	</tr>';
-
+		echo '<div class="resultrow">
+				<div style="width: 20px; float:left;"><img src="' . $this->core->fullTemplatePath . '/images/bullet_user.png"></div>
+				<div style="width: 275px; float:left;"> <a href="' . $this->core->conf['conf']['path'] . '/information/show/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></div>
+				<div style="width: 190px; float:left;">' . $uid . '</div>
+				<div style="width: 140px; float:left;">' . $status . '</div>
+				<div style="width: 100px; float:left;"><a href="' . $this->core->conf['conf']['path'] . '/information/edit/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/edi.png"> edit</a>  <a href="' . $this->core->conf['conf']['path'] . '/users/delete/' . $uid . '" onclick="return confirm(\'Are you sure?\')"><img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> delete</a></div>
+		  	</div>';
 		}
 
-		echo '</table>';
+		if($this->core->pager == FALSE){
+			echo'<div id="results">&zwnj;</div>';
+			include $this->core->conf['conf']['libPath'] . "edurole/autoload.js";
+		}
+
 	}
 
-	function deleteUser($id) {
-		$sql = 'UPDATE `basic-information` SET `Status` = "Removed" WHERE `ID` = "' . $id . '";';
+	function deleteUsers($item) {
+		$sql = 'UPDATE `basic-information` SET `Status` = "Removed" WHERE `ID` = "' . $item . '";';
 		$run = $this->core->database->doInsertQuery($sql);
 
-		$sql = 'DELETE FROM `access`  WHERE `ID` = "' . $id . '";';
+		$sql = 'DELETE FROM `access`  WHERE `ID` = "' . $item . '";';
 		$run = $this->core->database->doInsertQuery($sql);
 
-		$this->core->logEvent("Removed user $id", "4");
+		$this->core->logEvent("Removed user $item", "4");
 
 		$this->showUserList();
 		$this->core->showAlert("The account has been deleted");

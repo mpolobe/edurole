@@ -3,13 +3,16 @@ class information {
 
 	public $core;
 	public $view;
+	public $limit;
+	public $offset;
+	public $pager = FALSE;
 
 	public function configView() {
 		$this->view->header = TRUE;
 		$this->view->footer = TRUE;
 		$this->view->menu = TRUE;
 		$this->view->javascript = array('jquery.form-repeater');
-		$this->view->css = array(4);
+		$this->view->css = array();
 
 		return $this->view;
 	}
@@ -17,111 +20,105 @@ class information {
 	public function buildView($core) {
 		$this->core = $core;
 
-		include $this->core->conf['conf']['classPath'] . "users.inc.php";
-		
-		$listType = $this->core->cleanGet['listtype'];
-		$firstName = $this->core->cleanGet['studentfirstname'];
-		$lastName = $this->core->cleanGet['studentlastname'];
-		$studies = $this->core->cleanGet['studies'];
-		$programmes = $this->core->cleanGet['programmes'];
+		$this->limit = 50;
+		$this->offset = 0;
 
-		$search = $this->core->cleanGet['search'];
-		$q = $this->core->cleanGet['q'];
+		include $this->core->conf['conf']['classPath'] . "users.inc.php";
+
 
 		if(empty($this->core->item)){
-			$this->core->item = $this->core->cleanGet['uid'];
+			if(isset($this->core->cleanGet['uid'])){
+				$this->core->item = $this->core->cleanGet['uid'];
+			}
 		}
-		
-
-		if (isset($lastName) || isset($firstName)) {
-			$this->searchByName($firstName, $lastName, $listType);
-		} else if ($this->core->action == "search" && isset($q) && $search == "study" || $this->core->action == "students" && isset($q) && $search == "study") {
-			$this->searchByStudy($q, $listType);
-		} else if ($this->core->action == "search" && isset($q) && $search == "programme" || $this->core->action == "students" && isset($q) && $search == "programme") {
-			$this->searchByProgram($q, $listType);
-		} else if ($this->core->action == "search" && isset($q) && $search == "courses" || $this->core->action == "students" && isset($q) && $search == "courses") {
-			$this->searchByCourse($q, $listType);
-		}else  if ($this->core->action == "search" || $this->core->action == "students") {
-			$this->searchInformation();
-		} elseif ($this->core->action == "edit" && $this->core->item == "personal") {
-			$this->editUser($this->core->userID);
-		} elseif ($this->core->action == "edit" && isset($this->core->item)) {
-			$this->editUser($this->core->item);
-		} elseif ($this->core->action == "edit" && $this->core->item == "save") {
-			$users = new users($this->core);
-			$users->saveEdit($this->core->userID);
-			$this->getProfile();
-		} elseif ($this->core->action == "save" && $this->core->role == 1000) {
-			$users = new users($this->core);
-			$users->saveEdit($this->core->item, TRUE);
-			$this->core->throwSuccess("The user account has been updated");
-		} elseif ($this->core->action == "save" && $this->core->role < 1000) {
-			$users = new users($this->core);
-			$users->saveEdit($this->core->item, FALSE);
-			$this->core->throwSuccess("The user account has been updated");
-		} elseif ($this->core->item == "personal") {
-			$this->getProfile();
-		} elseif (isset($this->core->item) && is_numeric($this->core->item)) {
-			$this->getStudentProfile($this->core->item);
-		} else{
-			$this->showStudents();
+		if(isset($this->core->cleanGet['offset'])){
+			$this->offset = $this->core->cleanGet['offset'];
+		}
+		if(isset($this->core->cleanGet['limit'])){
+			$this->limit = $this->core->cleanGet['limit'];
+			$this->pager = TRUE;
 		}
 	} 
 
-	function showStudents(){
-
-		$function = __FUNCTION__;
-		$title = 'Student records';
-		$description = 'Overview of all students';
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-		
-		$sql = "SELECT * FROM `basic-information` LEFT JOIN `access` ON `basic-information`.ID = `access`.ID;";
-		$run = $this->core->database->doSelectQuery($sql);
-		$this->showInfoList($run);
+	public function studentsInformation($item) {
+		$this->searchInformation($item);
 	}
-	
-	function searchInformation() {
-		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
 
-		$select = new optionBuilder($this->core);
+	public function saveInformation($item){
+		$users = new users($this->core);
+		$users->saveEdit($this->core->item, TRUE);
+		$this->core->throwSuccess($this->core->translate("The user account has been updated"));
+	}
 
-		$study = $select->showStudies(null);
-		$program = $select->showPrograms(null, null, null);
-		$courses = $select->showCourses(null);
+	public function personalInformation($item){
+		$userid = $this->core->userID;
 
-		$function = __FUNCTION__;
-		$title = 'Search student records';
-		$description = 'Please use the form below to search through the student information database';
+		$sql = "SELECT * FROM  `basic-information` as bi, `access` as ac WHERE ac.`ID` = '" . $userid . "' AND ac.`ID` = bi.`ID`";
 
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
+		$this->showInfoProfile($sql);
+	}
 
-		if ($this->core->role >= 100) {
-			echo '<p>You can search for a single record or a group by utilizing the various search categories.</p>
-			<div class="heading">Search by student number</div>';
+	public function searchInformation($item) {
+		if(isset($this->core->cleanGet['studies'])){
+			$studies = $this->core->cleanGet['studies'];
+		}
+		if(isset($this->core->cleanGet['programmes'])){
+			$programmes = $this->core->cleanGet['programmes'];
+		}
+		if(isset($this->core->cleanGet['search'])){
+			$search = $this->core->cleanGet['search'];
+		}
+		if(isset($this->core->cleanGet['q'])){
+			$q = $this->core->cleanGet['q'];
+		}
+		if(isset($this->core->cleanGet['studentfirstname'])){
+			$firstName = $this->core->cleanGet['studentfirstname'];
+		}
+		if(isset($this->core->cleanGet['studentlastname'])){
+			$lastName = $this->core->cleanGet['studentlastname'];
+		}
+		if(isset($this->core->cleanGet['listtype'])){
+			$listType = $this->core->cleanGet['listtype'];
+		}
 
-			include $this->core->conf['conf']['formPath'] . "searchform.form.php";
-		} else {
-			$this->core->throwError("You do not have the authority to do system wide searches");
+		if (isset($lastName) || isset($firstName)) {
+			$this->bynameInformation($firstName, $lastName, $listType);
+		} else if ($this->core->action == "search" && isset($q) && $search == "study" || $this->core->action == "students" && isset($q) && $search == "study") {
+			$this->bystudyInformation($q, $listType);
+		} else if ($this->core->action == "search" && isset($q) && $search == "programme" || $this->core->action == "students" && isset($q) && $search == "programme") {
+			$this->byprogramInformation($q, $listType);
+		} else if ($this->core->action == "search" && isset($q) && $search == "courses" || $this->core->action == "students" && isset($q) && $search == "courses") {
+			$this->bycourseInformation($q, $listType);
+		} else if ($this->core->action == "search" && isset($item)) {
+			$this->showInformation($item);
+		}else{
+
+			include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
+
+			$select = new optionBuilder($this->core);
+
+			$study = $select->showStudies(null);
+			$program = $select->showPrograms(null, null, null);
+			$courses = $select->showCourses(null);
+
+			if ($this->core->role >= 100) {
+				include $this->core->conf['conf']['formPath'] . "searchform.form.php";
+			} else {
+				$this->core->throwError($this->core->translate("You do not have the authority to do system wide searches"));
+			}
 		}
 	}
 
-	function getProfile() {
-		$function = __FUNCTION__;
-		$title = 'Personal information';
-		$description = 'Showing personal profile';
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-
-		$sql = "SELECT * FROM  `basic-information` as bi, `access` as ac WHERE ac.`ID` = '" . $this->core->userID . "' AND ac.`ID` = bi.`ID`";
-		$run = $this->core->database->doSelectQuery($sql);
-		$this->showInfoProfile($run);
+	public function showInformation($item) {
+		if(empty($item)){
+			$this->searchInformation();
+		} else {
+			$sql = "SELECT * FROM `basic-information` WHERE `ID` = '" . $item . "'";
+			$this->showInfoProfile($sql);
+		}
 	}
 
-	function searchByName($firstName, $lastName, $listType = NULL) {
+	private function bynameInformation($firstName, $lastName, $listType = NULL) {
 		if (empty($firstName)) {
 			$firstName = "%";
 		}
@@ -130,79 +127,50 @@ class information {
 		}
 
 		$sql = "SELECT * FROM `basic-information` WHERE `Surname` LIKE '" . $lastName . "' AND `Firstname` LIKE '" . $firstName . "'";
-		$run = $this->core->database->doSelectQuery($sql);
-
-		$function = __FUNCTION__;
-		$title = 'Search results';
-		$description = 'Showing results for: ' . $firstName . ' ' . $lastName;
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
 
 		if ($listType == "profiles") {
-			$this->showInfoProfile($run);
+			$this->showInfoProfile($sql);
 		} elseif ($listType == "list") {
-			$this->showInfoList($run);
+			$this->showInfoList($sql);
 		}
 	}
 
-	function searchByStudy($study, $listType) {
+	private function bystudyInformation($study, $listType) {
 		if ($study != "" && is_numeric($study)) {
 			$sql = "SELECT * FROM `basic-information`, `student-study-link` WHERE `student-study-link`.StudentID = `basic-information`.ID AND StudyID = '" . $study . "'";
 		}
 
-		$run = $this->core->database->doSelectQuery($sql);
-
-		$function = __FUNCTION__;
-		$title = '"Search results';
-		$description = 'Showing results for: ' . $study;
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-
 		if ($listType == "profiles") {
-			$this->showInfoProfile($run);
+			$this->showInfoProfile($sql);
 		} elseif ($listType == "list") {
-			$this->showInfoList($run);
+			$this->showInfoList($sql);
 		}
 	}
 
-	function getStudentProfile($uid) {
-		$function = __FUNCTION__;
-		$title = 'Personal information';
-		$description = 'Showing student profile:' . $uid;
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-
-		$sql = "SELECT * FROM `basic-information` WHERE `ID` = '" . $uid . "'";
-		$run = $this->core->database->doSelectQuery($sql);
-		$this->showInfoProfile($run);
-	}
-
-	function searchByProgram($program, $listType) {
+	private function byprogramInformation($program, $listType) {
 		if ($program != "" && is_numeric($program)) {
-			$sql = "SELECT * FROM `basic-information`, `student-program-link` WHERE `student-program-link`.StudentID = `basic-information`.GovernmentID AND Major = '" . $program . "' OR `student-program-link`.StudentID = `basic-information`.ID AND Minor = '" . $program . "'";
+			$sql = "SELECT * FROM `basic-information`, `nkrumah-student-program-link` as sp, `programmes` as p, `programmes-link` as pl 
+				WHERE sp.`StudentID` = `basic-information`.ID 
+				AND sp.`ProgrammeID` = pl.`ID`
+				AND p.`ID` = pl.`Major`
+				AND p.`ID` = '$program'
+				OR  sp.`StudentID` = `basic-information`.ID 
+				AND sp.`ProgrammeID` = pl.`ID`
+				AND p.`ID` = pl.`Minor`
+				AND p.`ID` = '$program'";
 		}
 
-		$run = $this->core->database->doSelectQuery($sql);
-
-		$function = __FUNCTION__;
-		$title = '"Search results';
-		$description = 'Showing results for: ' . $program;
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-
 		if ($listType == "profiles") {
-			$this->showInfoProfile($run);
+			$this->showInfoProfile($sql);
 		} elseif ($listType == "list") {
-			$this->showInfoList($run);
+			$this->showInfoList($sql);
 		}
 	}
 
-	function showInfoProfile($run) {
-	
+	private function showInfoProfile($sql) {
+
+		$run = $this->core->database->doSelectQuery($sql);
+
 		while ($row = $run->fetch_row()) {
 			$results = TRUE;
 			$firstname = $row[0];
@@ -226,11 +194,12 @@ class information {
 			$disabilitytype = $row[16];
 			$email = $row[17];
 			$maritalstatus = $row[18];
-			$studytype = $row[22];
-			$studentstatus = $row[23];
-			$approved = $row[23];
 
-			$role = $row[23];
+			if(isset($row[23])){
+				$role = $row[23];
+			} else {
+				$role = "10";
+			}
 
 			$picid = substr($uid, 4);
 			$picid = ltrim($picid, '0');
@@ -243,13 +212,20 @@ class information {
 			if (file_exists("datastore/identities/pictures/picture-$picid.jpg")) {
 				echo '<img width="100%" src="'.$this->core->conf['conf']['path'].'/datastore/identities/pictures/picture-' . $picid . '.jpg">';
 			} else {
-				echo '<div class="none">No image available</div>';
+				echo '<img width="100%" src="'.$this->core->conf['conf']['path'].'/templates/default/images/noprofile.png">';
 			}
+
 
 			if ($this->core->role >= 100) {
 				echo '<div style="margin-top: 1px; border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/information/edit/' . $uid . '">Edit user information</a></b></div>';
 				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/housing/edit/' . $uid . '">Edit housing information</a></b></div>';
-				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/grades/view/' . $uid . '">Show users grades</a></b></div>';
+				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/grades/student/' . $uid . '">Show grades</a></b></div>';
+				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/payments/show/' . $uid . '">Show all payments</a></b></div>';
+				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/payments/balance/' . $uid . '">Show payment status</a></b></div>';
+			} else {
+				echo '<div style="margin-top: 1px; border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/information/edit/' . $uid . '">Edit user information</a></b></div>';
+				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/grades/student/">Show grades</a></b></div>';
+				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/payments/balance/">Show payment status</a></b></div>';
 			}
 
 			echo '</div>
@@ -294,17 +270,19 @@ class information {
 
 			echo '</table>';
 
-			$sql = "SELECT * FROM `student-program-link` as sp, `programmes` as pr 
-				WHERE sp.`StudentID` = '" . $this->core->username . "' 
-				AND sp.`Major` = pr.`ID` 
-				OR sp.`StudentID` = '" . $nrc . "' 
-				AND sp.`Minor` = pr.`ID` ";
-	
+			$sql = "SELECT * FROM `nkrumah-student-program-link` as sp, `programmes` as p, `programmes-link` as pl 
+				WHERE sp.`StudentID` = '$uid' 
+				AND sp.`ProgrammeID` = pl.`ID`
+				AND p.`ID` = pl.`Major`
+				OR sp.`StudentID` = '$uid' 
+				AND sp.`ProgrammeID` = pl.`ID`
+				AND p.`ID` = pl.`Minor`";
+
 			$run = $this->core->database->doSelectQuery($sql);
 
 			while ($row = $run->fetch_row()) {
 
-				$name = $row[7];
+				$name = $row[5];
 
 				if (!isset($major)) {
 					$major = $name;
@@ -350,7 +328,7 @@ class information {
 
 			}
 			
-			if (!isset($minor) && $student == TRUE) {
+			if (!isset($minor) && isset($student) == TRUE) {
 				$minor = $name;
 				echo '<tr>
 				<td>Minor</td>
@@ -508,17 +486,24 @@ class information {
 		}
 	}
 
-	function showInfoList($run) {
-		echo '<table width="768" height="" border="0" cellpadding="5" cellspacing="0">
-		<tr>
-		<td bgcolor="#EEEEEE"></td>
-		<td bgcolor="#EEEEEE"><b> Student Name</b></td>
-		<td bgcolor="#EEEEEE"><b> Student ID</b></td>
-		<td bgcolor="#EEEEEE"><b> National ID</b></td>
-		<td bgcolor="#EEEEEE"><b> Date of Birth</b></td>
-		<td bgcolor="#EEEEEE"><b> Status</b></td>
-		</tr>';
+	private function showInfoList($sql) {
 
+		$sql = $sql . " LIMIT ". $this->limit ." OFFSET ". $this->offset;
+		$run = $this->core->database->doSelectQuery($sql);
+
+		if($this->core->pager == FALSE){
+			echo '<table width="768" height="" border="0" cellpadding="5" cellspacing="0">
+			<tr>
+			<td bgcolor="#EEEEEE"></td>
+			<td bgcolor="#EEEEEE"><b> Student Name</b></td>
+			<td bgcolor="#EEEEEE"><b> Student ID</b></td>
+			<td bgcolor="#EEEEEE"><b> National ID</b></td>
+			<td bgcolor="#EEEEEE"><b> Date of Birth</b></td>
+			<td bgcolor="#EEEEEE"><b> Status</b></td>
+			</tr>
+			</table>';
+		}
+	
 		while ($row = $run->fetch_row()) {
 
 			$results = TRUE;
@@ -531,56 +516,51 @@ class information {
 			$dob = $row[6];
 			$studentstatus = $row[20];
 
-			echo '<tr>
-			<td><img src="'.$this->core->fullTemplatePath.'/images/bullet_user.png"></td>
-			<td><a href="' . $this->core->conf['conf']['path'] . '/information/view/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></td>
-			<td><i>' . $uid . '</i></td>
-			<td>' . $nrc . '</td>
-			<td>' . $dob . '</td>
-			<td>' . $studentstatus . '</td>
-			</tr>';
+			echo '<div class="resultrow">
+			<div style="width: 20px; float:left;"><img src="'.$this->core->fullTemplatePath.'/images/bullet_user.png"></div>
+			<div style="width: 205px; float:left;"><a href="' . $this->core->conf['conf']['path'] . '/information/show/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></div>
+			<div style="width: 140px; float:left;"><i>' . $uid . '</i></div>
+			<div style="width: 145px; float:left;">' . $nrc . '</div>
+			<div style="width: 165px; float:left;">' . $dob . '</div>
+			<div style="width: 90px; float:left;">' . $studentstatus . '</div>
+			</div>';
 
 		}
 
-		echo '</table>';
-
-		if ($results != TRUE) {
-			$this->core->throwError('Your search did not return any results');
+		if($this->core->pager == FALSE){
+			if ($results != TRUE) {
+				$this->core->throwError('Your search did not return any results');
+			}
 		}
 	}
 
-	function editUser($item) {
-		$sql = "SELECT * FROM  `basic-information` as bi LEFT JOIN `access` as ac ON ac.`ID` = '" . $item . "' WHERE bi.`ID` = '" . $item . "'";
+	public function editInformation($item) {
+		$sql = "SELECT * FROM  `basic-information` as bi 
+		LEFT JOIN `access` as ac ON ac.`ID` = '" . $item . "' 
+		WHERE bi.`ID` = '" . $item . "'";
+
 		$run = $this->core->database->doSelectQuery($sql);
  
-		$function = __FUNCTION__;
-		$title = 'Edit personal information';
-		$description = 'Editing student information';
-
-		echo $this->core->breadcrumb->generate(get_class(), $function);
-		echo component::generateTitle($title, $description);
-
-		while ($row = $run->fetch_assoc()) {
-
-			$id = $row['ID'];
-			$NID = $row['GovernmentID'];
-			$firstname = $row['FirstName'];
-			$middlename = $row['MiddleName'];
-			$surname = $row['Surname'];
-			$gender = $row['Sex'];
-			$dob = $row['DateOfBirth'];
-			$nationality = $row['Nationality'];
-			$street = $row['StreetName'];
-			$postal = $row['PostalCode'];
-			$town = $row['Town'];
-			$country = $row['Country'];
-			$homephone = $row['HomePhone'];
-			$celphone = $row['MobilePhone'];
-			$disability = $row['Disability'];
-			$email = $row['PrivateEmail'];
-			$relation = $row['MaritalStatus'];
-			$status = $row['Status'];
-			$role = $row['RoleID'];
+		while ($row = $run->fetch_row()) {
+			$id = $row[4];
+			$NID = $row[5];
+			$firstname = $row[0];
+			$middlename = $row[1];
+			$surname = $row[2];
+			$gender = $row[3];
+			$dob = $row[6];
+			$nationality = $row[8];
+			$street = $row[9];
+			$postal = $row[10];
+			$town = $row[11];
+			$country = $row[12];
+			$homephone = $row[13];
+			$celphone = $row[14];
+			$disability = $row[15];
+			$email = $row[16];
+			$relation = $row[18];
+			$status = $row[19];
+			$role = $row[21];
 
 			include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
 
@@ -589,7 +569,6 @@ class information {
 		}
 
 		include $this->core->conf['conf']['formPath'] . "edituser.form.php";
-
 
 	}
 }

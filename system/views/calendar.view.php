@@ -9,20 +9,16 @@ class calendar {
 		$this->view->footer = TRUE;
 		$this->view->menu = TRUE;
 		$this->view->javascript = array('fullcalendar');
-		$this->view->css = array('fullcalendar', 'fullcalendar-print');
+		$this->view->css = array('fullcalendar', 'fullcalendar.print');
 
 		return $this->view;
 	}
 
 	public function buildView($core) {
 		$this->core = $core;
-
-		if (empty($this->core->action) || $this->core->action == "view" && $core->role > 10) {
-			$this->buildCalendar();
-		}
 	}
 
-	public function buildCalendar() {
+	public function showCalendar() {
 		$inlinejs = "<script>
 		$(document).ready(function() {
 
@@ -87,10 +83,6 @@ class calendar {
 	</script>";
 
 		echo $inlinejs;
-
-		$function = __FUNCTION__;
-		echo breadcrumb::generate(get_class(), $function);
-
 
 		echo '<div id="calendar"></div>';
 
