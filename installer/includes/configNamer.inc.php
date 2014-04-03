@@ -1,13 +1,13 @@
 <?php
-$fullname['conf']['debugging'] = array("Select to enable debugging", "select");
 $fullname['conf']['institutionName'] = array("Institution Name", "text"); 
 $fullname['conf']['domain'] = array("Domain name on which pages are served", "text");
 $fullname['conf']['mailEnabled'] = array("Do you wish to enable mail", "select");
 $fullname['conf']['hash'] = array("Enter a random sting for encryption", "text");
-$fullname['conf']['titleName'] = array("EduRole Student Information System", "text");
+$fullname['conf']['titleName'] = array("System title", "text");
 $fullname['conf']['systemMail'] = array("Email address from server", "text");
-
 $fullname['conf']['path'] = array("System path on webserver", "text"); 
+$fullname['conf']['currency'] = array("System currency", "text"); 
+$fullname['conf']['language'] = array("System language", "text"); 
 
 $fullname['mysql']['server'] = array("MySQL server IP", "text"); 
 $fullname['mysql']['user'] = array("MySQL username", "text"); 

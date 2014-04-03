@@ -1,50 +1,35 @@
-<?php
-error_reporting(0);								// Disable PHP error messages in production
+<?php 
+ // Automated configuration file
+$conf['conf']['institutionName'] = "Example University";
+$conf['conf']['domain'] = "example.com";
+$conf['conf']['mailEnabled'] = "TRUE";
+$conf['conf']['hash'] = "2#FCLWJEFO2j3@K#LKF";
+$conf['conf']['titleName'] = "EduRole Student Information System";
+$conf['conf']['systemMail'] = "info@example.com";
+$conf['conf']['path'] = "/dev/repository/edurole";
+$conf['conf']['currency'] = "ZMW";
+$conf['conf']['language'] = "NL";
+$conf['mysql']['server'] = "localhost";
+$conf['mysql']['user'] = "root";
+$conf['mysql']['password'] = "NIT108335";
+$conf['mysql']['db'] = "eduroletestfier";
+$conf['ldap']['ldapEnabled'] = "TRUE";
+$conf['ldap']['server'] = "ldap.example.com";
+$conf['ldap']['port'] = "389";
+$conf['ldap']['studentou'] = "ou=students,dc=example,dc=com";
+$conf['ldap']['staffou'] = "ou=staff,dc=example,dc=com";
+$conf['ldap']['adminou'] = "ou=administrators,dc=example,dc=com";
+$conf['mail']['server'] = "mail.example.com";
+$conf['mail']['port'] = "389";
 
-/*
- * General system setup
- * You are required to change these values for the setup of the system.
- */
-$conf['conf']['installed'] = TRUE;						// Set to true to enable system
-$conf['conf']['debugging'] = FALSE;						// Set TRUE to enable debugging
-$conf['conf']['institutionName'] = "Example University"; 			// Institution name
-$conf['conf']['domain'] = "example.com";					// Domain on which the pages will be served
-$conf['conf']['mailEnabled'] = TRUE;						// Whether to enable in-system mailclient
-$conf['conf']['hash'] = "2#FCLWJEFO2j3@K#LKF";					// Change this to a unique random set of characters
-$conf['conf']['titleName'] = "EduRole Student Information System"; 		// Default Page Title
-$conf['conf']['systemMail'] = "info@example.com"; 				// System email
-$conf['conf']['path'] = "/edurole"; 						// Change to the installation path of Edurole on webserver (example: www.example.com/pathtosystem) would be /pathtosystem.
-$conf['conf']['currency'] = "ZMW"; 						// Used Currency
-$conf['conf']['language'] = "NL"; 						// Used Currency
+// DEFAULT CONFIG SECTION NOT MODIFIED BY INSTALLER
 
-/*
- * Update repository server
- */
-$conf['conf']['updates']['server'] = "http://edurole.com/update/";		// Update server
+$conf['conf']['installed'] = TRUE;                                              // Set to true to complete installation
+$conf['conf']['debugging'] = FALSE;                                             // Set TRUE to enable debugging
 
-/*
- * MYSQL server information
- */
-$conf['mysql']['server'] = "localhost"; 					// MySQL server host
-$conf['mysql']['user'] = "USERNAME"; 						// MySQL user
-$conf['mysql']['password'] = "PASSWORD"; 					// MySQL password
-$conf['mysql']['db'] = "edurole"; 						// MySQL database
+$conf['conf']['updates']['server'] = "http://edurole.com/update/";              // Update server to receive updates from
 
-/*
- * LDAP server information
- */
-$conf['ldap']['ldapEnabled'] = FALSE; 						// Enable LDAP integration or not
-$conf['ldap']['server'] = "ldap.example.com";	 				// LDAP host
-$conf['ldap']['port'] = "389"; 							// LDAP server port
-$conf['ldap']['studentou'] = "ou=students,dc=example,dc=com";	 		// Dedicated OU is needed for students
-$conf['ldap']['staffou']   = "ou=staff,dc=example,dc=com"; 			// Dedicated OU is needed for staff
-$conf['ldap']['adminou']   = "ou=administrators,dc=example,dc=com"; 		// Dedicated OU is needed for administrators
-
-/*
- * Mail server information
- */
-$conf['mail']['server'] = "mail.example.com"; 					// IMAP server address
-$conf['mail']['port'] = "389"; 							// IMAP port
+//error_reporting(0);								// Disable PHP error messages in production
 
 /*
  * System paths

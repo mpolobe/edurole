@@ -111,6 +111,8 @@ class eduroleCore {
 				$run->bind_param('s', $phrase);
 				$run->execute();
 
+				return $phrase;
+
 			} else {
 				while ($run->fetch()) {
 					if(empty($translatedphrase)){

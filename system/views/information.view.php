@@ -47,7 +47,7 @@ class information {
 	public function saveInformation($item){
 		$users = new users($this->core);
 		$users->saveEdit($this->core->item, TRUE);
-		$this->core->throwSuccess($this->core->translate("The user account has been updated"));
+		header('Location: ' . $_SERVER['HTTP_REFERER']);
 	}
 
 	public function personalInformation($item){
@@ -172,7 +172,9 @@ class information {
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($row = $run->fetch_row()) {
+
 			$results = TRUE;
+
 			$firstname = $row[0];
 			$middlename = $row[1];
 			$surname = $row[2];
@@ -481,8 +483,10 @@ class information {
 			echo "</div>";
 		}
 
-		if ($results != TRUE) {
+		if ($results != TRUE && $this->core->action != "personal") {
 			$this->core->throwError('Your search did not return any results');
+		} else if($results != TRUE) {
+                        $this->core->throwSuccess($this->core->translate("Please take the time to enter your profile information first,  you can do this <a href='". $this->core->conf['conf']['path'] ."/information/edit/personal'>here</a>."));
 		}
 	}
 
@@ -535,6 +539,11 @@ class information {
 	}
 
 	public function editInformation($item) {
+		
+		if($item == "personal"){
+			$item = $this->core->userID;
+		}
+
 		$sql = "SELECT * FROM  `basic-information` as bi 
 		LEFT JOIN `access` as ac ON ac.`ID` = '" . $item . "' 
 		WHERE bi.`ID` = '" . $item . "'";
@@ -561,12 +570,11 @@ class information {
 			$relation = $row[18];
 			$status = $row[19];
 			$role = $row[21];
-
-			include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
-
-			$select = new optionBuilder($this->core);
-			$select = $select->showRoles($role);
 		}
+
+		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
+		$select = new optionBuilder($this->core);
+		$select = $select->showRoles($role);
 
 		include $this->core->conf['conf']['formPath'] . "edituser.form.php";
 

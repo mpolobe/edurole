@@ -124,13 +124,11 @@ class optionBuilder {
 		$run = $this->core->database->doSelectQuery($sql);
 		$fetch = $this->core->database->fetch_all($run);
 		$out = $this->buildSelect($fetch, $selected);
-
 		return ($out);
 	}
 
 
 	function showMultipleRoles($selected = null) {
-
 		$sql = "SELECT `ID`, `PermissionDescription` FROM `permissions`";
 
 		$run = $this->core->database->doSelectQuery($sql);

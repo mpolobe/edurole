@@ -43,6 +43,9 @@ class users{
 		$surname = $this->core->cleanPost["surname"];
 		$sex = $this->core->cleanPost["sex"];
 		$id = $this->core->cleanPost["studentid"];
+		if(empty($id)){
+			$id = $this->core->cleanPost["nationalid"];
+		}
 		$day = $this->core->cleanPost["day"];
 		$month = $this->core->cleanPost["month"];
 		$year = $this->core->cleanPost["year"];
@@ -63,7 +66,6 @@ class users{
 		$studytype = $this->core->cleanPost["studytype"];
 
 		if(empty($id)){
-			throwError('Please enter an NRC this field is required<a a href="javascript:" onclick="history.go(-1); return false">Go back</a>');
 			return false;
 		}
 
@@ -98,7 +100,6 @@ class users{
 	}
 
 	public function saveEdit($item, $access = TRUE) {
-
 		$username = $this->core->cleanPost["username"];
 		$firstname = $this->core->cleanPost["firstname"];
 		$middlename = $this->core->cleanPost["middlename"];
@@ -121,11 +122,28 @@ class users{
 		$dissabilitytype = $this->core->cleanPost["dissabilitytype"];
 		$status = $this->core->cleanPost["status"];
 		$roleid = $this->core->cleanPost["role"];
-		$nrc = $this->core->cleanPost["nationalid"];
+		$id = $this->core->cleanPost["studentid"];
+		if(empty($id)){
+			$id = $this->core->cleanPost["nationalid"];
+		}
 		$studentid = $this->core->cleanPost["studentno"];
 
-		$sql = "UPDATE `basic-information` SET  `Surname` = '$surname', `FirstName` = '$firstname', `MiddleName` = '$middlename', `Sex` = '$sex', `GovernmentID` = '$nrc', `Nationality` = '$nationality ', `StreetName` = '$streetname ', `PostalCode` = '$postalcode', `Town` = '$town', `Country` = '$country', `HomePhone` = '$homephone', `MobilePhone` = '$celphone', `Disability` = '$dissability', `DissabilityType` = '$dissabilitytype', `PrivateEmail` = '$email', `MaritalStatus` = '$mstatus', `Status` = '$status' WHERE `ID` = '$item' ";
-		$run = $this->core->database->doInsertQuery($sql);
+		if(empty($id)){
+			return false;
+		}
+
+		$userid = $this->core->userID;
+		$sql = "SELECT * FROM `basic-information` WHERE `ID` = '$userid'";
+		$run = $this->core->database->doSelectQuery($sql);
+
+		if ($run->num_rows > 0) {
+			$sql = "UPDATE `basic-information` SET  `Surname` = '$surname', `FirstName` = '$firstname', `MiddleName` = '$middlename', `Sex` = '$sex', `GovernmentID` = '$nrc', `Nationality` = '$nationality ', `StreetName` = '$streetname ', `PostalCode` = '$postalcode', `Town` = '$town', `Country` = '$country', `HomePhone` = '$homephone', `MobilePhone` = '$celphone', `Disability` = '$dissability', `DissabilityType` = '$dissabilitytype', `PrivateEmail` = '$email', `MaritalStatus` = '$mstatus', `Status` = '$status' WHERE `ID` = '$item' ";
+			$run = $this->core->database->doInsertQuery($sql);
+		} else {
+			$sql = "INSERT INTO `basic-information` (`FirstName`, `MiddleName`, `Surname`, `Sex`, `ID`, `GovernmentID`, `DateOfBirth`, `PlaceOfBirth`, `Nationality`, `StreetName`, `PostalCode`, `Town`, `Country`, `HomePhone`, `MobilePhone`, `Disability`, `DissabilityType`, `PrivateEmail`, `MaritalStatus`, `StudyType`, `Status`) VALUES ('$firstname', '$middlename', '$surname', '$sex', '$userid', '$id', '$year-$month-$day', '$pob', '$nationality', '$streetname', '$postalcode', '$town', '$country', '$homephone', '$celphone', '$dissability', '$dissabilitytype', '$email', '$mstatus', '$studytype', 'Employed');";
+			$run = $this->core->database->doInsertQuery($sql);
+		}
+
 
 		if($access == TRUE){
 			$sql = "UPDATE `access` SET  `RoleID` =  '$roleid' WHERE `access`.`ID` = '$item';";

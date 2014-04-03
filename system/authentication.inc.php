@@ -41,7 +41,6 @@ class auth {
 			}
 
 			$ldapconn = ldap_connect($this->core->conf['ldap']['server'], $this->core->conf['ldap']['port']);
-			$this->accounting->sysLog($message, $level);
 			ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
 
 			$ldapbind = @ldap_bind($ldapconn, "uid=" . $username . "," . $ou, $password);

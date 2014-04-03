@@ -13,13 +13,11 @@ if($this->core->role > 104){
 <script type="text/javascript">
 
 jQuery(document).ready(function(){
-
 	jQuery('select').ddslick({width:280, height:300,
 	    onSelected: function(selectedData){
 	        console.log(selectedData.selectedData.text);
 	    }
 	});
-
 });
 
 </script>
@@ -593,16 +591,9 @@ echo'<tr>
 
 		$n=0;
 
-		while ($row = $run->fetch_assoc()) {
+		$setform = FALSE;
 
-			$name = $row['FullName'];
-			$relation = $row['Relationship'];
-			$phone = $row['PhoneNumber'];
-			$street = $row['Street'];
-			$town = $row['Town'];
-			$postalcode = $row['Postalcode'];
-	
-			echo'<div class="emergencycontact">
+		$form = '<div class="emergencycontact">
 				<input type="hidden" name="contact[0][id]" data-pattern-name="contact[++][id]" data-pattern-id="contact_++_index"/>
 					
 					<table width="768" height="135" border="0" cellpadding="5" cellspacing="0">
@@ -672,6 +663,88 @@ echo'<tr>
 
 				</div>';
 
+		while ($row = $run->fetch_assoc()) {
+
+			$name = $row['FullName'];
+			$relation = $row['Relationship'];
+			$phone = $row['PhoneNumber'];
+			$street = $row['Street'];
+			$town = $row['Town'];
+			$postalcode = $row['Postalcode'];
+
+		$form = '<div class="emergencycontact">
+				<input type="hidden" name="contact[0][id]" data-pattern-name="contact[++][id]" data-pattern-id="contact_++_index"/>
+					
+					<table width="768" height="135" border="0" cellpadding="5" cellspacing="0">
+						<tr>
+							<td width="205" height="28" bgcolor="#EEEEEE"><strong>Information</strong></td>
+							<td width="200" bgcolor="#EEEEEE"><strong>Input fields</strong></td>
+							<td bgcolor="#EEEEEE">
+								<div class="deleteemergencycontact">
+									<a href="#">Remove section</a>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td height="19"><strong>Full Name</strong></td>
+							<td>
+								<input type="text" name="econtact[0][fullname]" value="' . $name . '" id="econtact_0_fullname" data-pattern-name="econtact[++][fullname]" data-pattern-id="contact_++_fullname"/></td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td height="19"><strong>Relationship</strong></td>
+							<td>
+								<select name="econtact[0][relationship]" id="econtact_0_relationship" data-pattern-name="econtact[++][relationship]" data-pattern-id="contact_++_relationship">
+									<option value="' . $relation . '" selected="selected">- ' . $relation . ' -</option>
+									<option value="Spouse" selected="selected">Spouse</option>
+									<option value="Parent">Parent</option>
+									<option value="Guardian">Legal Guardian</option>
+									<option value="Uncle">Uncle</option>
+									<option value="Son">Son</option>
+									<option value="Daughter">Daughter</option>
+									<option value="Grandparrent">Grandparrent</option>
+									<option value="Aunt">Aunt</option>
+									<option value="Cousing">Cousin</option>
+									<option value="Sibling">Sibling</option>
+								</select>
+
+							</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td height="22"><strong>Phone Number</strong></td>
+							<td>
+								<input type="text" name="econtact[0][phonenumber]" value="' . $phone . '" id="econtact_0_phonenumber" data-pattern-name="econtact[++][phonenumber]" data-pattern-id="contact_++_phonenumber"/></td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td height="22"><strong>Street</strong></td>
+							<td>
+								<input type="text" name="econtact[0][street]" value="' . $street . '" id="econtact_0_street" data-pattern-name="econtact[++][street]" data-pattern-id="contact_++_street"/></td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td height="22"><strong>Town</strong></td>
+							<td><input type="text" name="econtact[0][town]" value="' . $town . '" id="econtact_0_town" data-pattern-name="econtact[++][town]" data-pattern-id="contact_++_town"/></td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td height="22"><strong>Postalcode</strong></td>
+							<td><input type="text" name="econtact[0][postalcode]" value="' . $postalcode . '" id="econtact_0_postalcode" data-pattern-name="econtact[++][postalcode]" data-pattern-id="contact_++_postalcode"/></td>
+							<td>&nbsp;</td>
+						</tr>
+					</table>
+					</div>
+						
+					<div class="addemergencycontact">
+						<a href="#"> <img src="'.  $this->core->fullTemplatePath .'/images/plus.png" width="16" height="16"/> Add another emergency contact </a>
+					</div>
+
+				</div>';
+
+			echo $form;
+			$setform = TRUE;		
+
 			if($n==0){
 				echo"<script type=\"text/javascript\">
 					$('.emergencycontacts').repeater({
@@ -691,6 +764,28 @@ echo'<tr>
 				</script>";
 			}
 			$n++;
+
+		}
+
+		if($setform == FALSE ){
+			echo $form;
+
+			echo"<script type=\"text/javascript\">
+				$('.emergencycontacts').repeater({
+				btnAddClass: 'addemergencycontact',
+				btnRemoveClass: 'deleteemergencycontact',
+				groupClass: 'emergencycontact',
+				minItems: 1,
+				maxItems: 0,
+				startingIndex: 0,
+				reindexOnDelete: true,
+				repeatMode: 'append',
+				animation: null,
+				animationSpeed: 600,
+				animationEasing: 'swing',
+				clearValues: true
+				});
+			</script>";
 
 		}
 		?>
