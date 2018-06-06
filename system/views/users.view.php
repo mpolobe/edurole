@@ -11,12 +11,13 @@ class users {
 		$this->view->menu = TRUE;
 		$this->view->javascript = array();
 		$this->view->css = array();
-
+		
 		return $this->view;
 	}
 
 	public function buildView($core) {
 		$this->core = $core;
+		$this->core->limit = 2000;
 	}
 	
 	private function generatePassword($length, $charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1') {
@@ -74,8 +75,12 @@ class users {
 		$roleid = $this->core->cleanPost["role"];
 		$studytype = $this->core->cleanPost["studytype"];
 
-		$sql = "INSERT INTO `basic-information` (`FirstName`, `MiddleName`, `Surname`, `Sex`, `ID`, `GovernmentID`, `DateOfBirth`, `PlaceOfBirth`, `Nationality`, `StreetName`, `PostalCode`, `Town`, `Country`, `HomePhone`, `MobilePhone`, `Disability`, `DissabilityType`, `PrivateEmail`, `MaritalStatus`, `StudyType`, `Status`) VALUES ('$firstname', '$middlename', '$surname', '$sex', NULL, '$id', '$year-$month-$day', '$pob', '$nationality', '$streetname', '$postalcode', '$town', '$country', '$homephone', '$celphone', '$dissability', '$dissabilitytype', '$email', '$mstatus', '$studytype', 'Employed');";
-
+		$sql = "INSERT INTO `basic-information` (`FirstName`, `MiddleName`, `Surname`, `Sex`, `ID`, `GovernmentID`, `DateOfBirth`, `PlaceOfBirth`, `Nationality`, `StreetName`, `PostalCode`, `Town`, `Country`, `HomePhone`, `MobilePhone`, `Disability`, `DissabilityType`, `PrivateEmail`, `MaritalStatus`, `StudyType`, `Status`) 
+				VALUES ('$firstname', '$middlename', '$surname', '$sex', NULL, '$id', '$year-$month-$day', '$pob', '$nationality', '$streetname', '$postalcode', '$town', '$country', '$homephone', '$celphone', '$dissability', '$dissabilitytype', '$email', '$mstatus', '$studytype', 'Employed');";
+		
+		//echo $sql;
+	//	die();
+		
 		if ($this->core->database->doInsertQuery($sql)) {
 
 			$sql = "SELECT * FROM `basic-information` WHERE `GovernmentID` = '$id'";
@@ -85,7 +90,8 @@ class users {
 
 				$passenc = $this->hashPassword($username, $password);
 
-				$sql = "INSERT INTO `access` (`ID`, `Username`, `RoleID`, `Password`) VALUES ('$fetch[4]', '$username', '$roleid', '$passenc');";
+				$sql = "INSERT INTO `access` (`ID`, `Username`, `RoleID`, `Password`) 
+						VALUES ('$fetch[4]', '$username', '$roleid', '$passenc');";
 				$this->core->database->doInsertQuery($sql);
 
 				echo '<div class="successpopup">The requested user account has been created.<br/> WRITE THE FOLLOWING INFORMATION DOWN OR REMEMBER IT!</div>';
@@ -107,6 +113,7 @@ class users {
 	}
 
 	function manageUsers() {
+		$this->core->pager = FALSE;
 
 		if($this->core->pager == FALSE){
 			echo '<div class="toolbar">
@@ -115,21 +122,28 @@ class users {
 
 			echo '<table width="768" height="" border="0" cellpadding="3" cellspacing="0">
 			<tr class="tableheader">
-			<td><b> Student Name</b></td>
+			<td style="width: 200px"><b> Staff Name</b></td>
 			<td><b> Access role</b></td>
-			<td><b> </b></td>
+			<td><b> Username </b></td>
 			<td><b> Status</b></td>		
 			<td><b> Options</b></td>
 			</tr>
 			</table>';
 		}
 
-		$sql = "SELECT * FROM `basic-information`, `access`, `roles` WHERE `access`.`ID` = `basic-information`.`ID` AND `access`.`RoleID` = `roles`.`ID` AND `access`.`RoleID` >= 100 ORDER BY `basic-information`.Surname";
-		$sql = $sql . " LIMIT ". $this->core->limit ." OFFSET ". $this->core->offset;
+		$sql = "SELECT * FROM `basic-information`
+			LEFT JOIN `access` ON `access`.ID = `basic-information`.ID
+			LEFT JOIN `roles` ON `access`.RoleID = `roles`.ID
+			WHERE `access`.RoleID > 10
+			ORDER BY `basic-information`.Surname";
 
+	
 		$run = $this->core->database->doSelectQuery($sql);
 
-		$sqlcount = "SELECT count(*) FROM `basic-information` WHERE `basic-information`.`Status` = 'Distance' OR `basic-information`.`StudyType` = 'Fulltime'";
+		$sqlcount = "SELECT count(*)  FROM `basic-information`, `access`, `roles` 
+			WHERE `access`.`ID` = `basic-information`.`ID` 
+			AND `access`.`RoleID` = `roles`.`ID` 
+			AND `access`.`RoleID` > 10 ORDER BY `basic-information`.Surname";
 
 		$runcount = $this->core->database->doSelectQuery($sqlcount);
 
@@ -143,6 +157,12 @@ class users {
 			$middlename = $row[1];
 			$surname = $row[2];
 			$username = $row[22];
+			
+			if($surname == "Demo"){
+				$style = ' color: #000; ';
+			} else {
+				$style ="";
+			}
 
 			if(empty($firstname) && empty($lastname)){
 				$firstname = $username;
@@ -154,19 +174,18 @@ class users {
 			$role = $row[26];
 			$status = $row[20];
 
+
 			echo '<div class="resultrow">
 				<div style="width: 20px; float:left;"><img src="' . $this->core->fullTemplatePath . '/images/user.png"></div>
-				<div style="width: 230px; float:left;"><a href="' . $this->core->conf['conf']['path'] . '/information/show/' . $uid . '"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></div>
-				<div style="width: 240px; float:left;"><i>' . $role . '</i></div>
-				<div style="width: 130px; float:left; height: 15px;">' . $status . '</div>
+				<div style="width: 190px; float:left;"><a href="' . $this->core->conf['conf']['path'] . '/information/show/' . $uid . '" style="'.$style.'"><b>' . $firstname . ' ' . $middlename . ' ' . $surname . '</b></a></div>
+				<div style="width: 175px; float:left;"><i>' . $role . '</i></div>
+				<div style="width: 150px; float:left;"><b>' .$username .'</b></div>
+				<div style="width: 115px; float:left; height: 15px;">' . $status . '</div>
 				<div style="width: 100px; float:left;"><a href="' . $this->core->conf['conf']['path'] . '/information/edit/' . $uid . '"><img src="' . $this->core->fullTemplatePath . '/images/edi.png"> edit</a>  <a href="' . $this->core->conf['conf']['path'] . '/users/delete/' . $uid . '" onclick="return confirm(\'Are you sure?\')"><img src="' . $this->core->fullTemplatePath . '/images/delete.gif"> delete</a></div>
 			</div>';
 		}
 
-		if($this->core->pager == FALSE){
-			echo'<div id="results">&nbsp;</div>';
-			include $this->core->conf['conf']['libPath'] . "edurole/autoload.js";
-		}
+
 	}
 
 	function studentsUsers() {

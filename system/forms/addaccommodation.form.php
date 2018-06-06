@@ -5,7 +5,7 @@
 	});
 </script>
 
-<form id="addaccommodation" name="addaccommodation" method="post" action="<? echo $this->core->conf['conf']['path'] . "/accommodation/save/" . $this->core->item; ?>">
+<form id="addaccommodation" name="addaccommodation" method="post" action="<?php echo $this->core->conf['conf']['path'] . "/accommodation/save/" . $this->core->item; ?>">
 	<p>Please enter the following information</p>
 	<table width="768" border="0" cellpadding="5" cellspacing="0">
 		<tr>
@@ -29,7 +29,7 @@
 			<td><strong>Accommodation manager</strong></td>
 			<td>
 				<select name="dean" id="dean">
-					<? echo $dean; ?>
+					<?php echo $dean; ?>
 				</select></td>
 			<td></td>
 		</tr>

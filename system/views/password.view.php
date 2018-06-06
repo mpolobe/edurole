@@ -6,7 +6,9 @@ class password {
 
 	public function buildView($core) {
 		$this->core = $core;
+	}
 
+	private function viewMenu(){
 		if($this->core->role == 0){
                 	echo '<div class="collapse navbar-collapse  navbar-ex1-collapse">
                 	<ul class="nav navbar-nav side-nav">
@@ -18,7 +20,15 @@ class password {
                 	<li class="menu"><a href="' . $this->core->conf['conf']['path'] . '/password/recover">Recover lost password</a></li>
                 	</ul><div id="page-wrapper">';
 		}
+	}
 
+	private function generatePassword($length, $charset = 'abcdefghijklmnopqrstuvwxyz23456789') {
+		$str = '';
+		$count = strlen($charset);
+		while ($length--) {
+			$str .= $charset[mt_rand(0, $count - 1)];
+		}
+		return $str;
 	}
 
 	public function changePassword($item) {
@@ -61,63 +71,58 @@ class password {
 		}
 	}
 
+
+	public function resetPassword($item) {
+		$admin = TRUE;
+		$newpass = "12345";
+
+		$auth = new auth($this->core);
+
+		if ($auth->mysqlChangePass($item, $oldpass, $newpass, $admin) == false) { }
+
+		$this->core->redirect("information", "search");
+	}
+
+
 	public function recoverPassword() {
-
-		if(!isset($this->core->cleanPost['captcha_code'])){
-			include $this->core->conf['conf']['formPath'] . 'recoverpassword.form.php';
-		}else{
-
-			include_once $this->core->conf['conf']['path'] . '/' . $this->core->conf['conf']['libPath'] . 'secureimage/securimage.php';
-			$securimage = new Securimage();
-
-			if ($securimage->check($this->core->cleanPost['captcha_code']) == false) {
-				echo "The security code entered was incorrect.<br /><br />";
-				echo "Please go <a href='javascript:history.go(-1)'>back</a> and try again.";
-				exit;
-			}
-
+		if(isset($this->core->cleanPost['uid']) && isset($this->core->cleanPost['studentid'])){
 			$uid = $this->core->cleanPost['uid'];
 			$studentid = $this->core->cleanPost['studentid'];
 
-			$sql = "SELECT * FROM `basic-information` WHERE `ID` = '$studentid' OR `GovernmentID` = '$uid'";
+			$sql = "SELECT * FROM `basic-information` WHERE `ID` = '$studentid' AND `GovernmentID` = '$uid'";
 			$run = $this->core->database->doSelectQuery($sql);
-	
-			while ($fetch = $run->fetch_assoc()) {
-				$this->core->throwSuccess("Your password was sent to your email or the administrator");
+
+			while ($fetch = $run->fetch_row()) {
+				$found = TRUE;
+				$this->core->throwSuccess("Your records were found");
+				$phone = $fetch[14];
+				if(isset($phone)){
+					include $this->core->conf['conf']['viewPath'] . "sms.view.php";
+					$sms = new sms($this->core);
+					$sms->buildView($this->core);
+
+					$password = $this->generatePassword(5);
+					$passenc = hash('sha512', $password . $this->core->conf['conf']['hash'] . $studentid);
+
+					$sql = "UPDATE `access` SET `Password` = '$passenc' WHERE `ID` = $studentid;";
+					$this->core->database->doInsertQuery($sql);
+
+					$sms->directSms("26".$phone, "Your new password is: $password");
+					$this->core->throwSuccess("Your new password was sent by SMS to phone number: $phone");
+
+					$this->core->throwSuccess("Please <a href=\"".$this->core->conf['conf']['path']."/\">log in</a> with the new password");
+				} else {
+					$this->core->throwError("Report to the helpdesk you do not have a phone number to send a password to.");
+				}
 			}
-		}
-	}
 
-
-	public function recoveredPassword(){
-		include_once $this->core->conf['conf']['libPath'] . '/secureimage/securimage.php';
-
-		$securimage = new Securimage();
-
-		if ($securimage->check($this->core->cleanPost['captcha_code']) == false) {
-                        echo "The security code entered was incorrect.<br /><br />";
-                        echo "Please go <a href='javascript:history.go(-1)'>back</a> and try again.";
-                        exit;
-                }
-
-                $uid = $this->core->cleanPost['uid'];
-                $studentid = $this->core->cleanPost['studentid'];
-
-                echo $uid . $studentid;
-
-                $sql = "SELECT * FROM `basic-information` WHERE `ID` = '" . $studentid . "'";
-                $run = $this->core->database->doSelectQuery($sql);
-
- 		while ($fetch = mysql_fetch_row($run)) {
-                        $ID = $fetch[4];
-                        $firstname = $fetch[0];
-                        $middlename = $fetch[1];
-                        $surname = $fetch[2];
-                        $phonea = $fetch[13];
-                        $phoneb = $fetch[14];
-                        $email = $fetch[17];
+			if($found != TRUE){
+				$this->core->throwError("NRC or Student number do not match");
+				include $this->core->conf['conf']['formPath'] . "recoverpassword.form.php";	
+			}
+		}else {
+			include $this->core->conf['conf']['formPath'] . "recoverpassword.form.php";
 		}
 	}
 }
-
 ?>

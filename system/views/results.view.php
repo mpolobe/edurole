@@ -48,7 +48,7 @@ class results {
 
 		echo'<div id="exhibition" style="position:absolute; left:20px; top:5px; width:auto; height:38px; z-index:90;">
 		<center>
-		<font size=5>NKRUMAH UNIVERSITY</font><br>
+		<font size=5>'.$this->core->conf['conf']['organization'].'</font><br>
 		<font size=4>ACADEMIC OFFICE </font></center>
 		<p align="right">
 		<br>
@@ -62,7 +62,7 @@ class results {
 		$studentID = $item;
 		$studentNo = $studentID;
 
-		$sql = "SELECT * FROM `basic-information`, as bi, `access` as ac, `student-study-link` as ss, `study` as st, `nkrumah-student-program-link` as pl 
+		$sql = "SELECT * FROM `basic-information`, as bi, `access` as ac, `student-study-link` as ss, `study` as st, `student-program-link` as pl 
 			WHERE ac.`ID` = '" . $item. "' 
 			AND ac.`ID` = bi.`ID` 
 			AND ss.`StudyID` = st.`ID` 
@@ -94,7 +94,7 @@ class results {
 			}
 
 			echo'<br> This to certify that: <b>$studentname</b> - Student No.:<b>$studentNo</b><br>
-			was a registered student of <b>Nkrumah University College</b><br>
+			was a registered student of <b>'.$this->core->conf['conf']['organization'].'</b><br>
 			studying: <b>$programme</b> from the academic session: <b>$session</b>.<br>
 			His/her academic performance was as follows:<br>';
 
@@ -109,10 +109,10 @@ class results {
 					Print "$title was Deceased<br><br>";
 					break;
 				case "EXCLUDE":
-					Print "$title was excluded from Nkrumah University College<br><br>";
+					Print "$title was Excluded<br><br>";
 					break;
 				case "WP":
-					Print "$title withdrew with permission from Nkrumah University College<br><br>";
+					Print "$title withdrew with permission<br><br>";
 					break;
 				case "Student":
 					//print "$title will be awarded a <b>$programme</b> ";
@@ -231,7 +231,7 @@ echo'</p>
   <TD>Disqualified</TD>
  </TR>
  </TABLE>
-This transcript is not valid if it does not bear the Nkrumah University College<b>Date Stamp</b> or if it has <b>alterations.</b>
+This transcript is not valid if it does not bear the '.$this->core->conf['conf']['organization'].' <b>Date Stamp</b> or if it has <b>alterations.</b>
 <h2>&nbsp;</h2>
 <h2>&nbsp;</h2>
 </div>

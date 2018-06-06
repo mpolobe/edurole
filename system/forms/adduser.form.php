@@ -8,7 +8,7 @@ jQuery(document).ready(function(){
 });
 </script>
 
-<form id="adduser" name="adduser" method="post" action="<? echo $this->core->conf['conf']['path'] . "/users/save/" . $this->core->item; ?>">
+<form id="adduser" name="adduser" method="post" action="<?php echo $this->core->conf['conf']['path'] . "/users/save/" . $this->core->item; ?>">
 <p>All fields are required to proceed with the creation of the user</p>
 <table cellspacing="0">
 <tr>

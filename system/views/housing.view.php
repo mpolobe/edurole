@@ -17,16 +17,16 @@ class housing {
 	public function buildView($core) {
 		$this->core = $core;
 	}
-	
+
 	function editHousing($item) {
 		$sql = "SELECT * FROM `accommodation`,`housing`,`rooms` WHERE `housing`.StudentID = '$item' AND `housing`.RoomID = `rooms`.ID AND `accommodation`.ID =  `rooms`.accommodationID";
 
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($results = $run->fetch_assoc()) {
-		
+
 			$AccommodationID = $results['AccommodationID'];
-		
+
 			include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
 			$select = new optionBuilder($this->core);
 			$accommodation = $select->showAccommodation(null);
@@ -39,15 +39,15 @@ class housing {
 		}
 	}
 
-	
+
 	function addHousing() {
 		include $this->core->conf['conf']['formPath'] . "addhousing.form.php";
 	}
-	
+
 	function deleteHousing($item) {
 		$sql = 'DELETE FROM `housing` WHERE `ID` = "' . $item . '"';
 		$run = $this->core->database->doInsertQuery($sql);
-		
+
 		$this->core->redirect("housing", "manage", NULL);
 	}
 
@@ -67,23 +67,28 @@ class housing {
 
 		$this->core->redirect("housing", "manage", NULL);
 	}
-		
+
 	public function manageHousing($item) {
 		echo'<a href="' . $this->core->conf['conf']['path'] . 'studies/add">Add housing record</a></p><p>' .
 			'<table width="768" height="" border="0" cellpadding="3" cellspacing="0">' .
 			'<tr class="tableheader">' .
-			'<td><b>Student</b></td>' .
-			'<td><b>Accommodation</b></td>' .
-			'<td><b>Room/Section</b></td>' .
-			'<td><b>Management tools</b></td>' .
+			'<td><b>Hostel</b></td>' .
+			'<td><b>Room Number</b></td>' .
+			'<td><b>Room Type</b></td>' .
+			'<td><b>Student ID</b></td>' .
+			'<td><b>Student Name</b></td>' .
+			'<td><b>Management Tool</b></td>' .
+
+
 			'</tr>';
 
-		if(isset($item)){
+		if(!empty($item)){
 			$sql = "SELECT * FROM `accommodation`,`housing`,`basic-information` WHERE `housing`.AccommodationID = `accommodation`.AccommodationID AND `housing`.StudentID = '$item'";
 		}else{
-			$sql = "SELECT * FROM `accommodation`,`housing`,`basic-information` WHERE `housing`.AccommodationID = `accommodation`.AccommodationID AND `housing`.StudentID = `basic-information`.ID";
+			$sql = "SELECT `housing`.ID,`hostels`.Name, `rooms`.RoomNumber,`rooms`.RoomType,`housing`.StudentID,`basic-information`.FirstName, `basic-information`.Surname 
+				FROM `basic-information`,`hostels`,`housing`,`rooms`
+				WHERE `housing`.RoomID = `rooms`.ID AND `rooms`.HostelID=`hostels`.ID AND `housing`.StudentID=`basic-information`.ID";
 		}
-		
 		$run = $this->core->database->doSelectQuery($sql);
 
 		$i = 0;
@@ -98,7 +103,10 @@ class housing {
 
 			echo'<tr ' . $bgc . '>' .
 				'<td><b><a href="' . $this->core->conf['conf']['path'] .'housing/show/' . $row[0] . '"> ' . $row[1] . '</a></b></td>' .
-				'<td><a href="' . $this->core->conf['conf']['path'] . 'accommodation/show/' . $row[3] . '">' . $row[2] . '</a></td>' .
+				'<td><b>' . $row[2] . '<b></td>' .
+				'<td><b>'.$row[3].' <b></td>' .
+				'<td><b>'.$row[4].' <b></td>' .
+				'<td><b>'.$row[5].' '.$row[6].' <b></td>' .
 				'<td>' .
 				'<a href="' . $this->core->conf['conf']['path'] . 'housing/edit/' . $row[0] . '"> <img src="templates/default/images/edi.png"> edit</a>' .
 				'<a href="' . $this->core->conf['conf']['path'] . 'housing/delete/' . $row[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="templates/default/images/del.png"> delete </a>' .

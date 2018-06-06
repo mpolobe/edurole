@@ -33,20 +33,37 @@ class database {
 		return $run;
 	}
 
-	public function doInsertQuery($sql) {
+	public function escape($data){
+		$run = $this->mysqli->real_escape_string($data);
+		return $run;
+	}
+
+	public function id(){
+		$run = $this->mysqli->insert_id;
+		return $run;
+	}
+
+	public function doInsertQuery($sql, $quiet=FALSE) {
+		if($this->core->roleName == "Auditor"){
+			$this->core->throwError("You are an auditor, therefore you are not able to edit, save or modify.");
+			return;
+		}
+
 		if (!$run = $this->mysqli->query($sql)) {
-			eduroleCore::logEvent("Query error: " . $this->mysqli->error, "1");
+			$this->core->logEvent("Query error: " . $this->mysqli->error, "1");
 
 			if ($this->mysqli->error == "Duplicate entry '0' for key 'PRIMARY'") {
 				return ("duplicate");
 			} else {
-				$this->core->logEvent("Query error: " . $this->mysqli->error, "1");
-				$this->core->throwError("An error occurred with the information you have entered.");
-				return false;
+				if($quiet == FALSE){
+					$this->core->logEvent("Query error: " . $this->mysqli->error, "1");
+					$this->core->throwError("An error occurred with the information you have entered.");
+				}
+				return FALSE;
 			}
 		} else {
 			$this->core->logEvent("Query executed: $sql", "3");
-			return true;
+			return TRUE;
 		}
 	}
 

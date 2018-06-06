@@ -5,7 +5,7 @@
 	});
 </script>
 
-<form id="addschool" name="addschool" method="post" action="<? echo $this->core->conf['conf']['path'] . "/schools/save/" . $this->core->item; ?>">
+<form id="addschool" name="addschool" method="post" action="<?php echo $this->core->conf['conf']['path'] . "/schools/save/" . $this->core->item; ?>">
 	<p>Please enter the following information</p>
 	<table width="768" border="0" cellpadding="5" cellspacing="0">
               <tr>
@@ -23,7 +23,7 @@
                 <td><strong>Dean/Rector of school</strong></td>
                 <td>
                   <select name="dean" id="dean">
-					<? echo $dean; ?>
+					<?php echo $dean; ?>
                   </select></td>
                 <td>Functional head of school</td>
               </tr>

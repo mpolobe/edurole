@@ -18,7 +18,7 @@ jQuery(document).ready(function(){
 
 </script>
 
-<form id="addstudy" name="addstudy" method="post" action="<? echo $this->core->conf['conf']['path'] . "/studies/save/" . $this->core->item; ?>">
+<form id="addstudy" name="addstudy" method="post" action="<?php echo $this->core->conf['conf']['path'] . "/studies/save/" . $this->core->item; ?>">
 	<p>This form creates a new study, the start and end of intake determine the days online registration will be open
 	</p>
 
@@ -32,16 +32,19 @@ jQuery(document).ready(function(){
 
 		<tr>
 			<td>Full name of study</td>
-			<td><input name="fullname" type="text" value=""></b></td>
+			<td><input name="fullname" type="text" value=""></td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>Short menu name for study</td>
-			<td><input name="shortname" type="text" value="" maxlength="15"></b></td>
+			<td><input name="shortname" type="text" value="" maxlength="15"></td>
 			<td>Max. 15 characters</td>
 		</tr>
-
-
+		<tr>
+			<td>Maximum size of intake</td>
+			<td><b><input name="maxintake" type="text" value="" style="width:100px"> students</b></td>
+			<td></td>
+		</tr>
 		<tr>
 			<td>School</td>
 			<td><select name="school" id="school">
@@ -51,59 +54,43 @@ jQuery(document).ready(function(){
 		</tr>
 
 
-		<tr>
-			<td>Method of Delivery</td>
-			<td><select name="delivery">
+	<tr><td>Method of Delivery</td>
+	<td>
+		<select name="delivery"  class="select">
 
-					<option value="3">Distance learning</option>
-					<option value="2">Parallel programme</option>
-					<option value="1">Regular programme</option>
-					<option value="4">Various forms</option>
+		<?php
+		echo '<option value="0" ';		if ($fetch[4] == "0") {	echo 'selected=""';	}	echo '>-choose-</option> '; 
+		echo '<option value="Distance" ';	if ($fetch[4] == "Distance") {	echo 'selected=""';	}	echo '>Distance learning</option>';
+		echo '<option value="Block" ';		if ($fetch[4] == "Block") {	echo 'selected=""';	}	echo '>Block Release</option>';
+		echo '<option value="Parallel" ';	if ($fetch[4] == "Parallel") {	echo 'selected=""';	}	echo '>Parallel programme</option>';
+		echo '<option value="Fulltime" ';	if ($fetch[4] == "Fulltime") {	echo 'selected=""';	}	echo'>Fulltime</option>';
+		?>
 
-				</select></td>
-			<td></td>
-		</tr>
+		</select>
+	</td>
+	<td></td>
+	</tr>
 
-		<tr>
-			<td>Type of study</td>
-			<td><select name="studytype">
-
-				<option value="14">Bachelor of Education</option>
-				<option value="1">Bachelor of Arts</option>
-				<option value="2">Bachelor of Engineering</option>
-				<option value="3">Bachelor of Science</option>
-				<option value="3">Bachelor of Business Studies</option>
-				<option value="4">Diploma maths and science</option>
-				<option value="5">Diploma other than maths and science</option>
-				<option value="6">Doctor</option>
-				<option value="7">Licentiate</option>
-				<option value="8">Master of Art</option>
-				<option value="9">Master of Business Administration</option>
-				<option value="10">Master of Engineering Science</option>
-				<option value="11">Master of Science</option>
-				<option value="12">Master of Science Engineering</option>
-				<option value="13">Secondary school</option>
-
-				</select></td>
-			<td></td>
-		</tr>
+	<tr><td>Study Type</td>
+	<td>
+	<select name="studytype" class="select">
+		<option value="Undergraduate">-choose-</option> 
+		<option value="Certificate">Certificate</option>
+		<option value="Diploma" >Diploma</option>
+		<option value="Undergraduate">Udergraduate study</option>
+		<option value="Postgraduate">Postgraduate study</option>
+		<option value="Doctorate">Doctorate</option>
+	</select>
 
 		<tr>
 			<td>Total duration of study</td>
 			<td>
 				<select name="duration">
-					<option value="12"
-					'; if($fetch[10]=="12"){ echo'selected=""'; } echo'>1 Year</option>
-					<option value="24"
-					'; if($fetch[10]=="24"){ echo'selected=""'; } echo'>2 Years</option>
-					<option value="36"
-					'; if($fetch[10]=="36"){ echo'selected=""'; } echo'>3 Years</option>
-					<option value="48"
-					'; if($fetch[10]=="48"){ echo'selected=""'; } echo'>4 Years</option>
-					<option value="60"
-					'; if($fetch[10]=="60"){ echo'selected=""'; } echo'>5 Years</option>
-					<option value="72"
-					'; if($fetch[10]=="72"){ echo'selected=""'; } echo'>6 Years</option>
+				<option value="1">1 Year</option>
+				<option value="2">2 Year</option>
+				<option value="3">3 Year</option>
+				<option value="4">4 Year</option>
+				<option value="5">5 Year</option>
 				</select>
 			</td>
 			<td></td>
@@ -114,18 +101,6 @@ jQuery(document).ready(function(){
 			<td><select name="active">
 					<option value="1">Yes</option>
 					<option value="0">No</option>
-				</select></td>
-			<td></td>
-		</tr>
-
-		<tr>
-			<td>Intensity of program</td>
-			<td><select name="intensity">
-
-					<option value="0">Part-time</option>
-					<option value="1">Fulltime</option>
-
-
 				</select></td>
 			<td></td>
 		</tr>

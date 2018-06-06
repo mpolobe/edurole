@@ -9,7 +9,6 @@ class optionBuilder {
 	}
 
 	public function buildSelect($run, $selected = NULL) {
-
 		$begin = "";
 		$out = "";
 
@@ -21,7 +20,7 @@ class optionBuilder {
 				$uid = $row[0];
 
 				if ($uid == $selected) {
-					$sel = 'selected="selected"';
+					$sel = 'selected="selected"'; 
 				} else {
 					$sel = "";
 				}
@@ -43,6 +42,36 @@ class optionBuilder {
 		return $out;
 	}
 
+	function showPeriods($study, $selected = null) {
+
+		if ($study != null) {
+			$sql = "SELECT `periods`.ID, CONCAT(`periods`.Year, ' - ', `periods`.Name) FROM `periods`";
+		} else {
+			$sql = "SELECT `periods`.ID, CONCAT(`periods`.Year, ' - ', `periods`.Name) FROM `periods`";
+		}
+
+		$run = $this->core->database->doSelectQuery($sql);
+		$fetch = $this->core->database->fetch_all($run);
+		$out = $this->buildSelect($fetch, $selected);
+
+		return ($out);
+	}
+
+	function showCentres($centre, $selected = null) {
+
+		if ($study != null) {
+			$sql = "SELECT  DISTINCT `student-data-other`.ExamCentre, `student-data-other`.ExamCentre FROM `student-data-other`";
+		} else {
+			$sql = "SELECT  DISTINCT `student-data-other`.ExamCentre, `student-data-other`.ExamCentre FROM `student-data-other`";
+		}
+
+		$run = $this->core->database->doSelectQuery($sql);
+		$fetch = $this->core->database->fetch_all($run);
+		$out = $this->buildSelect($fetch, $selected);
+
+		return ($out);
+	}
+
 	function showPrograms($study, $selected = null) {
 
 		if ($study != null) {
@@ -57,11 +86,58 @@ class optionBuilder {
 
 		return ($out);
 	}
+	
+
+	function showFeepackages($study, $selected = null) {
+
+		if ($study != null) {
+			$sql = "SELECT * FROM `fee-package`,`fee-package-study-link` WHERE `fee-package-study-link`.StudyID = '$study' AND `fee-package-study-link`.FeePackageID = `fee-package`.ID";
+		} else {
+			$sql = "SELECT * FROM `fee-package` ORDER BY `fee-package`.Name";
+		}
+
+		$run = $this->core->database->doSelectQuery($sql);
+		$fetch = $this->core->database->fetch_all($run);
+		$out = $this->buildSelect($fetch, $selected);
+
+		return ($out);
+	}
+
 
 	function showCourses($program, $selected = null) {
 
 		if ($program != null) {
 			$sql = "SELECT * FROM `courses`, `programmes`, `program-course-link` WHERE `program-course-link`.CourseID = `courses`.ID AND `program-course-link`.ProgramID = `programmes`.ID AND `program-course-link`.ProgramID = $program ORDER BY `courses`.`Name`";
+		} else {
+			$sql = "SELECT `ID`, `Name` FROM `courses` ORDER BY `courses`.`Name`";
+		}
+
+		$run = $this->core->database->doSelectQuery($sql);
+		$fetch = $this->core->database->fetch_all($run);
+		$out = $this->buildSelect($fetch, $selected);
+
+		return ($out);
+	}
+
+	function showPCourses($program, $selected = null) {
+
+		if ($program != null) {
+			$sql = "SELECT * FROM `courses`, `course-prerequisites` WHERE `course-prerequisites`.Prerequisites= `courses`.ID AND `course-prerequisites`.CourseID = $program ORDER BY `courses`.`Name`";
+		} else {
+			$sql = "SELECT `ID`, `Name` FROM `courses` ORDER BY `courses`.`Name`";
+		}
+
+		$run = $this->core->database->doSelectQuery($sql);
+		$fetch = $this->core->database->fetch_all($run);
+		$out = $this->buildSelect($fetch, $selected);
+
+		return ($out);
+	}
+
+	function showCoursesV($program, $selected = null) {
+
+		if ($program != null) {
+			$sql = "SELECT `Name`, `Name` FROM `courses`, `programmes`, `program-course-link` WHERE `program-course-link`.CourseID = `courses`.ID AND `program-course-link`.ProgramID = `programmes`.ID AND `program-course-link`.ProgramID = $program ORDER BY `courses`.`Name`";
 		} else {
 			$sql = "SELECT `ID`, `Name` FROM `courses` ORDER BY `courses`.`Name`";
 		}
@@ -119,16 +195,18 @@ class optionBuilder {
 
 	function showRoles($selected = null) {
 
-		$sql = "SELECT `ID`, `PermissionDescription` FROM `permissions`";
+		$sql = "SELECT `ID`, `RoleName` FROM `roles`";
 
 		$run = $this->core->database->doSelectQuery($sql);
 		$fetch = $this->core->database->fetch_all($run);
 		$out = $this->buildSelect($fetch, $selected);
+
 		return ($out);
 	}
 
 
-	function showMultipleRoles($selected = null) {
+	function showPermissions($selected = null) {
+
 		$sql = "SELECT `ID`, `PermissionDescription` FROM `permissions`";
 
 		$run = $this->core->database->doSelectQuery($sql);

@@ -25,7 +25,7 @@ class settings {
 			<a href="' . $this->core->conf['conf']['path'] . '/settings/functions">Block Management</a>
 			<a href="' . $this->core->conf['conf']['path'] . '/settings/translation">Translation Management</a>
 			<a href="' . $this->core->conf['conf']['path'] . '/settings/update">Update system</a>
-			</div>'; 
+			</div>';
 		}
 	}
 
@@ -37,6 +37,8 @@ class settings {
 	}
 
 	public function translateSettings($language) {
+
+		$this->viewMenu();
 
 		if (isset($language)) {
 
@@ -54,9 +56,10 @@ class settings {
 			echo'<form id="save" name="savetranslation" method="POST" action="'.$this->core->conf['conf']['path'].'/settings/save/translation/'.$language.'">';
 			echo'<div class="easymencontainer"><input type="submit" class="submit" value="Save settings" /></div>';
 
-			echo'<div class="easymencontainer">
+			echo'<div class="easymencontainer"><div class="label" style="width:50px;"> </div>
 			<div class="label" style="width:300px;"><b>Original</b></div>
 			<div class="label" style="width:300px;">Your translation</div>';
+			$i=1;
 
 			if($run->num_rows == 0){
                                 $run->close();
@@ -64,40 +67,41 @@ class settings {
 
                                 while ($run->fetch()) {
 					echo'<div class="linecontainer">
-					<div class="label" style="width:300px;"><b><input type="text" class="submit" name="original[' . $id . ']" style="width: 300px;" value="' . $phrase . '"></b></div>
+					<div class="label" style="width:30px;"><b> '.$i.' </b></div><div class="label" style="width:300px;"> <input type="text" class="submit" name="original[' . $id . ']" style="width: 300px;" value="' . $phrase . '"></div>
 					<div class="label" style="width:300px;"><input type="text" class="submit" name="translation[' . $id . ']" style="width: 300px;" value="' . $translatedphrase . '"> </div>
 					</div>';
+					$i++;
 				}
 			}
 
 			echo'</div>';
 
 			echo'<div class="easymencontainer"><input type="submit" class="submit" value="Save settings" /></div>';
-		}		
+		}
 	}
 
 	public function translationSettings() {
-                      $sql = 'SELECT ID, Language FROM `languages`';
+		$this->viewMenu();
 
-                        $run = $this->core->database->prepareQuery($sql);
+		$sql = 'SELECT ID, Language FROM `languages`';
+
+		$run = $this->core->database->prepareQuery($sql);
                         $run->execute();
                         $run->bind_result($id, $language);
                         $run->store_result();
 
 
-                        if($run->num_rows == 0){
-                                $run->close();
+                if($run->num_rows == 0){
+                	$run->close();
+                } else {
+			echo '<div class="toolbar">';
 
-                        } else {
-				echo '<div class="toolbar">';
-
-                                while ($run->fetch()) {
-					echo'<a href="' . $this->core->conf['conf']['path'] . '/settings/translate/'.$id.'">'.$language.'</a>';
-                                }
-
-				echo'</div>'; 
+ 			while ($run->fetch()) {
+				echo'<a href="' . $this->core->conf['conf']['path'] . '/settings/translate/'.$id.'">'.$language.'</a>';
                         }
 
+			echo'</div>';
+		}
 	}
 
 	public function updateSettings() {
@@ -117,24 +121,23 @@ class settings {
 		$modules = 0;
 		$actions = 0;
 
-		echo'<form id="save" name="savesettings" method="POST" action="'.$this->core->conf['conf']['path'].'/settings/save/settings">';
-		echo'<div class="easymencontainer"><input type="submit" class="submit" value="Save settings" /></div>';
-
 		$dir = 'system/views';
 		if ($handle = opendir($dir)) {
-			
+
 			$files = scandir($dir);
 
 			foreach ($files as $file) {
 
-				if ($file != "." && $file != ".." && $file != "settings.view.php") {
-					include $file;
+				if ($file != "." && $file != "..") {
+					include_once $file;
 					$name = explode(".",$file);
 					$class = $name[0];
 
 					$functions = get_class_methods($class);
 
-					echo '<div class="easymencontainer"><h3>' . ucwords($class) . '</h3>';
+					echo'<form name="savesettings" method="POST" action="'.$this->core->conf['conf']['path'].'/settings/save/settings">';
+					echo '<div class="easymencontainer"><h3>' . ucwords($class) . ' ('.$file.')</h3>';
+	
 
 					$uclass = ucwords($class);
 					$sql = "SELECT * FROM `functions` WHERE `Class` = '$uclass'";
@@ -142,7 +145,7 @@ class settings {
 
 					while ($fetch = $run->fetch_row()) {
 						$curset = FALSE;
-						
+
 						$func = $fetch[2];
 						$funcID = $fetch[0];
 
@@ -169,7 +172,7 @@ class settings {
 
 								$setVars = array();
 								foreach($funcSettings as $key => $val){
-									$setVars[$key] = $val; 
+									$setVars[$key] = $val;
 								}
 
 								echo '<input type="hidden" name="functions['.$funcID.']" value="'.$funcID.'">';
@@ -204,9 +207,10 @@ class settings {
 									echo '<input type="hidden" name="'.$set.'['.$funcID.']" value="'.$val.'">';
 								}
 
-								echo	'<div  style="width:50px; float:left; clear:left;">&nbsp;</div>
-								<div style="width:150px; float:left;"><a href="'.$url.'"><b>' . $uview . '</b></a></div>
-								<div  style="width:430px; float:left;"> '.$setlist.'</div>';
+
+                                                                echo    '<div  style="width:50px; float:left; clear:left;">&nbsp;</div>
+                                                                <div style="width:150px; float:left;"><a href="'.$url.'"><b>' . $uview . '</b></a></div>
+                                                                <div  style="width:430px; float:left;"> '.$setlist.'</div>';
 
 								unset($functions[$i]);
 
@@ -234,17 +238,17 @@ class settings {
 								continue;
 							}
 
-							if(is_callable(array($class, $function))){ 
-								$pub =  '<b>PUBLIC</b>'; 
+							if(is_callable(array($class, $function))){
+								$pub =  '<b>PUBLIC</b>';
 							} else {
-								$pub =  ''; 
+								$pub =  '';
 							}
 
 							$view = str_replace(ucwords($class), "", $function);
 							$url = $this->core->conf['conf']['path'] . '/' . $class . '/' . $view;
 
 
-						
+
 							$uview = ucwords($view);
 
 
@@ -263,14 +267,18 @@ class settings {
 
 
 					echo '</div>';
+					echo'<div class="easymencontainer" style="margin-top: 0px; border-top: 0px;"><input type="submit" class="submit" value="Save settings" /></div></form>';
 					$modules++;
 				}
+				
+
 			}
 			closedir($handle);
-		}
 
-		echo'<div class="easymencontainer"><input type="submit" class="submit" value="Save settings" /></div>';
-		echo'<div class="easymencontainer"><div class="label"  style="width:170px;">Installed modules: <b>' . $modules . '</b> <br>Total actions: <b>' . $actions . '</b></div></div></form>';
+		}
+		echo'<div class="easymencontainer"><div class="label"  style="width:170px;">Installed modules: <b>' . $modules . '</b> <br>Total actions: <b>' . $actions . '</b></div></div>';
+
+
 	}
 
 	public function saveSettings($item) {
@@ -289,15 +297,21 @@ class settings {
 			$sql = "";
 
 			foreach($functions as $setting){
-				$sql .= "UPDATE `functions` 
-					  SET  `FunctionTitle` =  '". $setting["title"] ."',  
+				
+				$menu = $setting["menu"];
+				if($menu == ""){
+						$menu = "0";
+				}
+				
+				$sql = "UPDATE `functions`
+					  SET  `FunctionTitle` =  '". $setting["title"] ."',
 					  `FunctionDescription` =  '". $setting["description"] ."',
 					  `FunctionRequiredPermissions` =  '". $setting["role"] ."',
-					  `FunctionMenuVisible` =  '". $setting["menu"] ."'
-					  WHERE  `functions`.`ID` = ". $setting["id"] ."; ";
+					  `FunctionMenuVisible` =  '". $menu ."'
+					  WHERE  `functions`.`ID` = ". $setting["id"] ."";
+			echo $sql;
+				$this->core->database->doInsertQuery($sql);
 			}
-
-			$this->core->database->mysqli->multi_query($sql);
 
 			$this->core->redirect("settings", "permissions", NULL);
 
@@ -341,14 +355,51 @@ class settings {
 			$sql = "";
 
 			foreach($json as $id => $setting){
-				$sql .= "UPDATE `functions` 
+				$sql = "UPDATE `functions` 
 			 	 SET `FunctionRequiredElements` =  '". $setting ."'
 				 WHERE  `functions`.`ID` = ". $id ."; ";
+				echo $sql;
+				$this->core->database->doInsertQuery($sql);
+			}
+
+
+			$this->core->redirect("settings", "functions", NULL);
+
+		}else if($item == "institution"){
+			$institutionname = $this->core->cleanPost["institutionname"];
+			$institutionwebsite = $this->core->cleanPost["institutionwebsite"];
+
+			$sql = "UPDATE `settings` SET `Value` = '".$institutionname."' WHERE `settings`.`Name` = 'InstitutionName';";
+			$sql .= "UPDATE `settings` SET `Value` = '".$institutionwebsite."' WHERE `settings`.`Name` = 'InstitutionWebsite';";
+
+			$this->core->database->mysqli->multi_query($sql);
+
+	                $this->core->redirect("settings", "manage", NULL);
+
+		}else if($item == "payments"){
+			$sql ="";
+			$i=1;
+
+			foreach($this->core->cleanPost["paymenttypes"] as $paymenttype){
+				$sql .= "UPDATE `settings` SET `Value` = '".$paymenttype."' WHERE `settings`.`Name` = 'PaymentType".$i."';";
+				$i++;
 			}
 
 			$this->core->database->mysqli->multi_query($sql);
 
-			$this->core->redirect("settings", "functions", NULL);
+	                $this->core->redirect("settings", "manage", NULL);
+
+		}else if($item == "admission"){
+			$sql ="";
+			$i=1;
+
+			foreach($this->core->cleanPost["admissionlevels"] as $admissionlevel){
+				$sql .= "UPDATE `settings` SET `Value` = '".$admissionlevel."' WHERE `settings`.`Name` = 'AdmissionLevel".$i."';";
+				$i++;
+			}
+
+			$this->core->database->mysqli->multi_query($sql);
+	                $this->core->redirect("settings", "manage", NULL);
 
 		}
 	}
@@ -357,8 +408,8 @@ class settings {
 		$this->viewMenu();
 
 		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
-
 		$select = new optionBuilder($this->core);
+		$rolesList = $select->showPermissions();
 
 		$sql = "SELECT * FROM `functions` ORDER BY `Class`, `Function`";
 		$run = $this->core->database->doSelectQuery($sql);
@@ -366,15 +417,59 @@ class settings {
 		$i = 0;
 
 		echo'<form id="save" name="institutionname" method="POST" action="'.$this->core->conf['conf']['path'].'/settings/save/permissions">
-		<div class="easymencontainer">
-		<input type="submit" class="submit" value="Save settings" />';
+		<div class="easymencontainer"><input type="submit" class="submit" value="Save settings" />';
 
 		$modules = 0;
 		$actions = 0;
+		$cc = 0;
 
 		$current = NULL;
 
-		$rolesList = $select->showMultipleRoles();
+		$classes = array();
+		$functions = array();
+
+		$dir = 'system/views';
+		if ($handle = opendir($dir)) {
+
+			$files = scandir($dir);
+
+			foreach ($files as $file) {
+
+				if ($file != "." && $file != ".." && $file != "settings.view.php" && $file != "error.view.php" && $file != "menu.inc.php") {
+
+					include_once $file;
+					$name = explode(".",$file);
+					$classes[] = ucwords($name[0]);
+
+					$functionlist = get_class_methods($name[0]);
+
+					$functionarray = array();
+					foreach($functionlist as $function){
+						if($function == "configView" || $function == "buildView" || $function == "viewMenu"){
+							continue;
+						}
+
+						$functionarray[] = str_replace(ucwords($name[0]), "", $function);
+					}
+
+					$functions[$name[0]] = $functionarray;
+					$cc++;
+
+				}
+			}
+
+					$functionlist = get_class_methods("settings");
+					foreach($functionlist as $function){
+						if($function == "configView" || $function == "buildView" || $function == "viewMenu"){
+							continue;
+						}
+
+						$functionarray[] = str_replace(ucwords("settings"), "", $function);
+					}
+					$classes[] = "Settings";
+					$functions["settings"] = $functionarray;
+
+		}
 
 		while ($fetch = $run->fetch_row()) {
 
@@ -382,13 +477,20 @@ class settings {
 
 			if($current != $fetch[1]){
 				$class=ucwords($fetch[1]);
+
+				if(!in_array($class, $classes)){
+					continue;
+				} else {
+					$functionlist = $functions[$fetch[1]];
+				}
+
 				echo '</div><div class="easymencontainer">';
 
-				echo'<div class="label"  style="width:70px;"><h3>' . $class . '</h3></div>
-				<div class="label"  style="width:120px;"><i>Title</i></div>
-				<div class="label" style="width:190px;"><i>Description</i></div>
-				<div class="label" style="width:130px;"><i>Permission required</i></div>
-				<div class="label" style="width:40px;"><i>Menu #</i></div>';
+                                echo'<div style="clear:both"><div class="label"  style="width:70px;"><h3>' . $class . '</h3></div>
+                                <div class="label"  style="width:120px;"><i>Title</i></div>
+                                <div class="label" style="width:290px;"><i>Description</i></div>
+                                <div class="label" style="width:130px;"><i>Permission required</i></div>
+                                <div class="label" style="width:40px;"><i>Menu #</i></div></div>';
 
 				$modules++;
 			} else {
@@ -400,18 +502,33 @@ class settings {
 				$menu = "";
 			}
 
-			echo'  <div class="label"  style="width:70px;"><b>' . ucwords($fetch[2]) . '</b></div>
-				<div class="label" style="width:120px;"><input type="text" class="submit" name="titles[' . $fetch[0] . ']" style="width: 120px;" value="' . $fetch[7] . '"> </div>
-				<div class="label" style="width:190px;"><input type="text" class="submit" name="descriptions[' . $fetch[0] . ']" style="width: 180px;" value="' . $fetch[8] . '"> </div>
-				<div class="label" style="width:130px;"><select style="width:150px;" class="submit" name="roles[' . $fetch[0] . ']"> ' . $roles . ' </select></div>
-				<div class="label" style="width:30px;"><input type="text" class="submit" name="menu[' . $fetch[0] . ']" style="width: 20px;" value="' . $menu . '"> </div>';
+			$function = $fetch[2];
+			$exists = FALSE;
+
+			foreach($functionlist as $functionfromdb){
+				if($function == $functionfromdb){
+					$exists = TRUE;
+				}
+			}
+
+			if ($exists){
+				echo'  <div style="clear:both"><div class="label"  style="width:70px;"><b>' . ucwords($fetch[2]) . '</b></div>
+                                <div class="label" style="width:120px;"><input type="text" class="submit" name="titles[' . $fetch[0] . ']" style="width: 120px;" value="' . $fetch[7] . '"> </div>
+                                <div class="label" style="width:290px;"><input type="text" class="submit"name="descriptions[' . $fetch[0] . ']" style="width: 280px;" value="' . $fetch[8] . '"> </div>
+                                <div class="label" style="width:130px;"><select style="width:130px;" class="submit" name="roles[' . $fetch[0] . ']"> ' . $roles . ' </select></div>
+                                <div class="label" style="width:50px;"><input type="text" class="submit" name="menu[' . $fetch[0] . ']" style="width: 50px;" value="' . $menu . '"> </div> </div>';
+			} else{
+				continue;
+			}
 
 			$current = $fetch[1];
 			$actions++;
 		}
 
-			echo'</div><div class="easymencontainer"><input type="submit" class="submit" value="Save settings" /><div class="label"  style="width:170px;">Installed modules: <b>' . $modules . '</b> <br>Total actions: <b>' . $actions . '</b></div>
-			</form></div>';
+		echo'</div><div class="easymencontainer"><input type="submit" class="submit" value="Save settings" />
+		<div class="label"  style="width:170px;">Installed modules: <b>' . $modules . '</b> 
+		<br>Total number of functions: <b>' . $actions . '</b></div>
+		</form></div>';
 
 	}
 
@@ -433,19 +550,18 @@ class settings {
 
 			if ($i == 0) {
 				echo '<div class="easymencontainer">
-			<form id="save" name="institutionname" method="POST" action="/settings/save">
-			<h2>Institutional identity</h2>
-			<p><input type="hidden" name="id" value="view-information">
-			<div class="padding"><div class="label">Name of institution</div> <input type="text" name="institutionname" class="submit" value="' . $fetch[2] . '"/><br>
-			</div>';
+				<form id="save" name="institutionname" method="POST" action="'.$this->core->conf['conf']['path'].'/settings/save/institution/">
+				<h2>Institutional identity</h2>
+				<p><input type="hidden" name="id" value="view-information">
+				<div class="padding"><div class="label">Name of institution</div> <input type="text" name="institutionname" class="submit" value="' . $fetch[2] . '"/><br>
+				</div>';
 				$i++;
 			} else {
-				echo '<div class="padding"><div class="label">Website of institution</div> <input type="text" name="institutionwebsite" class="submit" value="' . $fetch[2] . '" />
-			</div>
-			<div class="label"> </div>
-			<input type="submit" class="submit" value="Save settings" />
-			</form></p>
-			</div>';
+				echo '<div class="padding"><div class="label">Website of institution</div> <input type="text" name="institutionwebsite" class="submit" value="' . $fetch[2] . '"></div>
+				<div class="label"> </div>
+				<input type="submit" class="submit" value="Save settings" />
+				</form></p>
+				</div>';
 			}
 		}
 
@@ -462,23 +578,18 @@ class settings {
 
 			if ($i == 1) {
 				echo '<div class="easymencontainer">
-                            <form id="save" name="paymenttypes" method="POST" action="/institution/save">
-                            <h2>Payment types</h2>
-                            <p><input type="hidden" name="id" value="view-information">
-                            <div class="padding"><div class="label">Payment Type ' . $i . '</div> <input type="text" name="paymenttype' . $i . '" class="submit" value="' . $fetch[2] . '"/><br>
-                            </div>';
-				$i++;
-			} else {
-				echo '<div class="padding"><div class="label">Payment Type ' . $i . '</div> <input type="text" name="paymenttype' . $i . '" class="submit" value="' . $fetch[2] . '"/><br>
-                            </div>';
-				$i++;
+                         	<form id="save" name="paymenttypes" method="POST" action="'.$this->core->conf['conf']['path'].'/settings/save/payments/">
+                            	<h2>Payment types</h2>
+                            	<p><input type="hidden" name="id" value="view-information">';
 			}
 
+			echo'<div class="padding"><div class="label">Payment Type ' . $i . '</div> <input type="text" name="paymenttypes[]" class="submit" value="' . $fetch[2] . '"/><br></div>';
+			$i++;
 		}
 		echo '<div class="label"> </div>
-            <input type="submit" class="submit" value="Save settings" />
-            </form></p>
-            </div>';
+            	<input type="submit" class="submit" value="Save settings" />
+            	</form></p>
+            	</div>';
 	}
 
 	private function admissionFlow() {
@@ -487,31 +598,29 @@ class settings {
 
 		$run = $this->core->database->doSelectQuery($sql);
 
-		$n = 1;
-		$i = 0;
+		$i = 1;
 
 		while ($fetch = $run->fetch_row()) {
 
-			if ($i == 0) {
+			if ($i == 1) {
 				echo '<div class="easymencontainer">
-                            <form id="save" name="save" method="get" action="">
-                            <h2>Admission flow</h2>
-                            <p><input type="hidden" name="id" value="view-information">
-                            <div class="padding"><div class="label">Admission step ' . $n . '</div>
-                            <input type="text" name="admissionsteps' . $n . '" class="submit"  value="' . $fetch[2] . '" size="40"/><br></div>';
-				$i++;
-			} else {
-				echo '<div class="padding"><div class="label">Admission step ' . $n . '</div>
-                            <input type="text" name="admissionsteps' . $n . '" class="submit"  value="' . $fetch[2] . '" size="40"/><br></div>';
-				$n++;
+                        	<form id="save" name="save" method="POST" action="'.$this->core->conf['conf']['path'].'/settings/save/admission/">
+                        	<h2>Admission flow</h2>
+                        	<p><input type="hidden" name="id" value="view-information">';
 			}
+
+			echo '<div class="padding">
+				<div class="label">Admission step ' . $i . '</div>
+				<input type="text" name="admissionlevels[]" class="submit"  value="' . $fetch[2] . '" size="40"/><br>
+			      </div>';
+			$i++;
+
 		}
 
 		echo '<div class="label"> </div>
-            <input type="submit" class="submit" value="Save settings" />
-            </form></p>
-            </div>';
-
+            	<input type="submit" class="submit" value="Save settings" />
+            	</form></p>
+            	</div>';
 	}
 
 }

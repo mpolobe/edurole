@@ -24,9 +24,9 @@ class mail {
 
 
 		if ( ! filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) ){
-			$url = "http://mail.nkrumah.edu.zm/roundcube";
+			$url = "http://mail.ru.edu.zm/roundcube";
 		}else{
-			$url = "http://nkrumah.edu.zm:8080/roundcube";
+			$url = "http://ru.edu.zm:8080/roundcube";
 		}
 
 		// PROOF OF CONCEPT ROUNDCUBE INTEGRATION, NEEDS OVERHAUL TO SHARED SESSION AUTHENTICATION

@@ -10,8 +10,7 @@ class transactions{
 	}
 
         public function runService($core) {
-                $this->core = $core;
-
+              $this->core = $core;
 		$status = $this->core->cleanGet['TranStatus'];	
 
 		if($this->core->item == "QueryStatus"){
@@ -19,7 +18,7 @@ class transactions{
 		} else if($status == "v" || $status == "V"){
 			$this->reverseTransaction();
 		} else {
-			$this->logAll();
+			$this->postTransaction();
 		}
         }
 
@@ -28,7 +27,7 @@ class transactions{
 		$sql = "SELECT `TransactionID` FROM `transactions` WHERE `TransactionID` = '$transactionid'";
 		$run = $this->core->database->doSelectQuery($sql);
 
-       	        $output = '<?xml version="1.0"?>'. "\n" .
+      	 	$output = '<?xml version="1.0"?>'. "\n" .
 		'<QueryStatusResponse status="ERROR">' . "\n" .
 		'<Transaction id="'.$transactionid.'" status="ERROR" errorMessage="NO_SUCH_ENTRY"></Transaction>' . "\n" .
 		'</QueryStatusResponse>';
@@ -46,8 +45,16 @@ class transactions{
 		echo $output;
 	}
 
-	public function saveTransAction($data, $statusheader, $status, $error){
+	public function postTransaction(){
 
+		$ipaddr = $_SERVER['REMOTE_ADDR']; 
+		$file = "/tmp/zanaco.txt";
+	
+		$input = "\n\n" . date("Y-m-d H:i:s") . " STARTED input from: $ipaddr ============= \n";
+
+		$transactionid = $this->core->cleanGet['TranID'];
+
+		$keyset = $this->core->cleanGet['Key'];
 		$requestid = $this->core->cleanGet['RequestId'];
 		$tranid = $this->core->cleanGet['TranID'];
 		$key = $this->core->cleanGet['Key'];
@@ -57,46 +64,10 @@ class transactions{
 		$studentid = $this->core->cleanGet['StudentID'];
 		$phone = $this->core->cleanGet['Phone'];
 		$name = $this->core->cleanGet['Name'];
-
-		$sisstudentid = $this->getStudent($studentid);
-
-		if(!empty($sisstudentid)){
-			$uid = $sisstudentid;
-		}
-
-		$sql = "INSERT INTO `transactions` (`ID`, `UID`, `RequestID`, `TransactionID`, `StudentID`, `NRC`, `TransactionDate`, `Amount`, `Name`, `Type`, `Hash`, `Timestamp`, `Phone`, `Status`, `Error`, `Data`)
-			VALUES (NULL, '$uid', '$requestid', '$tranid', '$studentid', '$nrc', '$date', '$amount', '$name', '$type', '$key', CURRENT_TIMESTAMP, '$phone', '$statusheader', '$status', '$data');";
-
-		try{
-			$this->core->database->doInsertQuery($sql);
-			return TRUE;
-		} catch (Exception $e) {
-			return FALSE;
-		}
-	}
-
-	public function getStudent($studentid) {
-		$sql = "SELECT * FROM `access` WHERE `ID` = '$studentid'";
-
-		$run = $this->core->database->doSelectQuery($sql);
-		$fetch = $run->fetch_assoc();
-	}
-
-	public function logAll(){
-
-		$ipaddr = $_SERVER['REMOTE_ADDR']; 
-		$transactionid = $this->core->cleanGet['TranID'];
-
-		$keyset = $this->core->cleanGet['Key'];
-		$requestid = $this->core->cleanGet['RequestId'];
-		$date = $this->core->cleanGet['Date'];
-		$amount = $this->core->cleanGet['Amount'];
-		$type = $this->core->cleanGet['Type'];
-		$studentid = $this->core->cleanGet['StudentID'];
-		$phone = $this->core->cleanGet['Phone'];
+		$status = $this->core->cleanGet['TranStatus'];
 
 
-		$calkey = base64_encode(sha1($this->core->conf['bank']['token'] . "$transactionid"));
+		$calkey = base64_encode(sha1("dcb74b1413de4e83ade08fa6f0467268d74971f7" . "$transactionid"));
 
 		$status = "SUCCESS";
 		$error = "";
@@ -132,7 +103,47 @@ class transactions{
 			$error = $status;
 		}
 
-		if(!$this->saveTransAction($input, $statusheader, $status, $error)){
+
+
+		$sisstudentid = $this->getStudent($studentid);
+
+		if(!empty($sisstudentid)){
+			$uid = $sisstudentid;
+		}
+
+
+
+		// TEMPORARY LOGGING FEATURE
+		file_put_contents($file, $input, FILE_APPEND);
+		file_put_contents($file, $output, FILE_APPEND);
+
+
+
+		$sql = "SELECT * FROM `transactions` WHERE `TransactionID` = '$tranid'";
+
+		$run = $this->core->database->doSelectQuery($sql);
+
+		if($run->num_rows > 0){
+
+	                $output = '<?xml version="1.0"?>'. "\n" .
+			'<QueryStatusResponse status="SUCCESS">' . "\n" .
+			'<Transaction id="'.$tranid.'" status="SUCCESS" errorMessage="SUCCESS"></Transaction>' . "\n" .
+			'</QueryStatusResponse>';
+			echo $output;
+			return;
+			
+		}
+
+		$data = $this->core->database->escape($input);
+		$sql = "INSERT INTO `transactions` (`ID`, `UID`, `RequestID`, `TransactionID`, `StudentID`, `NRC`, `TransactionDate`, `Amount`, `Name`, `Type`, `Hash`, `Timestamp`, `Phone`, `Status`, `Error`, `Data`)
+			VALUES (NULL, '$uid', '$requestid', '$tranid', '$studentid', '$nrc', '$date', '$amount', '$name', '$type', '$keyset', CURRENT_TIMESTAMP, '$phone', '$statusheader', '$status', '$data');";
+
+
+		$qr = $this->core->database->doInsertQuery($sql, TRUE);
+
+		if($qr == TRUE){
+			
+		} else {
 			$statusheader = "STATUS_ERROR_INTERFACE";
 			$status = "ERR_GENERAL_FAILURE";
 			$error = $status;
@@ -166,5 +177,13 @@ class transactions{
 
 		echo $output;
 	}
+
+	public function getStudent($studentid) {
+		$sql = "SELECT * FROM `basic-information` WHERE `ID` = '$studentid'";
+
+		$run = $this->core->database->doSelectQuery($sql);
+		$fetch = $run->fetch_assoc();
+	}
+
 }
 ?>

@@ -22,140 +22,35 @@ class transcript {
 	}
 
 
-	public function resultsTranscript($item){
-
-		if(!isset($item) || $this->core->role <= 10){
-			$item = $this->core->userID;
-		}
-
-		echo'<div id="exhibition" style="left:20px; top:5px; width:auto; z-index:90;">
-		<center>
-		<font size="5">NKRUMAH UNIVERSITY</font><br>
-		<font size="4">ACADEMIC OFFICE </font></center>
-		<p align="right">
-		<br>
-		P O Box 80404<br>
-		<b> KABWE<br>
-		TEL/FAX. 260 5 223223<br></b></p>
-		<hr size=2>
-		<p>';
+	public function footerTranscript($item){
 
 
-		$studentID = $item;
-		$studentNo = $studentID;
-
-		$sql = "SELECT 
-				bi.Firstname, 
-				bi.MiddleName, 
-				bi.Surname, 
-				bi.Status,
-				bi.Sex,
-				bi.Status,
-				pr.ProgramNo
-			FROM 
-				`basic-information` as bi,
-				`programmes-link` as pr,
-				`nkrumah-student-program-link` as npl 
-			WHERE  bi.`ID` = '$studentID' 
-			AND	npl.`StudentID` = bi.`ID`
-			AND	npl.`ProgrammeID` = pr.`ID`";
-
-		$run = $this->core->database->doSelectQuery($sql);
-
-		while ($fetch = $run->fetch_row()){
-
-			$firstname = $fetch[0];
-			$middlename = $fetch[1];
-			$surname = $fetch[2];
-			$remark=$fetch[5];
-			$sex=$fetch[4]; 
-			$studentname = $firstname . " " . $middlename . " " . $surname;
-
-			$school=$fetch[7];
-			$programme=$fetch[6];
-
-			$graduation=$fetch[6]; 
-			$grad=$fetch[7];
-
-			switch ($sex) {
-				case "M":
-					$title="He";
-					break;
-				case "F":
-					$title="She";
-					break;
-				default:
-					$title="He/She";
-			}
-
-			echo"<span style=\"font-size: 12px\"><br> This to certify that: <b>$studentname</b> - Student No.:<b>$studentNo</b><br>
-			was a registered student of <b>Nkrumah University College</b><br>
-			studying: <b>$programme</b> from the academic session: <b>$start</b>.<br>
-			His/her academic performance was as follows:<br></span>";
-
-
-			$this->academicyear($studentNo);
-
-
-			echo "<br>";
-
-			switch ($remark) {
-				case "DECEASED":
-					Print "$title was Deceased<br><br>";
-					break;
-				case "EXCLUDE":
-					Print "$title was excluded from Nkrumah University College<br><br>";
-					break;
-				case "WP":
-					Print "$title withdrew with permission from Nkrumah University College<br><br>";
-					break;
-				case "Enrolled":
-					print "$title will be awarded the specified degree upon completion of studies<br><br>";
-					break;
-				default:
-					if ($grad>0){
-						$graduation1=date('d M Y',strtotime($graduation));
-						echo "$title will be awarded a <b>$programme</b> 
-						degree with <b>$remark</b> at the graduation ceremony to be held on $graduation1<br><br>";
-					} else {
-						$graduation1=date('d M Y',strtotime($graduation));
-						echo "$title was awarded a <b>$programme</b>
-						degree with <b>$remark</b> at the graduation ceremony held on $graduation1<br><br>";
-					}
-			}
-
-			echo "<br><br><br> <b>". $this->core->conf[institution][head] ."<br>". $this->core->conf[institution][title] ."</b><br> <br> <b>A key to understanding of the grades is on the reverse side of this statement</b><br><br>";
-
-		}
-
-		echo'</p>';
-
-echo'<h2 class="break">Key to Understanding Grades</h2>
-   <h3>Pass Grades</h3> 
-<TABLE>
-<TR>
-  <TD width="100">A+</TD>
-  <TD width="800">Distinction</TD>
- </TR>
-<TR>
-  <TD>A</TD>
-  <TD>Distinction</TD>
- </TR>
- <TR>
-  <TD>B+</TD>
-  <TD>Meritorious</TD>
- </TR>
- <TR>
-  <TD>B</TD>
-  <TD>Very Satisfactory</TD>
- </TR>
- <TR>
-  <TD>C+</TD>
-  <TD>Clear Pass</TD>
- </TR>
- <TR>
-  <TD>C</TD>
-  <TD>Bare Pass</TD>
+		echo'<h2 class="break">Key to Understanding Grades</h2>
+		<h3>Pass Grades</h3> 
+		<TABLE>
+		<TR>
+		  <TD width="100">A+</TD>
+		  <TD width="800">Distinction</TD>
+		 </TR>
+		<TR>
+		  <TD>A</TD>
+		  <TD>Distinction</TD>
+		 </TR>
+		 <TR>
+		  <TD>B+</TD>
+		  <TD>Meritorious</TD>
+		 </TR>
+		 <TR>
+		  <TD>B</TD>
+		  <TD>Very Satisfactory</TD>
+		 </TR>
+		 <TR>
+		  <TD>C+</TD>
+		  <TD>Clear Pass</TD>
+		 </TR>
+		 <TR>
+		  <TD>C</TD>
+		  <TD>Bare Pass</TD>
  </TR>
  <TR>
   <TD>S</TD>
@@ -227,11 +122,122 @@ echo'<h2 class="break">Key to Understanding Grades</h2>
  </TR>
  </TABLE>
 
-<p>This transcript is not valid if it does not bear the Nkrumah University College<b>Date Stamp</b> or if it has <b>alterations.</b></p>
+<p>This transcript is not valid if it does not bear the '.$this->core->conf['conf']['organization'].' <b>date Stamp</b> or if it has <b>alterations.</b></p>
 <h2>&nbsp;</h2>
 <h2>&nbsp;</h2>
 </div>
 </div>';
+
+		echo'<script type="text/javascript">
+			window.print();
+		</script>';
+
+	}
+
+
+
+
+	
+	public function resultsTranscript($item){
+
+		if(!isset($item) || $this->core->role <= 10){
+			$item = $this->core->userID;
+		}
+
+
+
+		$studentID = $_GET['uid'];
+		$studentNo = $studentID;
+
+		$start = substr($studentID, 0, 4);
+
+		$sql = "SELECT Firstname, MiddleName, Surname, Status, Sex, Status, ProgramNo FROM `basic-information`, `programmes-link`, `student-program-link` 
+		WHERE `basic-information`.ID = '$studentID' AND	 `student-program-link`.`StudentID` = `basic-information`.ID AND `student-program-link`.`ProgrammeID` = `programmes-link`.ID";
+
+		$run = $this->core->database->doSelectQuery($sql);
+
+
+			echo'	<center><div style="width: 200px;"><a href="'. $this->core->conf['conf']['path'] .'"><img height="100px" src="'. $this->core->fullTemplatePath .'/images/header.png" /></a></div>
+			<div style=" font-size: 22pt; color: #333; margin-top: 15px; margin-left: -30px; ">'.$this->core->conf['conf']['organization'].'<div style="font-size: 13pt">TRANSCRIPT OF RESULTS</div></div>
+			</center>
+
+			<div align="right">
+			<br>
+			P O Box 80404<br>
+			<b> KABWE<br>
+			TEL/FAX. 260 5 223223<br></b></p>
+			<hr size=2>
+			</div>';
+
+			echo"<span style=\"font-size: 12px\"><br> This to certify that: <b>$studentname</b> - Student No.: <b>$studentNo</b><br>
+			was a registered student of <b> '.$this->core->conf['conf']['organization'].'</b><br>
+			studying: <b>$programme</b> from the academic session: <b>$start</b>.<br>
+			His/her academic performance was as follows:<br></span>";
+
+
+
+		while ($fetch = $run->fetch_row()){
+
+			$firstname = $fetch[0];
+			$middlename = $fetch[1];
+			$surname = $fetch[2];
+			$remark=$fetch[5];
+			$sex=$fetch[4]; 
+			$studentname = $firstname . " " . $middlename . " " . $surname;
+
+			$school=$fetch[7];
+			$programme=$fetch[6];
+
+			$graduation=$fetch[6]; 
+			$grad=$fetch[7];
+
+			switch ($sex) {
+				case "M":
+					$title="He";
+					break;
+				case "F":
+					$title="She";
+					break;
+				default:
+					$title="He/She";
+			}
+
+			$this->academicyear($studentNo);
+
+
+			echo "<br>";
+
+			switch ($remark) {
+				case "DECEASED":
+					Print "$title was Deceased<br><br>";
+					break;
+				case "EXCLUDE":
+					Print "$title was Excluded<br><br>";
+					break;
+				case "WP":
+					Print "$title withdrew with permission<br><br>";
+					break;
+				case "Enrolled":
+					print "$title will be awarded the specified degree upon completion of studies<br><br>";
+					break;
+				default:
+					if ($grad>0){
+						$graduation1=date('d M Y',strtotime($graduation));
+						echo "$title will be awarded a <b>$programme</b> 
+						degree with <b>$remark</b> at the graduation ceremony to be held on $graduation1<br><br>";
+					} else {
+						$graduation1=date('d M Y',strtotime($graduation));
+						echo "$title was awarded a <b>$programme</b>
+						degree with <b>$remark</b> at the graduation ceremony held on $graduation1<br><br>";
+					}
+			}
+
+			echo "<br><br><br> <b>". $this->core->conf[institution][head] ."<br>". $this->core->conf[institution][title] ."</b><br> <br> <b>A key to understanding of the grades is on the reverse side of this statement</b><br><br>";
+
+		}
+
+		echo'</p>';
+
 
 	}
 
@@ -239,7 +245,7 @@ echo'<h2 class="break">Key to Understanding Grades</h2>
 		global $remark, $count, $count1;
 	
 
-		$sql = "SELECT distinct academicyear, semester FROM `nkrumah-grades` WHERE StudentNo = '$studentNo' order by academicyear";
+		$sql = "SELECT distinct academicyear, semester FROM `grades` WHERE StudentNo = '$studentNo' order by academicyear";
 		$run = $this->core->database->doSelectQuery($sql);
 
 
@@ -247,6 +253,8 @@ echo'<h2 class="break">Key to Understanding Grades</h2>
 
 			$acyr = $fetch[0];
 			$semester = $fetch[1];
+
+			
 
 			$this->detail($studentNo, $acyr, $semester);
 
@@ -257,14 +265,14 @@ echo'<h2 class="break">Key to Understanding Grades</h2>
 	private function detail($studentNo, $acyr, $semester) {
 
 		echo "<p> <span style=\"font-size: 14px; font-weight: bold;\"> $acyr &nbsp ($semester) </span></p>
-		<table width=\"100%\" border= \"1\" style=\"font-size: 12px\">\n <tr >\n <th >COURSENO</th>\n <th >COURSE NAME</th>\n  <th >GRADE</th>\n </tr>\n\n";
+		<table width=\"100%\"  style=\"font-size: 12px; text-align: left;\">\n <tr >\n <th >COURSE</th>\n <th >COURSE NAME</th>\n  <th >GRADE</th>\n </tr>\n\n";
 
 		$sql = "SELECT 
 				p1.CourseNo,
 				p2.CourseDescription,
 				p1.Grade
 			FROM 
-				`nkrumah-grades` as p1,
+				`grades` as p1,
 				`courses` as p2
 			WHERE 	p1.StudentNo = '$studentNo'
 			AND	p1.AcademicYear = '$acyr'

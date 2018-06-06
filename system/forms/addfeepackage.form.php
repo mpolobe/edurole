@@ -5,7 +5,7 @@
 	});
 </script>
 
-<form id="addfee" name="addfee" method="post" action="<? echo $this->core->conf['conf']['path'] . "/feepackages/save/" . $this->core->item; ?>">
+<form id="addfee" name="addfee" method="post" action="<?php echo $this->core->conf['conf']['path'] . "/feepackages/save/" . $this->core->item; ?>">
 	<p>Please enter the following information</p>
 	<table width="768" border="0" cellpadding="5" cellspacing="0">
               <tr>
@@ -23,7 +23,7 @@
                 <td><strong>Fee Package Manager</strong></td>
                 <td>
                   <select name="owner" id="owner">
-					<? echo $owner; ?>
+					<?php echo $owner; ?>
                   </select></td>
                 <td>Functional head of fee</td>
               </tr>

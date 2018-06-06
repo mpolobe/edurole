@@ -18,56 +18,98 @@ class intake {
 
 	public function buildView($core) {
 		$this->core = $core;
+        }
 
-		echo '<div class="collapse navbar-collapse  navbar-ex1-collapse">
-		<ul class="nav navbar-nav side-nav">
+	private function viewMenu(){
+		echo '<div class="">
+		<ul class="nav side-nav">
 		<li class="active"><strong>Home menu</strong></li>
-		<li class="menu"><a href="' . $this->core->conf['conf']['path'] . '">Home</a></li>
-		<li class="menu"><a href="' . $this->core->conf['conf']['path'] . '/intake/studies">Overview of all studies</a></li>
-		<li class="menu"><a href="' . $this->core->conf['conf']['path'] . '/intake">Studies open for intake</a></li>
-		<li class="menu"><a href="' . $this->core->conf['conf']['path'] . '/intake/register">Current student registration</a></li>
-		<li class="menu"><a href="' . $this->core->conf['conf']['path'] . '/password/recover">Recover lost password</a></li>
+		<li class="menu"><a href="' . $this->core->conf['conf']['path'] . '/">' . $this->core->translate("Home") . '</a></li>
+		<li class="menu"><a href="' . $this->core->conf['conf']['path'] . '/intake/studies">' . $this->core->translate("All programmes") . '</a></li>
+		<li class="menu"><a href="' . $this->core->conf['conf']['path'] . '/intake">' . $this->core->translate("Open for intake") . '</a></li>
+		<li class="menu"><a href="' . $this->core->conf['conf']['path'] . '/intake/register">' . $this->core->translate("Current student registration") . '</a></li>
+		<li class="menu"><a href="' . $this->core->conf['conf']['path'] . '/password/recover">' . $this->core->translate("Recover lost password") . '</a></li>
 		</ul><div id="page-wrapper">';
 	}
 
-	function registerIntake() {
+	function adminIntake() {
 		$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID ORDER BY `study`.Name";
-		
-		echo '<p> All students need to register electronicaly for the new student information system. </p>
-		<p>
-		<table width="768" cellspacing="0" cellpadding="5" >
-		<tr><td bgcolor="#EEEEEE"> <b>Study</b></td>' .
-		'<td bgcolor="#EEEEEE"><b>School</b></td>' .
-		'<td bgcolor="#EEEEEE"><b>Years</b></td>' .
-		'</tr>';
+
+		echo'<table class="table table-bordered table-striped table-hover">
+			<thead>
+				<tr>
+					<td bgcolor="#EEEEEE"><b>' . $this->core->translate("Study") . '</b></td>
+					<td bgcolor="#EEEEEE"><b>' . $this->core->translate("School") . '</b></td>
+					<td bgcolor="#EEEEEE"><b>' . $this->core->translate("End of intake") . '</b></td>
+				</tr>
+			</thead>
+			<tbody>';
+
+		$run = $this->core->database->doSelectQuery($sql);
+
+		while ($row = $run->fetch_row()) {
+			echo '<tr><td><b><a href="' . $this->core->conf['conf']['path'] . '/register/study/' . $row[0] . '"> ' . $row[6] . '</a></b></td>' .
+				'<td>' . $row[16] . '</td>' .
+				'<td>' . $row[3] . '</td>' .
+				'</tr>';
+		}
+
+		echo '</tbody>
+		</table>';
+	}
+
+	function registerIntake() {
+
+		$this->viewMenu();
+
+		$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID  AND CURRENT_TIMESTAMP <= `study`.IntakeEnd ORDER BY `study`.Name";
+
+		echo'<p class="title">Select your study</p>
+			<p>Select the study you are currently enrolled for</p>
+			<table class="table table-bordered table-striped table-hover">
+			<thead>
+				<tr>
+					<td bgcolor="#EEEEEE"><b>' . $this->core->translate("Study") . '</b></td>
+					<td bgcolor="#EEEEEE"><b>' . $this->core->translate("School") . '</b></td>
+					<td bgcolor="#EEEEEE"><b>' . $this->core->translate("End of intake") . '</b></td>
+				</tr>
+			</thead>
+			<tbody>';
 
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($row = $run->fetch_row()) {
 			echo '<tr><td><b><a href="' . $this->core->conf['conf']['path'] . '/register/study/' . $row[0] . '?existing=yes"> ' . $row[6] . '</a></b></td>' .
 				'<td>' . $row[16] . '</td>' .
-				'<td>2009/2013</td>' .
+				'<td>' . $row[3] . '</td>' .
 				'</tr>';
 		}
 
-		echo '</table>
-		</p>';
+		echo '</tbody>
+		</table>';
 	}
 
+
 	function showIntake($item = NULL) {
+		$this->viewMenu();
+
 		if(isset($item)){
 			$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID AND `study`.ParentID = `schools`.ID AND `study`.ID = $item";
 		}else{
 			$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID AND CURRENT_TIMESTAMP <= `study`.IntakeEnd ORDER BY `study`.Name";
 		}
-		
-		echo '<p>Overview of all studies for which intake is currently open, click on the study to proceed to filing your request for admission. </p>
-		<p>
-		<table width="768" cellspacing="0" cellpadding="5" >
-		<tr><td bgcolor="#EEEEEE"> <b>Study</b></td>' .
-			'<td bgcolor="#EEEEEE"><b>School</b></td>' .
-			'<td bgcolor="#EEEEEE"><b>End of intake</b></td>' .
-			'</tr>';
+
+		echo'<p class="title">Select the study for which you are applying</p>
+			<p>You can only select one study for your first application</p>
+			<table class="table table-bordered table-striped table-hover">
+			<thead>
+				<tr>
+					<td bgcolor="#EEEEEE"><b>Study</b></td>
+					<td bgcolor="#EEEEEE"><b>School</b></td>
+					<td bgcolor="#EEEEEE"><b>End of intake</b></td>
+				</tr>
+			</thead>
+                        <tbody>';
 
 		$run = $this->core->database->doSelectQuery($sql);
 
@@ -81,11 +123,17 @@ class intake {
 		echo '</table>
 		</p>';
 	}
-	
+
 	function studiesIntake() {
+		$this->viewMenu();
+
+		echo '<p class="title">Overview of all studies on offer</p>
+			<p>Please note when applications will be accepted in the last column of the table.</p>';
 		$this->core->throwSuccess("PLEASE OBSERVE THE START AND END DATE FOR THE ONLINE INTAKE, ONLINE REGISTRATION WILL BE POSSIBLE BETWEEN THESE DATES ONLY.");
 
-		echo '<p>' .
+
+
+		echo'<p>' .
 		'<table width="768">' .
 		'<tr class="tableheader"><td><b>Study</b></td>' .
 		'<td><b>School</b></td>' .

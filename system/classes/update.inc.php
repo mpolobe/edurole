@@ -26,7 +26,7 @@ class update {
 			$lfile = ltrim($filename, ".");
 			$lfile = ltrim($lfile, "/");
 
-			$localfile = "update/" . $lfile;
+			$localfile = "test/" . $lfile;
 			$localdir = dirname($localfile);
 
 			if (!file_exists($localdir)){

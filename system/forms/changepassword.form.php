@@ -16,10 +16,10 @@
 				<input type="text" name="studentid"/></td>
 		</tr>
 		<tr>
-			<td><img id="captcha" src="<? echo $this->core->conf['conf']['path']; ?>/lib/secureimage/securimage_show.php" alt="CAPTCHA Image"/></td>
+			<td><img id="captcha" src="<?php echo $this->core->conf['conf']['path']; ?>/lib/secureimage/securimage_show.php" alt="CAPTCHA Image"/></td>
 			<td><input type="text" name="captcha_code" class="captcha_code" size="10" maxlength="6"/></td>
 			<td>Please enter the text in the verification image, if you are having difficulty reading the text please
-				click <a href="#" onclick="document.getElementById('captcha').src = '<? echo $this->core->conf['conf']['path']; ?>/lib/secureimage/securimage_show.php?' + Math.random(); return false">here.</a>
+				click <a href="#" onclick="document.getElementById('captcha').src = '<?php echo $this->core->conf['conf']['path']; ?>/lib/secureimage/securimage_show.php?' + Math.random(); return false">here.</a>
 			</td>
 		</tr>
 	</table>

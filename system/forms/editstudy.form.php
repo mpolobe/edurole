@@ -2,11 +2,11 @@
 
 jQuery(document).ready(function(){
 
-	jQuery(function() {
-		jQuery('.datepicker').datepicker({
-			dateFormat : 'yy-mm-dd'
-		});
-	});	
+
+  jQuery( function() {
+    $( ".datepicker" ).datepicker();
+  } );
+
 
 	jQuery('.select').ddslick({width:280, height:300,
 	    onSelected: function(selectedData){
@@ -18,8 +18,8 @@ jQuery(document).ready(function(){
 
 </script>
 
-<form id="addstudy" name="addstudy" method="post" action="<? echo $this->core->conf['conf']['path'] . "/studies/save/" . $this->core->item; ?>">
-	<p>You are editing:<b> <? echo $fetch[6]; ?></b>  </p>
+<form id="addstudy" name="addstudy" method="post" action="<?php echo $this->core->conf['conf']['path'] . "/studies/save/" . $this->core->item; ?>">
+	<p>You are editing:<b> <?php echo $fetch[6]; ?></b>  </p>
 	<p>
 
 	<table width="768" border="0" cellpadding="5" cellspacing="0">
@@ -30,23 +30,29 @@ jQuery(document).ready(function(){
         </tr>
 
 	<tr><td width="150">Full name of study</td>
-	<td><input name="fullname" type="text" value="<? echo $fetch[6]; ?>"></b></td>
+	<td><input name="fullname" type="text" value="<?php echo $fetch[6]; ?>"></b></td>
 	<td></td>
 	</tr>
 
 	<tr>
 	<td>Short menu name for study</td>
-	<td><input name="shortname" type="text" value="<? echo $fetch[7]; ?>" maxlength="15"></b></td>
+	<td><input name="shortname" type="text" value="<?php echo $fetch[7]; ?>" maxlength="15"></b></td>
 	<td>Max. 15 characters</td>
 	</tr>
 
 	<tr><td>School</td>
 	<td>
 		<select name="school" id="school" class="select">
-			<? echo $schools; ?>
+			<?php echo $schools; ?>
         </select>
 	</td>
 	<td></td>
+	</tr>
+
+	<tr>
+		<td>Maximum size of intake</td>
+		<td><b><input name="maxintake" type="text" value="<?php echo $fetch[5]; ?>" style="width:100px"> students</b></td>
+		<td></td>
 	</tr>
 
 	<tr><td>Method of Delivery</td>
@@ -54,11 +60,12 @@ jQuery(document).ready(function(){
 		<select name="delivery"  class="select">
 
 		<?php
-		echo '<option value="0" ';	if ($fetch[4] == "0") {	echo 'selected=""';	}	echo '>-choose-</option> '; 
-		echo '<option value="1" ';	if ($fetch[4] == "1") {	echo 'selected=""';	}	echo '>Distance learning</option>';
-		echo '<option value="2" ';	if ($fetch[4] == "2") {	echo 'selected=""';	}	echo '>Parallel programme</option>';
-		echo '<option value="3" ';	if ($fetch[4] == "3") {	echo 'selected=""';	}	echo'>Regular programme</option>';
-		echo '<option value="4" ';	if ($fetch[4] == "4") {	echo 'selected=""';	}	echo'>Various forms</option>';
+		if ($fetch[4] == "0") {	 echo '<option value="0">-choose-</option> '; } else { 	echo '<option value="'.$fetch[4].'">'.$fetch[4].'</option>'; }
+
+		echo '<option value="Distance">Distance learning</option>';
+		echo '<option value="Block">Block Release</option>';
+		echo '<option value="Parallel">Parallel programme</option>';
+		echo '<option value="Fulltime">Fulltime</option>';
 		?>
 
 		</select>
@@ -71,22 +78,13 @@ jQuery(document).ready(function(){
 	<select name="studytype" class="select">
 	
 	<?php
-		echo '<option value="0" ';	if ($fetch[9] == "0") {	echo 'selected=""';	}	echo '>-choose-</option> '; 
-		echo '<option value="14"';	if ($fetch[9] == "14"){	echo 'selected=""';	}	echo '>Bachelor of Education</option>';
-		echo '<option value="1" ';	if ($fetch[9] == "1") {	echo 'selected=""';	}	echo '>Bachelor of art</option>';
-		echo '<option value="2" ';	if ($fetch[9] == "2") {	echo 'selected=""';	}	echo '>Bachelor of Engineering</option>';
-		echo '<option value="3" ';	if ($fetch[9] == "3") {	echo 'selected=""';	}	echo '>Diploma maths and science</option>';
-		echo '<option value="4" ';	if ($fetch[9] == "4") {	echo 'selected=""';	}	echo '>Diploma other than maths and science</option>';
-		echo '<option value="5" ';	if ($fetch[9] == "5") {	echo 'selected=""';	}	echo '>Doctor</option>';
-		echo '<option value="6" ';	if ($fetch[9] == "6") {	echo 'selected=""';	}	echo '>Licentiate</option>';
-		echo '<option value="7" ';	if ($fetch[9] == "7") {	echo 'selected=""';	}	echo '>Master of Arts</option>';
-		echo '<option value="8" ';	if ($fetch[9] == "8") {	echo 'selected=""';	}	echo '>Master of Business Administration</option>';
-		echo '<option value="9" ';	if ($fetch[9] == "9") {	echo 'selected=""';	}	echo '>Master of Engineering Science</option>';
-		echo '<option value="10" ';	if ($fetch[9] == "10"){	echo 'selected=""';	}	echo '>Master of Science</option>';
-		echo '<option value="11" ';	if ($fetch[9] == "11"){	echo 'selected=""';	}	echo '>Doctor of Philosophy</option>';
-		echo '<option value="12" ';	if ($fetch[9] == "12"){	echo 'selected=""';	}	echo '>Secondary school</option>';
+		if ($fetch[9] == "0") {	 echo '<option value="0">-choose-</option> '; } else { 	echo '<option value="'.$fetch[9].'">'.$fetch[9].'</option>'; }
 	?>
-
+		<option value="Certificate">Certificate</option>
+		<option value="Diploma" >Diploma</option>
+		<option value="Undergraduate">Udergraduate study</option>
+		<option value="Postgraduate">Postgraduate study</option>
+		<option value="Doctorate">Doctorate</option>
 	</select>
 	</td>
 	<td></td>
@@ -96,32 +94,24 @@ jQuery(document).ready(function(){
 	<td><select name="active" class="select">
 
 		<?php
-			echo '<option value="0" ';	if ($fetch[8] == "0") {	echo 'selected=""';	}	echo '>No</option> '; 
-			echo '<option value="1" ';	if ($fetch[8] == "1") {	echo 'selected=""';	}	echo '>Yes</option>';
+			if ($fetch[8] == "0") {	 
+				echo '<option value="0" selected="" >No</option> <option value="1">Yes</option> ';	
+			}  else {
+ 				 echo '<option value="1" selected="" >Yes</option> <option value="0">No</option> ';	
+			} 
 		?>
 
 	</select></td>
 	<td></td>
 	</tr>
 
-	<tr><td>Intensity of program</td>
-	<td><select name="active" class="select">
-
-	<?php
-		echo '<option value="0" ';	if ($fetch[11] == "0") {	echo 'selected=""';	}	echo '>Part-time</option> '; 
-		echo '<option value="1" ';	if ($fetch[11] == "1") {	echo 'selected=""';	}	echo '>Full-time</option>';
-	?>
-
-	</select></td>
-	<td></td>
-	</tr>
 
 	<tr><td>Start of Intake</td>
-	<td><input name="startintake" type="text" class="datepicker" value="<? echo $fetch[2]; ?>"></td>
+	<td><input name="startintake" type="text" class="datepicker" value="<?php echo $fetch[2]; ?>"></td>
 	<td></td>
 	</tr>
 	<tr><td>End of Intake</td>
-	<td><input name="endintake" type="text" class="datepicker"  value="<? echo $fetch[3]; ?>"></td>
+	<td><input name="endintake" type="text" class="datepicker"  value="<?php echo $fetch[3]; ?>"></td>
 	<td></td>
 	</tr>
 
@@ -130,38 +120,14 @@ jQuery(document).ready(function(){
 	<td>
 	<select name="duration" class="select">
 
-<?php	
-	echo'<option value="12" ';
-if ($fetch[10] == "12") {
-	echo 'selected=""';
-}
-echo '>1 Year</option>	<option value="24" ';
-if ($fetch[10] == "24") {
-	echo 'selected=""';
-}
-echo '>2 Years</option>
-	<option value="36" ';
-if ($fetch[10] == "36") {
-	echo 'selected=""';
-}
-echo '>3 Years</option>
-	<option value="48" ';
-if ($fetch[10] == "48") {
-	echo 'selected=""';
-}
-echo '>4 Years</option>
-	<option value="60" ';
-if ($fetch[10] == "60") {
-	echo 'selected=""';
-}
-echo '>5 Years</option>
-	<option value="72" ';
-if ($fetch[10] == "72") {
-	echo 'selected=""';
-}
-echo '>6 Years</option>';
-?>
-
+	<?php	
+		echo '<option value="'.$fetch[10].'" elected="">'.$fetch[10].' Year</option>';
+	?>
+		<option value="1">1 Year</option>
+		<option value="2">2 Year</option>
+		<option value="3">3 Year</option>
+		<option value="4">4 Year</option>
+		<option value="5">5 Year</option>
 	</select>
 	</td>
 	<td></td>
@@ -184,16 +150,15 @@ echo '>6 Years</option>';
 	 <table width="700" border="0" cellpadding="5" cellspacing="0">
               <tr>
                 <td width="205" height="28" bgcolor="#EEEEEE"><strong>Information</strong></td>
-                <td  width="130" bgcolor="#EEEEEE"><strong>Currently selected</strong></td>
-                <td  width="130" bgcolor="#EEEEEE">Currently not selected</td>
-                <td bgcolor="#EEEEEE"><strong>Description</strong></td>
+                <td  width="230" bgcolor="#EEEEEE"><strong>Currently selected</strong></td>
+                <td  width="230" bgcolor="#EEEEEE">Currently not selected</td>
               </tr>
  	<tr >
 	<td>Select which programmes should be offered as part of this study</td>
 	<td width="100"> 
-	<form id="selected" name="selectedfr" method="post" action="<? echo $this->core->conf['conf']['path'] . "/studies/save/" . $this->core->item; ?>">
-	<input type="hidden" name="item" value="<? echo $item; ?>" />
-		<select name="selected[]" multiple="multiple" size="10" style="width: 130px">
+	<form id="selected" name="selectedfr" method="post" action="<?php echo $this->core->conf['conf']['path'] . "/studies/save/" . $this->core->item; ?>">
+	<input type="hidden" name="item" value="<?php echo $item; ?>" />
+		<select name="selected[]" multiple="multiple" size="10" style="width: 230px">
 			<?php echo $selectedprogrammes;  ?> 
 		</select><br>
 		<input type="submit" class="submit" name="submit" id="submit" value="Remove Selected" style="width: 130px" />
@@ -201,9 +166,9 @@ echo '>6 Years</option>';
 	</td> 
 	
 	<td  width="100">
-	<form id="nselected" name="nselectedfr" method="post" action="<? echo $this->core->conf['conf']['path'] . "/studies/save/" . $this->core->item; ?>">
-	<input type="hidden" name="item" value="<? echo $item; ?>" />
-	<select name="nselected[]" multiple="multiple" size="10" style="width: 130px">';
+	<form id="nselected" name="nselectedfr" method="post" action="<?php echo $this->core->conf['conf']['path'] . "/studies/save/" . $this->core->item; ?>">
+	<input type="hidden" name="item" value="<?php echo $item; ?>" />
+	<select name="nselected[]" multiple="multiple" size="10" style="width: 230px">';
 		<?php echo $notselectedprogrammes;  ?> 
 	</select> <br>
 	<input type="submit" class="submit" name="submit" id="submit" value="Add Selected" style="width: 130px" /></form>
@@ -213,3 +178,42 @@ echo '>6 Years</option>';
 
 	</table>
 	</p> 
+
+
+
+
+<br /><br /> <p class="title">Manage fee packages assigned to study</p><p>Please select the required fee packages to be paid</p>
+
+
+	 <table width="700" border="0" cellpadding="5" cellspacing="0">
+              <tr>
+                <td width="205" height="28" bgcolor="#EEEEEE"><strong>Information</strong></td>
+                <td  width="230" bgcolor="#EEEEEE"><strong>Currently selected</strong></td>
+                <td  width="230" bgcolor="#EEEEEE">Currently not selected</td>
+              </tr>
+ 	<tr >
+	<td>Select which fee packages should be paid</td>
+	<td width="100"> 
+	<form id="feepackagesselected" name="feepackagesselected" method="post" action="<?php echo $this->core->conf['conf']['path'] . "/studies/save/" . $this->core->item; ?>">
+	<input type="hidden" name="item" value="<?php echo $item; ?>" />
+		<select name="selectedf[]" multiple="multiple" size="10" style="width: 230px">
+			<?php echo $selectedfeepackages;  ?> 
+		</select><br>
+		<input type="submit" class="submit" name="submit" id="submit" value="Remove Selected" style="width: 130px" />
+	</form>
+	</td> 
+	
+	<td  width="100">
+	<form id="feepackagesnselected" name="feepackagesnselected" method="post" action="<?php echo $this->core->conf['conf']['path'] . "/studies/save/" . $this->core->item; ?>">
+	<input type="hidden" name="item" value="<?php echo $item; ?>" />
+	<select name="nselectedf[]" multiple="multiple" size="10" style="width: 230px">';
+		<?php echo $notselectedfeepackages;  ?> 
+	</select> <br>
+	<input type="submit" class="submit" name="submit" id="submit" value="Add Selected" style="width: 130px" /></form>
+	</td>
+	<td></td>
+	</tr>
+
+	</table>
+	</p> 
+

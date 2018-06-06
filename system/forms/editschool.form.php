@@ -1,4 +1,4 @@
-<form id="editschool" name="editschool" method="post" action="<? echo $this->core->conf['conf']['path'] . "/schools/save/" . $this->core->item; ?>">
+<form id="editschool" name="editschool" method="post" action="<?php echo $this->core->conf['conf']['path'] . "/schools/save/" . $this->core->item; ?>">
 	<p>Please enter the following information</p>
         <table 	cellspacing="0" >
           <tr>
@@ -11,21 +11,21 @@
               <tr>
                 <td><strong>School name </strong></td>
                 <td>
-                  <input type="text" name="name" value="<? echo $fetch[3]; ?>" /></td>
+                  <input type="text" name="name" value="<?php echo $fetch[3]; ?>" /></td>
                 <td>Name of school</td>
               </tr>
               <tr>
                 <td><strong>Dean/Rector of school</strong></td>
                 <td>
                   <select name="dean" id="dean">
-					<? echo $dean; ?>
+					<?php echo $dean; ?>
                   </select></td>
                 <td>Functional head of school</td>
               </tr>
               <tr>
                 <td><strong>Optional description</strong></td>
                 <td>
-			<textarea rows="4" cols="37" name="description"><? echo $fetch[4]; ?></textarea>
+			<textarea rows="4" cols="37" name="description"><?php echo $fetch[4]; ?></textarea>
 		  </td>
                 <td></td>
               </tr>

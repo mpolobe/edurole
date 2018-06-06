@@ -1,7 +1,21 @@
-<div class="formElement">
-	<h2><strong>Personal Information</strong></h2>
+<div id="studentheader" class="studentname"><?php $count=1; echo $count; ?> - Student details</div>
+
+<script>
+$( "#studentheader" ).click(function() {
+$( ".studentdetails" ).slideToggle( "slow" );
+$( ".results" ).slideUp( "slow" );
+$( ".educationalrecords" ).slideUp( "slow" );
+$( ".emergencycontacts" ).slideUp( "slow" );
+$( ".programdetails" ).slideUp( "slow" );
+$( ".submitdetails" ).slideUp( "slow" );
+});
+</script>
+
+<?php $countsub = 1; ?>
+
+<div class="studentdetails formElement" style="display: none; margin-bottom: 20px;">
 	<p>In this section you will provide basic information needed for your enrolment.</p>
-	
+
 	<table width="768" border="0" cellpadding="5" cellspacing="0">
 	<tr>
 		<td width="205" height="28" bgcolor="#EEEEEE"><strong>Information</strong></td>
@@ -9,9 +23,9 @@
 		<td bgcolor="#EEEEEE"><strong>Description</strong></td>
 	</tr>
 	<?php
-		if($existing==TRUE){
-			echo'<tr>
-			<td><strong>Student number</strong></td>
+		if($existing=="yes"){
+			echo'<tr> 
+			<td><strong>'.$count.'.'.$countsub.' - Student number</strong></td>
 			<td>
 			<input type="text" name="studentno" id="studentno"/>
 			</td>
@@ -20,9 +34,15 @@
 		}
 	?>
 	<tr>
-		<td><strong>National ID number</strong></td>
+		<td><strong><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?> National Registration Number</strong></td>
 		<td>
-			<input type="text" name="studentid" id="username"/>
+			<?php
+				if($existing=="yes"){
+					echo'<input type="text" name="studentid" id="username"/>'; 
+				}else{
+					echo'<input type="text" name="studentid" id="nrc"/>';
+				}
+			?>
 		</td>
 		<td>
 			<div id="status">
@@ -31,25 +51,25 @@
 		</td>
 	</tr>
 	<tr>
-		<td><strong>Surname </strong></td>
+		<td><strong><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?> Surname </strong></td>
 		<td>
 			<input type="text" name="surname"/></td>
 		<td>Your family name</td>
 	</tr>
 	<tr>
-		<td height="19"><strong>First Name</strong></td>
+		<td height="19"><strong><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?> First Name</strong></td>
 		<td>
 			<input type="text" name="firstname"/></td>
 		<td>Your given name</td>
 	</tr>
 	<tr>
-		<td><strong>Middle name</strong></td>
+		<td><strong><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?> Middle name</strong></td>
 		<td>
 			<input type="text" name="middlename"/></td>
 		<td>Optional</td>
 	</tr>
 	<tr>
-		<td><strong>Sex (Gender)</strong></td>
+		<td><strong><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?> Sex (Gender)</strong></td>
 		<td>
 			<select name="sex" id="gender">
 				<option value="Male">Male</option>
@@ -59,7 +79,7 @@
 		<td>&nbsp;</td>
 	</tr>
 	<tr>
-		<td><strong>Date of Birth</strong></td>
+		<td><strong><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?> Date of Birth</strong></td>
 		<td>
 			<div style="float:left;"><select name="day" id="day">
 					<option selected> Day</option>
@@ -110,8 +130,18 @@
 					<option value="11">November</option>
 					<option value="12">December</option>
 				</select></div>
-			<div style="float:left;"><select name="year" id="year">
+			<div style="float:left;">
+				<select name="year" id="year">
 					<option> Year</option>
+					<option value="2018">2018</option>
+					<option value="2017">2017</option>
+					<option value="2017">2017</option>
+					<option value="2016">2016</option>
+					<option value="2015">2015</option>
+					<option value="2014">2014</option>
+					<option value="2013">2013</option>
+					<option value="2012">2012</option>
+					<option value="2011">2011</option>
 					<option value="2010">2010</option>
 					<option value="2009">2009</option>
 					<option value="2008">2008</option>
@@ -223,15 +253,17 @@
 					<option value="1902">1902</option>
 					<option value="1901">1901</option>
 					<option value="1900">1900</option>
-				</select></div>
+				</select>
+			</div>
 		</td>
 
 		<td></td>
 	</tr>
 	<tr>
-		<td><strong>Nationality</strong></td>
+		<td><strong><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?> Nationality</strong></td>
 		<td>
 			<select name="nationality" id="nationality">
+				<option value="zambian" selected="selected">Zambian</option>
 				<option value="Other">Other</option>
 				<option value="afghan">Afghan</option>
 				<option value="albanian">Albanian</option>
@@ -429,27 +461,42 @@
 		<td>&nbsp;</td>
 	</tr>
 	<tr>
-		<td><strong>Streetname and number</strong></td>
+		<td><strong><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?> Streetname and number</strong></td>
 		<td>
-			<input type="text" name="streetname" id="textfield77"/></td>
-		<td>For example: Jambo drive 115</td>
+			<input type="text" name="streetname" id="streetname"/></td>
+		<td>For example: Munkoyo Street 1583</td>
 	</tr>
 	<tr>
-		<td><strong>P.O Box</strong></td>
+		<td><strong><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?> P.O Box</strong></td>
 		<td>
-			<input type="text" name="postalcode" id="textfield78"/></td>
-		<td>For example: P.O Box 2169</td>
+			<input type="text" name="postalcode" id="postalcode"/></td>
+		<td>For example: 804040</td>
 	</tr>
 	<tr>
-		<td><strong>City/Town</strong></td>
+		<td><strong><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?> City/Town</strong></td>
 		<td>
-			<input type="text" name="town" id="textfield79"/></td>
+			<input type="text" name="town" id="town"/></td>
 		<td></td>
 	</tr>
 	<tr>
-	<td><strong>Country</strong></td>
+		<td><strong><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?> Phone Number</strong></td>
+		<td>
+			<input type="text" name="celphone" id="phone"/>
+		</td>
+		<td>For example: 0978168860</td>
+	</tr>
+	<tr>
+		<td><strong><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?> Email Address</strong></td>
+		<td>
+			<input type="text" name="email" id="email"/>
+		</td>
+		<td>Optional (Yahoo, Hotmail, Gmail, etc)</td>
+	</tr>
+	<tr>
+	<td><strong><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?> Country</strong></td>
 	<td>
 	<select name="country" id="country">
+	<option value="Zambia">Zambia</option>
 	<option value="USA">USA</option>
 	<option value="UK">UK</option>
 	<option value="Albania">Albania</option>
@@ -647,26 +694,20 @@
 	<option value="Wales">Wales</option>
 	<option value="Yemen">Yemen</option>
 	<option value="Zaire">Zaire</option>
-	<option value="Zambia" selected="selected">Zambia</option>
+	<option value="Zambia">Zambia</option>
 	<option value="Zimbabwe">Zimbabwe</option>
 	</select></td>
 	<td>&nbsp;</td>
 	</tr>
 	<tr>
-		<td><strong>Phone Number</strong></td>
-		<td>
-			<input type="text" name="celphone" id="phone"/></td>
-		<td>&nbsp;</td>
-	</tr>
-	<tr>
-		<td><strong>Dissability</strong></td>
+		<td><strong><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?> Disability</strong></td>
 		<td>
 			<div style="float:left;"><select name="dissability" id="dissability">
 					<option value="No" selected="selected">No</option>
 					<option value="Yes">Yes</option>
 				</select></div>
 			<div style="float:left;"><select name="dissabilitytype" id="dissabilitytype">
-					<option value="" selected="selected">No Dissability</option>
+					<option value="" selected="selected">No Disability</option>
 					<option value="blind/part.sight">Blind or partially sighted</option>
 					<option value="deaf">Deaf</option>
 					<option value="speech">Speech impairment</option>
@@ -680,13 +721,7 @@
 		<td></td>
 	</tr>
 	<tr>
-		<td><strong>Private Email Address</strong></td>
-		<td>
-			<input type="text" name="email" id="email"/></td>
-		<td>Optional (Yahoo, Hotmail, Gmail, etc)</td>
-	</tr>
-	<tr>
-		<td><strong>Marital Status</strong></td>
+		<td><strong><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?> Marital Status</strong></td>
 		<td>
 			<select name="mstatus" id="mstatus">
 				<option value="Married">Married</option>
@@ -697,52 +732,421 @@
 		<td>&nbsp;</td>
 	</tr>
 	<tr>
-		<td><strong>Study Type</strong></td>
+		<td><strong><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?> Study Delivery Mode</strong></td>
 		<td>
 			<select name="studytype" id="studytype">
 				<option value="Fulltime" selected="selected">Fulltime</option>
 				<option value="Partime">Partime</option>
 				<option value="Distance">Distance</option>
-			</select></td>
+				<option value="Block">Block Release</option>
+			</select>
+		</td>
 		<td>&nbsp;</td>
 	</tr>
+
+<?php
+if($existing=="yes"){
+	 $countsub++;
+
+	echo'<input name="yearofstudy" value="1" type="hidden">';
+	/*echo'<tr>
+		<td><strong>'. $count .'.'. $countsub . ' -  Select your year of study</strong></td>
+		<td>
+			
+			<select name="yearofstudy" id="yearofstudy">
+				<option value="" selected="selected">select</option>
+				<option value="1">1st Year</option>
+				<option value="2">2nd Year</option>
+				<option value="3">3rd Year</option>
+				<option value="4">4th Year</option>
+			</select>
+		</td>
+		<td>&nbsp;</td>
+	</tr>';
+*/
+
+
+
+	echo'<tr>
+		<td><strong>'. $count .'.'. $countsub . ' Please select the examination center location from which you will be taking your examination</strong></td>
+		<td>
+			<select name="examcenter" id="examcenter">
+				<option value="Chipata">Chipata</option>
+				<option value="Choma">Choma</option>
+				<option value="Isoka">Isoka</option>
+				<option value="Kabwe" selected="selected">Kabwe</option>
+				<option value="Kasama">Kasama</option>
+				<option value="Kitwe">Kitwe </option>
+				<option value="Lusaka">Lusaka</option>
+				<option value="Mansa">Mansa</option>
+				<option value="Mazabuka">Mazabuka</option>
+				<option value="Mongu">Mongu</option>
+				<option value="Ndola">Ndola</option>
+				<option value="Solwezi">Solwezi</option>
+			</select>
+		</td>
+		<td>&nbsp;</td>
+	</tr>';
+}
+?>
 	<tr>
-		<td><strong>Payment Type</strong></td>
+		<td><strong><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?>  Student Lodging</strong></td>
 		<td>
 			<select name="payment" id="payment">
-				<? echo $paymenttypes; ?>
+				<?php echo $paymenttypes; ?>
 			</select></td>
 		<td>&nbsp;</td>
 	</tr>
+
+
+	</table> 
+</div>
+
+<?php
+if($this->core->cleanGet['existing'] != "yes"){
+	$count++; 
+	echo'<div id="certheader" class="studentname">'. $count .' - School certificate examination results</div>
+
+	<script>
+	$( "#certheader" ).click(function() {
+	$( ".results" ).slideToggle( "slow" );
+	$( ".studentdetails" ).slideUp( "slow" );
+	$( ".educationalrecords" ).slideUp( "slow" );
+	$( ".emergencycontacts" ).slideUp( "slow" );
+	$( ".programdetails" ).slideUp( "slow" );
+	$( ".submitdetails" ).slideUp( "slow" );
+	});
+	</script>
+
+	<div class="results formElement" style="display: none;  margin-bottom: 20px;">
+	<p>In this enter the grades that you have scored in your secondary education.
+	These grades will determine if you are elligable to enrol for a program.</p>
+
+
+	<p>
+		<strong> Examination number: </strong>
+		<input type="text" name="examinationid" id="examinationid"/>
+	
+		<strong> Year of completion: </strong>
+						<select name="year" id="year">
+					<option> Year</option>
+					<option value="2018">2018</option>
+					<option value="2017">2017</option>
+					<option value="2017">2017</option>
+					<option value="2016">2016</option>
+					<option value="2015">2015</option>
+					<option value="2014">2014</option>
+					<option value="2013">2013</option>
+					<option value="2012">2012</option>
+					<option value="2011">2011</option>
+					<option value="2010">2010</option>
+					<option value="2009">2009</option>
+					<option value="2008">2008</option>
+					<option value="2007">2007</option>
+					<option value="2006">2006</option>
+					<option value="2005">2005</option>
+					<option value="2004">2004</option>
+					<option value="2003">2003</option>
+					<option value="2002">2002</option>
+					<option value="2001">2001</option>
+					<option value="2000">2000</option>
+					<option value="1999">1999</option>
+					<option value="1998">1998</option>
+					<option value="1997">1997</option>
+					<option value="1996">1996</option>
+					<option value="1995">1995</option>
+					<option value="1994">1994</option>
+					<option value="1993">1993</option>
+					<option value="1992">1992</option>
+					<option value="1991">1991</option>
+					<option value="1990">1990</option>
+					<option value="1989">1989</option>
+					<option value="1988">1988</option>
+					<option value="1987">1987</option>
+					<option value="1986">1986</option>
+					<option value="1985">1985</option>
+					<option value="1984">1984</option>
+					<option value="1983">1983</option>
+					<option value="1982">1982</option>
+					<option value="1981">1981</option>
+					<option value="1980">1980</option>
+					<option value="1979">1979</option>
+					<option value="1978">1978</option>
+					<option value="1977">1977</option>
+					<option value="1976">1976</option>
+					<option value="1975">1975</option>
+					<option value="1974">1974</option>
+					<option value="1973">1973</option>
+					<option value="1972">1972</option>
+					<option value="1971">1971</option>
+					<option value="1970">1970</option>
+					<option value="1969">1969</option>
+					<option value="1968">1968</option>
+					<option value="1967">1967</option>
+					<option value="1966">1966</option>
+					<option value="1965">1965</option>
+					<option value="1964">1964</option>
+					<option value="1963">1963</option>
+					<option value="1962">1962</option>
+					<option value="1961">1961</option>
+					<option value="1960">1960</option>
+					<option value="1959">1959</option>
+					<option value="1958">1958</option>
+					<option value="1957">1957</option>
+					<option value="1956">1956</option>
+					<option value="1955">1955</option>
+					<option value="1954">1954</option>
+					<option value="1953">1953</option>
+					<option value="1952">1952</option>
+					<option value="1951">1951</option>
+					<option value="1950">1950</option>
+					<option value="1949">1949</option>
+					<option value="1948">1948</option>
+					<option value="1947">1947</option>
+					<option value="1946">1946</option>
+					<option value="1945">1945</option>
+					<option value="1944">1944</option>
+					<option value="1943">1943</option>
+					<option value="1942">1942</option>
+					<option value="1941">1941</option>
+					<option value="1940">1940</option>
+					<option value="1939">1939</option>
+					<option value="1938">1938</option>
+					<option value="1937">1937</option>
+					<option value="1936">1936</option>
+					<option value="1935">1935</option>
+					<option value="1934">1934</option>
+					<option value="1933">1933</option>
+					<option value="1932">1932</option>
+					<option value="1931">1931</option>
+					<option value="1930">1930</option>
+					<option value="1929">1929</option>
+					<option value="1928">1928</option>
+					<option value="1927">1927</option>
+					<option value="1926">1926</option>
+					<option value="1925">1925</option>
+					<option value="1924">1924</option>
+					<option value="1923">1923</option>
+					<option value="1922">1922</option>
+					<option value="1921">1921</option>
+					<option value="1920">1920</option>
+					<option value="1919">1919</option>
+					<option value="1918">1918</option>
+					<option value="1917">1917</option>
+					<option value="1916">1916</option>
+					<option value="1915">1915</option>
+					<option value="1914">1914</option>
+					<option value="1913">1913</option>
+					<option value="1912">1912</option>
+					<option value="1911">1911</option>
+					<option value="1910">1910</option>
+					<option value="1909">1909</option>
+					<option value="1908">1908</option>
+					<option value="1907">1907</option>
+					<option value="1906">1906</option>
+					<option value="1905">1905</option>
+					<option value="1904">1904</option>
+					<option value="1903">1903</option>
+					<option value="1902">1902</option>
+					<option value="1901">1901</option>
+					<option value="1900">1900</option>
+				</select>
+	</p>
+
+
+	<table class="table table-bordered table-striped" cellspacing="0" cellpadding="5" >
+	<thead>
+		<tr>
+		<th><b>Grade code</b></th>
+		<th>Grade</th>
+		<th><b>Grade code</b></th>
+		<th>Grade</th>
+		<th><b>Grade code</b></th>
+		<th>Grade</th>
+		</tr>
+	</thead>
+	<tbody>';
+	
+		$sql = "SELECT * FROM `study-requirement`, `subjects` WHERE StudyID = $item AND `study-requirement`.SubjectID = `subjects`.ID";
+		$run = $this->core->database->doSelectQuery($sql);
+		$i=0;
+		while ($fetch = $run->fetch_row()) {
+			if($i == 0){
+				echo'<tr>';
+				$i++;
+			}else if($i==4){
+				echo'</tr><tr>';
+				$i=1;
+			}
+
+			echo'<td>'.$fetch[5].'</td><td><input name="grade['.$fetch[2].']" type="text" class="grade"></td>';
+			$i++;
+		}
+
+		if($i ==0){
+			$sql = "SELECT * FROM `subjects`";
+
+			$run = $this->core->database->doSelectQuery($sql);
+			while ($fetch = $run->fetch_row()) {
+				if($i == 0){
+					echo'<tr>';
+					$i++;
+				}else if($i==4){
+					echo'</tr><tr>';
+					$i=1;
+				}
+
+				echo'<td>'.$fetch[1].'</td><td><input name="grade['.$fetch[0].']" type="text" class="grade"></td>';
+				$i++;
+			}
+		}
+	
+	echo'</tbody>
 	</table>
+	</div>';
+
+$count++;
+
+echo'<div id="educationrecordheader" class="studentname"> '. $count.' - Education background</div>';
+
+echo'<script>
+$( "#educationrecordheader" ).click(function() {
+$( ".educationalrecords" ).slideToggle( "slow" );
+$( ".studentdetails" ).slideUp( "slow" );
+$( ".results" ).slideUp( "slow" );
+$( ".emergencycontacts" ).slideUp( "slow" );
+$( ".programdetails" ).slideUp( "slow" );
+$( ".submitdetails" ).slideUp( "slow" );
+});
+</script>';
+
+ $countsub = 0; 
+
+echo'<div class="educationalrecords formElement" style="display: none;  margin-bottom: 20px;">
+<p>In this section you will need to provide records of your previously followed education (secondary education and up), you can use the Add button below this section to add more then one record, please enter as many records as needed.</p>
+
+	<div class="educationalrecord">
+		<input type="hidden" name="education[0][id]" data-pattern-name="education[++][id]" data-pattern-id="education_++_index"/>
+
+		<table width="768" height="94" border="0" cellpadding="5" cellspacing="0">
+			<tr>
+				<td width="205" height="28" bgcolor="#EEEEEE"><strong>Information</strong></td>
+				<td width="200" bgcolor="#EEEEEE"><strong>Input fields</strong></td>
+				<td bgcolor="#EEEEEE">
+					<div class="deleteeducationalrecord">
+						<b><a href="#">REMOVE RECORD</a></b>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td height="19"><strong>'.$countsub++.' '.$count .'.'. $countsub . ' -  Type of certificate</strong></td>
+				<td>
+					<select name="education[0][type]" id="education_0_type" data-pattern-name="education[++][type]" data-pattern-id="education_++_type">
+						<option value="Secondary certificate">Secondary school certificate</option>
+						<option value="Certificate">Certificate</option>
+						<option value="Advanced Certificate">Advanced Certificate</option>
+						<option value="Diploma">Diploma</option>
+						<option value="Advanced Diploma">Advanced Diploma</option>	
+						<option value="Degree">Degree</option>
+						<option value="Masters Degree">Masters Degree</option>
+						<option value="Post Doctorate">Post Doctorate</option>
+						<option value="Professional certification">Professional certification</option>
+					</select></td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td height="22"><strong>'. $countsub++ .'  '. $count .'.'. $countsub . ' - Name of institution</strong></td>
+				<td>
+					<input type="text" name="education[0][institution]" id="education_0_institution" data-pattern-name="education[++][institution]" data-pattern-id="education_++_institution"/></td>
+				<td>For example: Evelyn Hone</td>
+			</tr>
+			<tr>
+				<td height="22"><strong>'. $countsub++ .'  '. $count .'.'. $countsub . ' -  Name of certification</strong></td>
+				<td>
+					<input type="text" name="education[0][name]" id="education_0_name" data-pattern-name="education[++][name]" data-pattern-id="education_++_name"/></td>
+				<td>For example: Grade 12, or Diploma in Business Studies</td>
+			</tr>
+			<tr>
+				<td height="22"><strong> Scan of document</strong></td>
+				<td>
+					<input type="file" name="education[0][upload]" id="education_0_upload" data-pattern-name="education[++][upload]" data-pattern-id="education_++_upload"/></td>
+				<td>Upload the certificate, degree or diploma.</td>
+			</tr>
+		</table>
+
+		<div class="addeducationalrecord" style="margin-left: 10px; padding: 20px;">
+			<a href="#"> <img src="'. $this->core->fullTemplatePath .'/images/plus.png" width="16" height="16"/> <b> Add another education record </b></a>
+		</div>
+	</div>
+
 </div>
 
 
-<div class="emergencycontacts formElement">
-<h2><strong>Emergency contact information</strong></h2>
+<script type="text/javascript">
+ $(\'.educationalrecords\').repeater({
+	btnAddClass: \'addeducationalrecord\',
+	btnRemoveClass: \'deleteeducationalrecord\',
+	groupClass: \'educationalrecord\',
+	minItems: 1,
+	maxItems: 0,
+	startingIndex: 0,
+	reindexOnDelete: true,
+	repeatMode: \'append\',
+	animation: null,
+	animationSpeed: 600,
+	animationEasing: \'swing\',
+	clearValues: true
+});
+</script>
+';
+
+}
+?>
+
+
+
+
+
+<div id="emergencyheader" class="studentname"><?php $count++; echo $count; ?> - Next of Kin information</div>
+
+<script>
+$( "#emergencyheader" ).click(function() {
+$( ".educationalrecords" ).slideUp( "slow" );
+$( ".studentdetails" ).slideUp( "slow" );
+$( ".results" ).slideUp( "slow" );
+$( ".emergencycontacts" ).slideToggle( "slow" );
+$( ".programdetails" ).slideUp( "slow" );
+$( ".submitdetails" ).slideUp( "slow" );
+});
+</script>
+
+<?php $countsub = 0; ?>
+
+
+<div class="emergencycontacts formElement" style="display: none;  margin-bottom: 20px;">
 <p>In this section you can provide contact information that should be used in case of an emergency, in general this should be a family member or legal guardian. Use the add button to add as many emergency contacts as you wish.</p>
-	
+
 	<div class="emergencycontact">
 		<input type="hidden" name="econtact[0][id]" data-pattern-name="econtact[++][id]" data-pattern-id="econtact_++_index"/>
-		
+
 		<table width="768" height="135" border="0" cellpadding="5" cellspacing="0">
 			<tr>
 				<td width="205" height="28" bgcolor="#EEEEEE"><strong>Information</strong></td>
 				<td width="200" bgcolor="#EEEEEE"><strong>Input fields</strong></td>
 				<td bgcolor="#EEEEEE">
 					<div class="deleteemergencycontact">
-						<a href="#">Remove section</a>
+						<a href="#"><b>REMOVE RECORD</b></a>
 					</div>
 				</td>
 			</tr>
 			<tr>
-				<td height="19"><strong>Full Name</strong></td>
+				<td height="19"><strong><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?> Full Name</strong></td>
 				<td>
 					<input type="text" name="econtact[0][fullname]" id="econtact_0_fullname" data-pattern-name="econtact[++][fullname]" data-pattern-id="contact_++_fullname"/></td>
 				<td>&nbsp;</td>
 			</tr>
 			<tr>
-				<td height="19"><strong>Relationship</strong></td>
+				<td height="19"><strong><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?> Relationship</strong></td>
 				<td>
 					<select name="econtact[0][relationship]" id="econtact_0_relationship" data-pattern-name="econtact[++][relationship]" data-pattern-id="contact_++_relationship">
 						<option value="Spouse" selected="selected">Spouse</option>
@@ -761,37 +1165,37 @@
 				<td>&nbsp;</td>
 			</tr>
 			<tr>
-				<td height="22"><strong>Phone Number</strong></td>
+				<td height="22"><strong><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?> Phone Number</strong></td>
 				<td>
 					<input type="text" name="econtact[0][phonenumber]" id="econtact_0_phonenumber" data-pattern-name="econtact[++][phonenumber]" data-pattern-id="contact_++_phonenumber"/></td>
 				<td>&nbsp;</td>
 			</tr>
 			<tr>
-				<td height="22"><strong>Street</strong></td>
+				<td height="22"><strong><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?> Street</strong></td>
 				<td>
 					<input type="text" name="econtact[0][street]" id="econtact_0_street" data-pattern-name="econtact[++][street]" data-pattern-id="contact_++_street"/></td>
 				<td>&nbsp;</td>
 			</tr>
 			<tr>
-				<td height="22"><strong>Town</strong></td>
+				<td height="22"><strong><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?> Town</strong></td>
 				<td><input type="text" name="econtact[0][town]" id="econtact_0_town" data-pattern-name="econtact[++][town]" data-pattern-id="contact_++_town"/></td>
 				<td>&nbsp;</td>
 			</tr>
 			<tr>
-				<td height="22"><strong>Postalcode</strong></td>
+				<td height="22"><strong><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?> Postalcode</strong></td>
 				<td><input type="text" name="econtact[0][postalcode]" id="econtact_0_postalcode" data-pattern-name="econtact[++][postalcode]" data-pattern-id="contact_++_postalcode"/></td>
 				<td>&nbsp;</td>
 			</tr>
 		</table>
+
+		<div class="addemergencycontact" style="margin-left: 10px; padding: 20px;">
+			<a href="#"> <img src="<?php echo $this->core->fullTemplatePath; ?>/images/plus.png" width="16" height="16"/> <b>Add another emergency contact</b></a>
+		</div>
 	</div>
-	
-	<div class="addemergencycontact">
-		<a href="#"> <img src="<? echo $this->core->fullTemplatePath; ?>/images/plus.png" width="16" height="16"/> Add another emergency contact </a>
-	</div>
+
 
 </div>
 
-	
 <script type="text/javascript">
  $('.emergencycontacts').repeater({
 	btnAddClass: 'addemergencycontact',
@@ -810,87 +1214,25 @@
 </script>
 
 
-<div class="educationalrecords formElement">
-<h2><strong>Educational records</strong></h2>
-<p>In this section you will need to provide records of your previously followed education (secondary education and up), you can use the Add button below this section to add more then one record, please enter as many records as needed.</p>
-	
-	<div class="educationalrecord">
-		<input type="hidden" name="education[0][id]" data-pattern-name="education[++][id]" data-pattern-id="education_++_index"/>
 
-		<table width="768" height="94" border="0" cellpadding="5" cellspacing="0">
-			<tr>
-				<td width="205" height="28" bgcolor="#EEEEEE"><strong>Information</strong></td>
-				<td width="200" bgcolor="#EEEEEE"><strong>Input fields</strong></td>
-				<td bgcolor="#EEEEEE">
-					<div class="deleteeducationalrecord">
-						<a href="#">Remove section</a>
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td height="19"><strong>Type of certificate</strong></td>
-				<td>
-					<select name="education[0][type]" id="education_0_type" data-pattern-name="education[++][type]" data-pattern-id="education_++_type">
-						<option value="Diploma">Diploma</option>
-						<option value="Secondary certificate">Secondary certificate</option>
-						<option value="Primary certificate">Primary certificate</option>
-						<option value="Pre-school">Pre-school</option>
-						<option value="Degree">Degree</option>
-						<option value="Other">Other</option>
-					</select></td>
-				<td>&nbsp;</td>
-			</tr>
-			<tr>
-				<td height="22"><strong>Name of institution</strong></td>
-				<td>
-					<input type="text" name="education[0][institution]" id="education_0_institution" data-pattern-name="education[++][institution]" data-pattern-id="education_++_institution"/></td>
-				<td>&nbsp;</td>
-			</tr>
-			<tr>
-				<td height="22"><strong>Name of certification</strong></td>
-				<td>
-					<input type="text" name="education[0][name]" id="education_0_name" data-pattern-name="education[++][name]" data-pattern-id="education_++_name"/></td>
-				<td>&nbsp;</td>
-			</tr>
-			<tr>
-				<td height="22"><strong>Scan of document</strong></td>
-				<td>
-					<input type="file" name="education[0][upload]" id="education_0_upload" data-pattern-name="education[++][upload]" data-pattern-id="education_++_upload"/></td>
-				<td>It is optional to upload the certificate, degree or diploma.</td>
-			</tr>
-		</table>
-	</div>
-	
-	<div class="addeducationalrecord">
-		<a href="#"> <img src="<? echo $this->core->fullTemplatePath; ?>/images/plus.png" width="16" height="16"/> Add another education record </a>
-	</div>
+<div id="programheader" class="studentname"><?php $count++; echo $count; ?> - Program registration</div>
 
-</div>
-	
-<script type="text/javascript">
- $('.educationalrecords').repeater({
-	btnAddClass: 'addeducationalrecord',
-	btnRemoveClass: 'deleteeducationalrecord',
-	groupClass: 'educationalrecord',
-	minItems: 1,
-	maxItems: 0,
-	startingIndex: 0,
-	reindexOnDelete: true,
-	repeatMode: 'append',
-	animation: null,
-	animationSpeed: 600,
-	animationEasing: 'swing',
-	clearValues: true
+<script>
+$( "#programheader" ).click(function() {
+$( ".educationalrecords" ).slideUp( "slow" );
+$( ".studentdetails" ).slideUp( "slow" );
+$( ".results" ).slideUp( "slow" );
+$( ".emergencycontacts" ).slideUp( "slow" );
+$( ".programdetails" ).slideToggle( "slow" );
+$( ".submitdetails" ).slideUp( "slow" );
 });
 </script>
 
+<?php $countsub = 0; ?>
 
-
-<div class="formElement">
-	
-	<h2>Program enrollment</h2>
+<div class="programdetails formElement" style="display: none;  margin-bottom: 20px;">
 	<p>This is the final part of your admission request, here you will need to select the program you wish to minor and major in.</p>
-	
+
 	<table width="768" height="94" border="0" cellpadding="5" cellspacing="0">
 		<tr>
 			<td width="205" height="28" bgcolor="#EEEEEE"><strong>Information</strong></td>
@@ -898,7 +1240,7 @@
 			<td bgcolor="#EEEEEE"></td>
 		</tr>
 		<tr>
-			<td height="22"><b>Major:</b><br></td>
+			<td height="22"><b><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?> Major:</b><br></td>
 			<td>
 				<select name="major" id="mda">
 					<?php echo $major; ?>
@@ -909,7 +1251,7 @@
 
 
 		<tr>
-			<td height="22"><b>Minor:</b><br></td>
+			<td height="22"><b><?php $countsub++; echo $count .'.'. $countsub . ' - '; ?> Minor:</b><br></td>
 			<td>
 				<select name="minor" id="mdb">
 					<?php echo $minor; ?>
@@ -920,14 +1262,42 @@
 		<input type="hidden" name="dateofenrollment" value="<?php echo date("Y-m-d"); ?>"></td>
 
 	</table>
-	
-</div>
+</div> 
+
+<?php
+$count++;
+
+if($this->core->cleanGet['existing'] == "yes"){
+	echo'<div id="submitheader" class="studentname">'. $count .' - Submit updated information</div>';
+}else{
+	echo'<div id="submitheader" class="studentname">'. $count .' - Submit your application</div>';
+}
+?>
 
 
-<div class="formElement">
-	<h2>Submit your application</h2>
-	<p>Click on the button to complete your request for admission. </p>
-	<input type="submit" class="register" name="submit-registrar" id="submit-registrar" value="Submit To Registrar"/>
+
+<script>
+$( "#submitheader" ).click(function() {
+$( ".educationalrecords" ).slideUp( "slow" );
+$( ".studentdetails" ).slideUp( "slow" );
+$( ".results" ).slideUp( "slow" );
+$( ".emergencycontacts" ).slideUp( "slow" );
+$( ".programdetails" ).slideUp( "slow" );
+$( ".submitdetails" ).slideToggle( "slow" );
+});
+</script>
+
+<div class="submitdetails formElement" style="display: none; padding-left: 30px;  margin-bottom: 20px;">
+	<p><b>Click on the button to submit the form. </p>
+
+	<div class="error" id="laststatus"></div>
+	<?php
+	if($this->core->cleanGet['existing'] == "yes"){
+		echo'<input type="submit" class="register" name="submit-registrar" id="submit-registrar" value="UPDATE INFORMATION"/>';
+	}else{
+		echo'<input type="submit" class="register" name="submit-registrar" id="submit-registrar" value="SUBMIT APPLICATION"/>';
+	}
+	?>
 </div>
 
 </form>

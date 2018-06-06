@@ -39,6 +39,40 @@ class programmes {
 
 	}
 
+	public function changeProgrammes($item) {
+
+		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
+
+		$select = new optionBuilder($this->core);
+
+		$study = 		$select->showStudies(null);
+		$major = 		$select->showPrograms(null);
+		$minor = 		$select->showPrograms(null);
+		
+		
+		include $this->core->conf['conf']['formPath'] . "changeprogramme.form.php";
+		
+
+		$study = $this->core->cleanPost['study'];
+		$major = $this->core->cleanPost['major'];
+		$minor = $this->core->cleanPost['minor'];
+
+
+		if(isset($study) && isset($major) && isset($minor)){
+
+			$sql = "UPDATE `student-program-link` SET `Major` = '$major', `Minor` = '$minor' WHERE `StudentID` = '$item'";
+			$run = $this->core->database->doInsertQuery($sql);
+
+			$sql = "UPDATE `student-study-link` SET `StudyID` = '$study' WHERE `StudentID` = '$item'";
+			$run = $this->core->database->doInsertQuery($sql);
+
+			echo '<span class="successpopup">Information updated. Go <a href="' . $this->core->conf['conf']['path'] . '/information/show/'.$item.'">back to profile.</a></span>';
+
+		}
+
+
+	}
+
 	public function addProgrammes() {
 		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
 		
@@ -67,7 +101,7 @@ class programmes {
 
 		if (!empty($nselected)) {
 			foreach ($nselected as $nsel) {
-				$sql = "INSERT INTO `program-course-link` (`ID`, `ProgramID`, `CourseID`, `Manditory`, `Year`) VALUES (NULL, '$item', '$nsel', '', '');";
+				$sql = "INSERT INTO `program-course-link` (`ID`, `ProgramID`, `CourseID`, `Manditory`, `Year`) VALUES (NULL, '$item', '$nsel', '0', '1');";
 				$run = $this->core->database->doInsertQuery($sql);
 			}
 		} elseif (!empty($selected)) {
@@ -232,7 +266,7 @@ class programmes {
 
 			while ($fetchs = $run->fetch_assoc()) {
 
-				echo '<li><a href="' . $this->core->conf['conf']['path'] . 'courses/show/' . $fetchs['ID'] . '">' . $fetchs['Name'] . ' - ' . $fetchs['CourseDescription'] . '</a></li>';
+				echo '<li><a href="' . $this->core->conf['conf']['path'] . '/courses/show/' . $fetchs['ID'] . '">' . $fetchs['Name'] . ' - ' . $fetchs['CourseDescription'] . '</a></li>';
 				$i++;
 
 			}

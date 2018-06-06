@@ -24,7 +24,7 @@
                 <td><strong>Fee Manager</strong></td>
                 <td>
                   <select name="owner" id="owner">
-					<? echo $owner; ?>
+					<?php echo $owner; ?>
                   </select></td>
                 <td>Functional head of fee</td>
               </tr>
@@ -36,7 +36,7 @@
                 <td></td>
               </tr>
               <tr>
-                <td><strong>Ammount </strong></td>
+                <td><strong>Amount </strong></td>
                 <td>
                   <input type="text" name="amount" /></td>
                 <td>How much needs to be payed</td>

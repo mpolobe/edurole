@@ -18,50 +18,127 @@ class item {
 		$this->core = $core;
 	}
 
-	private function showNewsOverview() {
+	public function overviewItem($id, $title) {
+		$role = $this->core->role;
 
-		$sql = "SELECT * FROM `content` WHERE `ContentCat` = 'news'";
-		$run = $this->core->database->doInsertQuery($sql);
+		$sql = "SELECT * FROM `content` WHERE `ContentCat` = '$id' AND `Privileges` LIKE '%+$role+%' 
+			OR `ContentCat` = '$id' AND `Privileges` LIKE ''
+			ORDER BY PublishingDate DESC";
+		$run = $this->core->database->doSelectQuery($sql);
 
-		echo '<div class="newscontainers">	<h2>News and updates</h2> <p>';
+		echo '<div class="col-lg-12 padding20 panel panel-default loginpadding" style="padding-bottom: 15px;">';
 
+		if ($this->core->role > 104) {
+			echo '<div style="float: right;"><a href="' . $this->core->conf['conf']['path'] . '/item/add/'.$id.'">add</a></div>';
+		}
+
+		echo '<h2>';
+		echo $this->core->translate($title);
+		echo '</h2> <p>';
 		while ($row = $run->fetch_row()) {
-			echo ' <li> <b><a href="' . $this->core->conf['conf']['path'] . '/item/show/' . $row[0] . '">' . $row[1] . '</a></b></li>';
+
+			if($row[0] == 1){ continue; }
+
+			echo '<div style="border-bottom: 1px dotted #ccc; height: 20px;">
+				<div style="width: 85%; float:left;"> <b><a href="' . $this->core->conf['conf']['path'] . '/item/show/' . $row[0] . '">' . $row[1] . '</a></b></div>
+				<div style="width: 15%; float:left;">'. $row[6] .'</div>
+			</div>';
 		}
 
 		echo '</p></div>';
 	}
 
-        public function saveItem($item) {
+	public function deleteItem($item) {
+		$sql = 'DELETE FROM `content` WHERE `ContentID` = "' . $item . '"';
+		$run = $this->core->database->doInsertQuery($sql);
+
+		$this->core->redirect("home", "show", NULL);
+	}
+
+	public function saveItem($item) {
 		$id = $this->core->cleanPost['itemid'];
 		$name = $this->core->cleanPost['name'];
-		$content = $this->core->cleanPost['content'];
+		$roles = $this->core->cleanPost['roles'];
+		$content = $_POST['content'];
 
+		foreach($roles as $role){
+			$privileges .= "+$role+";
+		}
+
+		if (isset($_FILES["file"])) {
+
+			$file = $_FILES["file"];
+		
+			$home = getcwd();
+			$path = $this->core->conf['conf']["dataStorePath"] . 'uploads';
+
+	
+		
+			if (!is_dir($path)) {
+				mkdir($path, 0755, true);
+			}
+		
+			if ($_FILES["file"]["error"] > 0) {
+				echo "Error: " . $file["error"]["file"] . "<br>";
+			} else {
+		
+				$fname = $_FILES["file"]["name"];
+				$destination = $path."/".$fname;
+		
+				if (file_exists($destination)) {
+					$fname = rand(1,999) . '-' .$fname;
+					$destination = $path."/".$fname;
+				}
+
+				move_uploaded_file($_FILES["file"]["tmp_name"], $destination);
+				
+				if(file_exists($destination)){
+					echo'<div class="successpopup">File uploaded as '.$fname.'</div>';
+				}
+			}
+		}
+
+		foreach($links as $link){
+			$linked = $link . ',';
+		}
+		
+		$base = $this->core->conf['conf']['path'] . '/datastore/uploads/' . $fname;
+
+		
 		if(!empty($id)){
 	                $sql = "UPDATE `content` SET `Content` = '".$content."', `Name` = '".$name."' WHERE `ContentID` = '".$id."';";
 		}else{
-	                $sql = "INSERT INTO `content` (`ContentID`, `Name`, `Content`, `ContentCat`) VALUES (NULL, '".$name."', '".$content."', '".$this->core->item."');";
-		}		
-echo $sql;
-                $run = $this->core->database->doInsertQuery($sql);
+	                $sql = "INSERT INTO `content` (`ContentID`, `Name`, `Content`, `ContentCat`, `Files`, `PublishingDate`, `Privileges`) 
+				VALUES (NULL, '".$name."', '".$content."', '".$this->core->item."', '$base', NOW(),  '$privileges');";
+		}
+		
+              	$run = $this->core->database->doInsertQuery($sql);
 
-		$this->core->redirect($this->core->item, "manage", NULL);
+		$this->core->redirect("home", "show", NULL);
 	}
 
-	function showItem($id) {
+	function showItem($id, $width) {
+		if(!isset($width)){
+			$width = "12";
+		}
 
 		$sql = "SELECT * FROM `content` WHERE `ContentID` = $id";
 		$run = $this->core->database->doSelectQuery($sql);
 
-		echo '<div class="welcomecontainers">';
+		echo '<div class="col-lg-'.$width.' panel panel-default fixedheightpanel">';
 
 		if ($this->core->role == 1000) {
-			echo '<div style="float: right;"><a href="' . $this->core->conf['conf']['path'] . '/item/edit/' . $id . '">edit</a></div>';
+			echo '<div style="float: right;"><a href="' . $this->core->conf['conf']['path'] . '/item/edit/' . $id . '">edit</a> | <a href="' . $this->core->conf['conf']['path'] . '/item/delete/' . $id . '">delete</a></div>';
 		}
 
-		while ($row = $run->fetch_row()) {
-			echo ' <h2>' . $row[1] . '</h2>';
-			echo ' <p>' . $row[2] . '</p>';
+		while ($row = $run->fetch_assoc()) {
+			echo ' <h2>' . $row['Name'] . '</h2>';
+			echo ' <p>' . $row['Content'] . '</p>';
+
+			$files = $row['Files'];
+			if(!empty($files)){
+				echo'<hr><a href="'.$files.'" class="btn btn-info">DOWNLOAD ATTACHMENT</a>';
+			}
 		}
 
 		echo '</div>';
@@ -80,9 +157,12 @@ echo $sql;
 			</script>";
 		}
 
+
+
 		include $this->core->conf['conf']['classPath'] . "showoptions.inc.php";
 		$select = new optionBuilder($this->core);
 		$manager = $select->showUsers("100", null);
+		$roles = $select->showRoles(null);
 				
 		include $this->core->conf['conf']['formPath'] . "additem.form.php";
 

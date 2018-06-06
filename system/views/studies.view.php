@@ -32,6 +32,9 @@ class studies {
 			$notselectedprogrammes = $select->showPrograms(NULL);
 			$selectedprogrammes = $select->showPrograms($fetch[0]);
 
+			$notselectedfeepackages = $select->showFeepackages(NULL);
+			$selectedfeepackages = $select->showFeepackages($fetch[0]);
+
 			include $this->core->conf['conf']['formPath'] . "editstudy.form.php";
 		}
 	}
@@ -68,10 +71,13 @@ class studies {
 
 		$selected = $this->core->cleanPost['selected'];
 		$nselected = $this->core->cleanPost['nselected'];
+
+		$selectedf = $this->core->cleanPost['selectedf'];
+		$nselectedf = $this->core->cleanPost['nselectedf'];
 		
 		if (!empty($nselected)) {
 			foreach ($nselected as $nsel) {
-				$sql = "INSERT INTO `study-program-link` (`ID`, `StudyID`, `ProgramID`, `Manditory`, `Year`) VALUES (NULL, '$item', '$nsel', '', '');";
+				$sql = "INSERT INTO `study-program-link` (`ID`, `StudyID`, `ProgramID`, `Manditory`, `Year`) VALUES (NULL, '$item', '$nsel', '0', '1');";
 				$run = $this->core->database->doInsertQuery($sql);
 			}
 		} elseif (!empty($selected)) {
@@ -79,15 +85,25 @@ class studies {
 				$sql = "DELETE FROM `study-program-link` WHERE `StudyID` = $item AND `ProgramID` = $sel";
 				$run = $this->core->database->doInsertQuery($sql);
 			}
+		} elseif (!empty($nselectedf)) {
+			foreach ($nselectedf as $nsel) {
+				$sql = "INSERT INTO `fee-package-study-link` (`ID`, `StudyID`, `FeePackageID`) VALUES (NULL, '$item', '$nsel');";
+				$run = $this->core->database->doInsertQuery($sql);
+			}
+		} elseif (!empty($selectedf)) {
+			foreach ($selectedf as $sel) {
+				$sql = "DELETE FROM `fee-package-study-link` WHERE `StudyID` = $item AND `FeePackageID` = $sel";
+				$run = $this->core->database->doInsertQuery($sql);
+			}
 		} elseif (!empty($item)) {
-			$sql = "UPDATE `edurole`.`study` SET `ParentID` = '$school', `IntakeStart` = '$startintake', `IntakeEnd` = '$endintake', `Delivery` = '$delivery', `IntakeMax` = '$maxintake', `Name` = '$fullname', `ShortName` = '$shortname', `Active` = '$active', `StudyType` = '$type', `TimeBlocks` = '$duration', `StudyIntensity` = '$intensity' WHERE `ID` = $item;";
+			$sql = "UPDATE `study` SET `ParentID` = '$school', `IntakeStart` = '$startintake', `IntakeEnd` = '$endintake', `Delivery` = '$delivery', `IntakeMax` = '$maxintake', `Name` = '$fullname', `ShortName` = '$shortname', `Active` = '$active', `StudyType` = '$type', `TimeBlocks` = '$duration', `StudyIntensity` = '1' WHERE `ID` = $item;";
 			$run = $this->core->database->doInsertQuery($sql);
 		} else {
-			$sql = "INSERT INTO `study` (`ID`, `ParentID`, `IntakeStart`, `IntakeEnd`, `Delivery`, `IntakeMax`, `Name`, `ShortName`, `Active`, `StudyType`, `TimeBlocks`, `StudyIntensity`) VALUES (NULL, '$school', '$startintake', '$endintake', '$delivery', '$maxintake', '$fullname', '$shortname', '$active', '$type', '$duration', '$intensity');";
+			$sql = "INSERT INTO `study` (`ID`, `ParentID`, `IntakeStart`, `IntakeEnd`, `Delivery`, `IntakeMax`, `Name`, `ShortName`, `Active`, `StudyType`, `TimeBlocks`, `StudyIntensity`, `ProgrammesAvailable`) 
+					VALUES (NULL, '$school', '$startintake', '$endintake', '$delivery', '$maxintake', '$fullname', '$shortname', '$active', '$type', '$duration', '$intensity', '0');";
 			$run = $this->core->database->doInsertQuery($sql);
-
 		}
-		
+
 		$this->core->redirect("studies", "manage", NULL);
 	}
 
@@ -95,13 +111,14 @@ class studies {
 		echo   '<div class="toolbar"><a href="' . $this->core->conf['conf']['path'] . '/studies/add">Add study</a></div>'. 
 			'<table width="768" height="" border="0" cellpadding="3" cellspacing="0"><tr class="tableheader"><td><b>Study</b></td>' .
 			'<td><b>School</b></td>' .
+			'<td><b>Delivery</b></td>' .
 			'<td><b>Management tools</b></td>' .
 			'</tr>';
 
 		if(!empty($item)){
 			$sql = "SELECT * FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID AND `study`.ID = $item ORDER BY `study`.Name";
 		}else{
-			$sql = "SELECT `study`.ID, `study`.Name, `schools`.name, `schools`.id FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID ORDER BY `study`.Name";
+			$sql = "SELECT `study`.ID, `study`.Name, `schools`.name, `schools`.id , `study`.Delivery  FROM `study`,`schools` WHERE `study`.ParentID = `schools`.ID ORDER BY `study`.Name";
 		}
 		
 		$run = $this->core->database->doSelectQuery($sql);
@@ -120,8 +137,8 @@ class studies {
 			echo '<tr ' . $bgc . '>
 			<td><b><a href="' . $this->core->conf['conf']['path'] . '/studies/show/' . $row[0] . '"> ' . $row[1] . '</a></b></td>' .
 				'<td><a href="' . $this->core->conf['conf']['path'] . '/schools/show/' . $row[3] . '">' . $row[2] . '</a></td>' .
-				'<td>
-				<a href="' . $this->core->conf['conf']['path'] . '/studies/edit/' . $row[0] . '"> <img src="'.$this->core->fullTemplatePath.'/images/edi.png"> edit</a>
+				'<td>' . $row[4] . '</td>' .
+				'<td><a href="' . $this->core->conf['conf']['path'] . '/studies/edit/' . $row[0] . '"> <img src="'.$this->core->fullTemplatePath.'/images/edi.png"> edit</a>
 			<a href="' . $this->core->conf['conf']['path'] . '/studies/delete/' . $row[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="'.$this->core->fullTemplatePath.'/images/del.png"> delete </a>
 			</td>
 			</tr>';

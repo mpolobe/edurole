@@ -64,7 +64,7 @@ class fees {
 		$packageid = $this->core->cleanPost['packageid'];
 
 		if (!empty($item)) {
-			$sql = "UPDATE `fees` SET `Name` = '$name', `Description` = '$description', `Owner` = '$owner' WHERE `ID` = $item;";
+			$sql = "UPDATE `fees` SET `Name` = '$name', `Description` = '$description', `Owner` = '$owner', `Amount` = '$amount' WHERE `ID` = $item;";
 			$run = $this->core->database->doInsertQuery($sql);
 		} else {
 			$sql = "INSERT INTO `fees` (`ID`, `PackageID`, `Name`, `Description`, `Amount`, `Date`, `Owner`) VALUES (NULL, '$packageid', '$name', '$description', '$amount', NOW(), '$owner');";
@@ -74,14 +74,23 @@ class fees {
 		$this->core->redirect("fees", "show", $packageid);
 	}
 
-	public function showFees($item) {
-		$sql = "SELECT * FROM `fees` LEFT JOIN `fee-package` ON `fees`.PackageID = `fee-package`.ID WHERE `fee-package`.ID = '$item'";
-		
+	public function showFees($item, $admin = FALSE) {
+		if($admin == FALSE){
+			$sql = "SELECT * FROM `fees` LEFT JOIN `fee-package` ON `fees`.PackageID = `fee-package`.ID WHERE `fee-package`.ID = '$item'";
+		}else{
+			$sql = "SELECT * FROM `fees` LEFT JOIN `fee-package` ON `fees`.PackageID = `fee-package`.ID WHERE `fee-package`.Name = '$item'";
+		}
+
 		$run = $this->core->database->doSelectQuery($sql);
 
-		echo   '<div class="toolbar"><a href="' . $this->core->conf['conf']['path'] . '/fees/add/'.$item.'">Add Fee</a></div>';
+		if($admin != TRUE){ 
+			$output .=  '<div class="toolbar">
+			<a href="' . $this->core->conf['conf']['path'] . '/fees/add/'.$item.'">Add Fee</a>
+			</div>';
+		}
 
 		$feeset = FALSE;
+		
 
 		$i = 0;
 		$total = 0;
@@ -89,68 +98,72 @@ class fees {
 			$feeset = TRUE;
 			if ($i == 0) {
 				$method = $fetch[4];
-				echo '<table width="768" border="0" cellpadding="5" cellspacing="0">
-					 <tr>
-						<td width="205" height="28" bgcolor="#EEEEEE"><strong>Fee package</strong></td>
-						<td width="500" bgcolor="#EEEEEE"></td>
-						<td  bgcolor="#EEEEEE"></td>
-					  </tr>
+				$output.= '<table border="0" cellpadding="5" cellspacing="0">
+
 					  <tr>
-						<td><strong>Fee package</strong></td>
-						<td>' . $fetch[8] . '</td>
+						<td  width="200px"><strong>Fee package</strong></td>
+						<td width="200px">' . $fetch[8] . '</td>
 						<td></td>
 					  </tr>
 					  <tr>
 						<td><strong>Package description</strong></td>
 						<td>' . $fetch[9] . ' </td>
-					  </tr>'; 
-
-					echo'</table>';
+					  </tr>
+					</table>';
 
 				$i++;
 
+				$output .= '<br /><table width="600px" border="0" cellpadding="5" cellspacing="0">
+					    <tr>
+					    <td width="200px" height="28" bgcolor="#EEEEEE"><strong>Fee information</strong></td>
+					    <td width="300px" bgcolor="#EEEEEE">Description</td>
+					    <td width="100px" bgcolor="#EEEEEE">Cost</td>';
 
-				echo '<br /><table width="768" border="0" cellpadding="5" cellspacing="0">
-					 <tr>
-						<td width="205" height="28" bgcolor="#EEEEEE"><strong>Fee information</strong></td>
-						<td width="200" bgcolor="#EEEEEE">Description</td>
-						<td bgcolor="#EEEEEE">Cost</td>
-						<td bgcolor="#EEEEEE">Options</td>
-					  </tr>
+				if($admin != TRUE){ $output .= '<td bgcolor="#EEEEEE">Options</td>'; }
 
-					 <tr>
-						<td><strong>' . $fetch[2] . '</strong></td>
-						<td>' . $fetch[3] . ' </td>
-						<td><b>' . $fetch[4] . '</b></td>
-						<td>
-							<a href="' . $this->core->conf['conf']['path'] . '/fees/edit/'.$fetch[0].'"> <img src="'.$this->core->fullTemplatePath.'/images/edi.png"> edit</a>
-							<a href="' . $this->core->conf['conf']['path'] . '/fees/delete/' . $fetch[0] . '/'. $item .'" onclick="return confirm(\'Are you sure?\')"> <img src="'.$this->core->fullTemplatePath.'/images/del.png"> delete </a>
-						</td>
-					  </tr>';
+				$output .= '</tr>
+					    <tr>
+					    <td><strong>' . $fetch[2] . '</strong></td>
+					    <td>' . $fetch[3] . ' </td>
+					    <td><b>' . $fetch[4] . '</b></td>';
 
-					$total = $fetch[4] + $total;
+				if($admin != TRUE){
+					$output .= '<td>
+					<a href="' . $this->core->conf['conf']['path'] . '/fees/edit/'.$fetch[0].'"> <img src="'.$this->core->fullTemplatePath.'/images/edi.png"> edit</a>
+					<a href="' . $this->core->conf['conf']['path'] . '/fees/delete/' . $fetch[0] . '/'. $item .'" onclick="return confirm(\'Are you sure?\')"> <img src="'.$this->core->fullTemplatePath.'/images/del.png"> delete </a>
+					</td>';
+				}
 
+				$output.= '</tr>';
+
+				$total = $fetch[4] + $total;
+		
 			 }else if(!empty($fetch[5])){
 
 
-					 echo' <tr>
-						<td><strong>' . $fetch[2] . '</strong></td>
-						<td>' . $fetch[3] . ' </td>
-						<td><b>' . $fetch[4] . '</b></td>
-						<td>
-							<a href="' . $this->core->conf['conf']['path'] . '/fees/edit/'.$fetch[0].'"> <img src="'.$this->core->fullTemplatePath.'/images/edi.png"> edit</a>
-							<a href="' . $this->core->conf['conf']['path'] . '/fees/delete/' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="'.$this->core->fullTemplatePath.'/images/del.png"> delete </a>
-						</td>
-					  </tr>';
+				$output.= ' <tr>
+					<td><strong>' . $fetch[2] . '</strong></td>
+					<td>' . $fetch[3] . ' </td>
+					<td><b>' . $fetch[4] . '</b></td>';
 
-					$total = $fetch[4] + $total;
+					if($admin != TRUE){
+						$output.= '<td>
+						<a href="' . $this->core->conf['conf']['path'] . '/fees/edit/'.$fetch[0].'"> <img src="'.$this->core->fullTemplatePath.'/images/edi.png"> edit</a>
+						<a href="' . $this->core->conf['conf']['path'] . '/fees/delete/' . $fetch[0] . '" onclick="return confirm(\'Are you sure?\')"> <img src="'.$this->core->fullTemplatePath.'/images/del.png"> delete </a>
+						</td>';
+					}
+				$output.= ' </tr>';
+
+				$total = $fetch[4] + $total;
+			
 			}
+
 
 
 		}
 
 		if($feeset == TRUE){
-			echo' <tr>
+			$output.= ' <tr>
 				<td width="205" height="28" bgcolor="#EEEEEE"><strong>Total fees in package</strong></td>
 				<td width="200" bgcolor="#EEEEEE"></td>
 				<td bgcolor="#EEEEEE"><strong>' . $total . '</strong></td>
@@ -159,13 +172,19 @@ class fees {
 			</table>';
 		}
 
+		if($admin == FALSE){
+			echo $output;
+		} else { 
+			return $output;
+		}
+
 	}
 
 	public function assignedFees($item) {	
 		$sql = "SELECT * FROM `basic-information`,
 			WHERE `basic-information`.ID = '$item'
 			LEFT JOIN `student-study-link` as ss ON ss.`StudentID` = `basic-information`.ID
-			LEFT JOIN `nkrumah-student-program-link` as sp ON sp.`StudentID` = `basic-information`.ID
+			LEFT JOIN `student-program-link` as sp ON sp.`StudentID` = `basic-information`.ID
 			LEFT JOIN `fee-package-study-link` as fpsl ON fpsl.StudyID = `StudyID`.ID
 			LEFT JOIN `fee-package-program-link` as fppl ON fppl.ProgramID = `ProgrammeID`.ID";
 

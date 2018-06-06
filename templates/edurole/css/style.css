@@ -4,29 +4,84 @@ body, html {
 	font-family: Arial, Verdana, sans-serif;
 	margin-right: 0;
 	margin-left: 0;
-	background-color: #FFF;
+	background-color: #dce1e4;
 	height: 100%;
+	width: 100%;
+	position:relative;
+}
+
+@media print {
+   .menu {
+    visibility: collapse;
+    width: 0px;
+    position: fixed;
+	}
+	.chat-window{
+    visibility: hidden;
+    width: 0px;
+    position: fixed;
+	}
+}
+
+
+.menu {
+	background-color: #FFF;
+}
+.formElement{
+	border: 1px solid #ccc;
 }
 html {
 	overflow: -moz-scrollbars-vertical; 
 	overflow-y: scroll;
+}
+.col-lg-12 {
+	padding-left: 20px;
+	margin-bottom: 0px;
+}
+.panel {
+	border-radius: 0px;
+}
+.pagination {
+	padding-left: 0px;
+	height: 20px;
+	padding-bottom: 20px;
+}
+.pagination li {
+	margin-right: 1px;
+	margin-left: 2px;
+	text-align: center;
+	list-style-type: none;
+	float: left;
+}
+li .sr-only{
+	width: 100px;
+}
+
+.logo {
+	margin-top: 5px;
+	float: left;
+	padding-left:  40px;
+	padding-right: 55px;
+    height: 100px;
 }
 .bodycontainer {
 	font-size: 11px;
 	font-weight: normal;
 	color: #464646;
 	clear: both;
-	min-height: 100%;
 	overflow: hidden;
 	z-index: 1;
 	padding-bottom: 20px;
 	text-decoration: none;
-	background-color: #FFF;
+	background-color: #F0F0F0;
 	margin-right: auto;
 	margin-left: auto;
 	width: 1015px;
+	margin-bottom: 15px;
+	border: 5px solid #FFF;
 }
 .headercenter {
+	padding-left: 30px;
 	width: 100%;
 	background-color: #fff;
 	margin-right: auto;
@@ -34,17 +89,19 @@ html {
 	padding-top: 10px;
 	position: relative;
 	width: 1015px;
-	height: 95px;
+	height: 138px;
+	border-bottom: 2px solid #ccc;
 }
 .breadcrumb {
-	height:20px;
-	width: 730px;
+	height:40px;
+	width: 100%;
 	margin-bottom: 10px;
 	position: relative;
 	padding-right: 0px;
 	padding-bottom: 7px;
 	padding-top: 13px;
 	color: #FFF;
+	border-radius: 0px;
 	padding-left: 40px;
 	font-size: 12px;
 	background-color: #6297C3;
@@ -77,6 +134,12 @@ label{
 	display: inline-block;
 	width: 450px;
 	padding-left: 20px;
+}
+.grade {
+	width: 50px;
+}
+.grade:focus {
+	width: 50px;
 }
 .resultrow {
 	width: 770px;
@@ -117,7 +180,7 @@ td {
 	color: #FFF;
 	background-color: #70808D;
 	text-align: left;
-	width: 182px;
+	width: 100%;
 	padding-top: 7px;
 	padding-bottom: 6px;
 }
@@ -128,8 +191,7 @@ td {
 	color: #333;
 	background-color: #DFDFDF;
 	text-align: left;
-	width: 170px;
-	border-left: 10px solid #115BA0;
+	border-left: 10px solid #4F97CA;
 }
 #ui-datepicker-div {
 	padding: 10px;
@@ -152,60 +214,76 @@ td {
 }
 .statistics{
 	border: 1px solid #D8DFE5;
-	background-color: #F0F0F0;
+	background-color: #FFF;
 	font-weight: bold;
-	width: 149px;	
+	width: 16.65%;	
 	float: left;
 	text-align: center;
 	padding-top: 10px;
-	margin-right: 3px;
 }
 .fixedheightpanel { 
 	float: left;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	padding: 20px;
+	min-height: 150px;
+	margin-right: 3px;
+	border: 1px solid #D8DFE5;
+}
+
+.varheightpanel { 
+	float: left;
 	margin-top: 20px;
 	padding: 20px;
-	height: 150px;
 	margin-right: 3px;
 	border: 1px solid #D8DFE5;
 }
 .easymen{
 	padding-top: 3px;
 	padding-bottom: 3px;
-	width: 105px;
-	margin-right: 3px;	
+	width: 110px;
 	float: left;
+	margin-top: 5px;
+	margin-right: 0px;	
 	text-align: center;
 	border: 1px solid #ccc;
+	background-color: #FFF;
 }
 .easymencontainer {
-	width: 728px;
+	width: 100%;
 	background-color: #fcfcfc;
 	border: 1px solid #ccc;
 	padding: 20px;
 	float: left;
-	margin-top: 10px;
+	margin-top: 0px;
 	position: relative;
 }
+.nav li a {
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
 .menu a { 
-	background-color: #fff;
+	
 	color: #0099CC;
 	display: block;
-	width: 160px;
-	padding-top: 5px;
-	padding-bottom: 1px;
+	width: 100%;
+	margin: 0px;
+	padding-top: 0px;
+	padding-bottom: 0px;
 	padding-right: 15px;
 	padding-left: 15px;
 	line-height: 20px;
 	text-align: left;
 	font-size: 12px;
-	border-left: solid 10px #4D90FE;
+	
 }
 
 .menu a:hover { 
 	background-color: #4D90FE;
-	color: #FFF;
+	border-bottom: solid 2px #ccc;
+	color: #333;
 	display: block;
-	width: 162px;
+	width: 100%;
 	padding-top: 5px;
 	padding-bottom: 1px;
 	padding-right: 15px;
@@ -269,14 +347,14 @@ td {
 	width: 760px;
 }
 .segment {
-	height:20px;
+	height:40px;
 	width: 480px;
 	z-index: 2;
 	position: relative;
 	padding-right: 0px;
 	padding-bottom: 7px;
 	padding-top: 13px;
-	margin-left: -10px;
+	margin-left: 10px;
 	color: #464646;
 	padding-left: 40px;
 	font-size: 12px;
@@ -286,14 +364,11 @@ td {
 	margin-top: 20px;
 }
 .toolbar {
-	height:20px;
-	width: 730px;
+	height:40px;
+	width: 100%;
 	z-index: 2;
-	position: relative;
+
 	padding-right: 0px;
-	padding-bottom: 7px;
-	padding-top: 13px;
-	margin-left: 0px;
 	color: #464646;
 	padding-left: 40px;
 	font-size: 12px;
@@ -302,11 +377,24 @@ td {
 	font-weight: bold;
 	margin-top: 20px;
 }
-.toolbar a{
-	height:20px;
-	width: 80px;
+
+.approval {
+	height:40px;
+	width: 720px;
 	z-index: 2;
-	position: relative;
+
+	padding-right: 0px;
+	color: #464646;
+	padding-left: 40px;
+	font-size: 12px;
+	background-color: #EEEEEE;
+	margin-bottom: 10px;
+	font-weight: bold;
+	margin-top: 20px;
+}
+.toolbaritem {
+	height:40px;
+	float: left;
 	padding-right: 0px;
 	padding-bottom: 11px;
 	padding-top: 13px;
@@ -315,33 +403,80 @@ td {
 	padding-left: 20px;
 	padding-right: 20px;
 	font-size: 12px;
-	margin-bottom: 10px;
 	font-weight: bold;
-	margin-top: 20px;
+	background-color: #ccc;
+	margin-right: 1px;
+	text-align:center;
+}
+.toolbar a{
+	height:40px;
+	float: left;
+	padding-right: 0px;
+	padding-bottom: 11px;
+	padding-top: 13px;
+	margin-left: 0px;
+	color: #FFF;
+	padding-left: 20px;
+	padding-right: 20px;
+	font-size: 12px;
+	font-weight: bold;
+	margin-right: 1px;
 	background-color: #6297C3;
 	text-align:center;
 }
 .toolbar a:hover{
-	height:20px;
-	width: 80px;
-	z-index: 2;
-	position: relative;
+	height:40px;
+	float: left;
+	padding-right: 0px;
+	padding-bottom: 11px;
+	padding-top: 13px;
+	margin-left: 0px;
+	color: #FFF;
+	padding-left: 20px;
+	padding-right: 20px;
+	font-size: 12px;
+	font-weight: bold;
+	margin-right: 1px;
+	background-color: #333;
+	text-align:center;
+}
+
+.approval a{
+	height:40px;
+	float: left;
+	padding-right: 0px;
+	padding-bottom: 11px;
+	padding-top: 13px;
+	margin-left: 0px;
+	color: #FFF;
+	width: 100%;
+	padding-left: 20px;
+	padding-right: 20px;
+	font-size: 12px;
+	font-weight: bold;
+	margin-right: 1px;
+	background-color: #00bfb8;
+	text-align:center;
+}
+.approval a:hover{
+	height:40px;
+	float: left;
 	padding-right: 0px;
 	padding-bottom: 11px;
 	padding-top: 13px;
 	margin-left: 0px;
 	color: #000;
+	width: 100%;
 	padding-left: 20px;
 	padding-right: 20px;
 	font-size: 12px;
-	margin-bottom: 10px;
 	font-weight: bold;
-	margin-top: 20px;
-	background-color: #CCC;
+	margin-right: 1px;
+	background-color: #e2a901;
 	text-align:center;
 }
 .mailcount {
-	height:13px;
+	height:20px;
 	position: relative;
 	padding-right: 0px;
 	padding-bottom: 7px;
@@ -376,18 +511,6 @@ td {
 	background-color: #FFBABA;
 	font-weight: bold;
 }
-.noticepopup{
-	display: block;
-	font-size:13px;
-	border: 1px solid;
-	margin: 10px 0px;
-	padding:15px 10px 15px 50px;
-	background-repeat: no-repeat;
-	background-position: 10px center;
-	color: #C2733F;
-	background-color: #FFDBC3;
-	font-weight: bold;
-}
 .profilepic {
 	z-index: 4;
 	position:relative;
@@ -409,6 +532,20 @@ td {
 	color: #4F8A10;
 	background-color: #DFF2BF;
 	font-weight: bold;
+	width: 100%;
+}
+.warningpopup{
+	display: block;
+	font-size:13px;
+	border: 1px solid;
+	margin: 10px 0px;
+	padding:15px 10px 15px 50px;
+	background-repeat: no-repeat;
+	background-position: 10px center;
+	color: #8A6010;
+	background-color: #F9D678;
+	font-weight: bold;
+	width: 100%;
 }
 .student{
 	position: relative;
@@ -416,32 +553,47 @@ td {
 	margin: 10px 0px;
 	padding:0px 0px 15px 10px;
 }
+.progress{
+	margin-bottom: 5px;
+}
 .greeter{
 	display: block;
+	margin-bottom: 10px;
 	font-size:19px;
 	font-weight:bolder;
 	padding:10px 15px 15px 0px;
 	color: #fff;
 	font-weight: bold;
-	height:20px;
-	width: 730px;
+	height:50px;
+	width: 100%;
 	position: relative;
 	padding-right: 0px;
 	padding-bottom: 13px;
 	padding-top: 13px;
 	padding-left: 40px;
-	margin-bottom: 0px;
 	background-color: #4F97CA;
 }
+.greeter a{
+	font-size:14px;
+	color: #fff;
+	font-weight: bold;
+}
+.greeter a:hover{
+	font-size:14px;
+	color: #333;
+	font-weight: bold;
+}
 .studentname{
+	cursor:pointer;
+	clear: both;
 	display: block;
 	font-size:19px;
 	font-weight:bolder;
 	padding:10px 15px 15px 0px;
 	color: #fff;
 	font-weight: bold;
-	height:20px;
-	width: 730px;
+	height:50px;
+	width: 100%;
 	float: left;
 	position: relative;
 	padding-right: 0px;
@@ -461,8 +613,8 @@ td {
 }
 .heading { 
 	background-color: #FAFAFA;
-	width: 740px;
-	height: 20px;
+	width: 100%;
+	height: 30px;
 	margin-top: 15px;
 	margin-bottom: 13px;
 	text-align: left;
@@ -471,7 +623,7 @@ td {
 	padding-right: 15px;
 	padding-left: 15px;
 	font-weight: bold;
-	border-bottom: solid 1px #ccc;
+	border: solid 1px #ccc;
 }
 select {
 	border: 1px solid #ccc;
@@ -516,8 +668,11 @@ input:focus{
 	width: auto;
 }
 .label { 
+	color: #333;
 	width: 180px;
 	display: inline-block;
+	font: 700 12px "Helvetica", "Arial", sans-serif;
+
 	text-align: left;
 	padding-top: 4px;
 	padding-right: 15px;
@@ -783,11 +938,7 @@ img {
         font-size: 11px;
         margin-bottom: 25px;
 }
-.logo {
-        position: absolute;
-        margin: auto auto;
-        padding-top: 45px;
-}
+
 #navlist {
         font-size: 11px;
         color: #3E424F;
@@ -1063,15 +1214,16 @@ form{
         display:inline;
 }
 .footer {
-	float: left;
+	float: center;
 	font-size: 11px;
 	font-weight: normal;
+	clear:both;
 	color: #666;
-	width: 100%;
+	width: 800px;
 	margin-right: auto;
 	margin-left: auto;
 	border-top: solid 1px #ccc;
-	margin-top: 30px;
+	margin-top: 10px;
 	min-height: 90px;
 
 }
@@ -1085,7 +1237,7 @@ form{
 .float {
 	float: left;
 	padding-top: 15px;
-	padding-right: 35px;
+	padding-right: 10px;
 }
 .center {
 	width: 770px;
@@ -1371,4 +1523,11 @@ h3 {
 	padding: 3px;
 	border:solid 2px #FFCD00;
 	color:#000;
+}
+@media print {
+    .noprint {display:none !important;}
+    a:link:after, a:visited:after {  
+      display: none;
+      content: "";    
+    }
 }

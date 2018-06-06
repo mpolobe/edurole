@@ -5,7 +5,7 @@
 	});
 </script>
 
-<form id="edititem" name="additem" method="post" action="<? echo $this->core->conf['conf']['path'] . "/item/save/" . $this->core->item; ?>">
+<form id="edititem" name="additem" method="post" action="<?php echo $this->core->conf['conf']['path'] . "/item/save/" . $this->core->item; ?>">
 	<p>Please enter the following information</p>
 	<input type="hidden" name="itemid" value="<?php echo $id; ?>" />
 	<table width="768" border="0" cellpadding="5" cellspacing="0">
@@ -23,7 +23,7 @@
                 <td><strong>Item manager</strong></td>
                 <td>
                   <select name="manager" id="manager">
-			<? echo $manager; ?>
+			<?php echo $manager; ?>
                   </select></td>
               </tr>
               <tr>

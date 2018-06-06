@@ -5,7 +5,7 @@
 	});
 </script>
 
-<form id="editaccommodation" name="editaccommodation" method="post" action="<? echo $this->core->conf['conf']['path'] . "/accommodation/save/" . $this->core->item; ?>">
+<form id="editaccommodation" name="editaccommodation" method="post" action="<?php echo $this->core->conf['conf']['path'] . "/accommodation/save/" . $this->core->item; ?>">
 	<p>Please enter the following information</p>
 	<table width="768" border="0" cellpadding="5" cellspacing="0">
 		<tr>
@@ -16,27 +16,27 @@
 		<tr>
 			<td><strong>Accommodation name </strong></td>
 			<td>
-				<input type="text" name="name" value="<? echo $fetch['Name']; ?>"/></td>
+				<input type="text" name="name" value="<?php echo $fetch['Name']; ?>"/></td>
 			<td>Name of accommodation</td>
 		</tr>
 		<tr>
 			<td><strong>Accommodation location </strong></td>
 			<td>
-				<input type="location" name="location" value="<? echo $fetch['Location']; ?>"/></td>
+				<input type="location" name="location" value="<?php echo $fetch['Location']; ?>"/></td>
 			<td>Name of accommodation</td>
 		</tr>
 		<tr>
 			<td><strong>Accommodation manager</strong></td>
 			<td>
 				<select name="dean" id="dean">
-					<? echo $dean; ?>
+					<?php echo $dean; ?>
 				</select></td>
 			<td></td>
 		</tr>
 		<tr>
 			<td><strong>Optional description</strong></td>
 			<td>
-				<textarea rows="4" cols="37" class="editable" name="description"><? echo $fetch['Description']; ?></textarea>
+				<textarea rows="4" cols="37" class="editable" name="description"><?php echo $fetch['Description']; ?></textarea>
 			</td>
 			<td></td>
 		</tr>

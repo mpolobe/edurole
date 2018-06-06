@@ -11,7 +11,7 @@ class error {
 	public function buildView($core) {
 		$this->core = $core;
 	}
-	
+
 	public function showError(){
 		$error = $this->core->getViewError();
 		echo "<h2>" . $error->message . "</h2>";

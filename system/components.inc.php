@@ -61,5 +61,4 @@ class component {
 		return ($menu);
 	}
 }
-
 ?>

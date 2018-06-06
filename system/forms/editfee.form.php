@@ -5,7 +5,7 @@
 	});
 </script>
 
-<form id="addfee" name="addfee" method="post" action="<? echo $this->core->conf['conf']['path'] . "/fees/save/" . $this->core->item; ?>">
+<form id="editfee" name="editfee" method="post" action="<?php echo $this->core->conf['conf']['path'] . "/fees/save/" . $this->core->item; ?>">
 	<p>Please enter the following information</p>
         <input type="hidden" name="packageid" value="<?php echo $packageid; ?>" />
 	<table width="768" border="0" cellpadding="5" cellspacing="0">

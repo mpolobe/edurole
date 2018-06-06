@@ -9,23 +9,13 @@ session_start();
 
 	The application system are separated in the following directories:
 	system/				Core components, authentication, template-constructor, database connectors and the like.
-	system/forms			Input forms
-	system/views			View handlers
-	system/services			Service handlers
-	system/classes			Functional classes
+	system/forms		Input forms
+	system/views		View handlers
+	system/services		Service handlers
+	system/classes		Functional classes
 */
-$config = "system/config.inc.php";
 
-if (file_exists($config)) {
-	require_once $config;	
-} else {
-	echo "Missing configuration file system/config.inc.php"; 
-}
-
-if(!isset($conf)){
-	$url = $_SERVER['REQUEST_URI'] . "installer";
-	header("Location: $url");
-}
+require_once "system/config.inc.php";
 
 /*
 	 Required core classes
@@ -33,6 +23,7 @@ if(!isset($conf)){
 require_once "system/core.inc.php";
 require_once "system/database.inc.php";
 require_once "system/authentication.inc.php";
+require_once "system/breadcrumb.inc.php";
 require_once "system/menu.inc.php";
 require_once "system/components.inc.php";
 require_once "system/viewBuilder.inc.php";

@@ -13,7 +13,7 @@ jQuery(document).ready(function(){
 </script>
 
 
-<form id="editprogramme" name="editprogramme" method="post" action="<? echo $this->core->conf['conf']['path'] . "/programmes/save/" . $this->core->item; ?>">
+<form id="editprogramme" name="editprogramme" method="post" action="<?php echo $this->core->conf['conf']['path'] . "/programmes/save/" . $this->core->item; ?>">
 	<p>Please enter the following information</p>
 	<table width="768" border="0" cellpadding="5" cellspacing="0">
               <tr>
@@ -31,7 +31,7 @@ jQuery(document).ready(function(){
 		<td width="150"><b>Programme Coordinator</b></td>
                 <td colspan="2">
                   <select name="coordinator" class="ddsel" id="coordinator">
-					<? echo $users; ?>
+					<?php echo $users; ?>
                   </select></td>
                 <td>Functional course coordinator</td>
               </tr>
@@ -54,7 +54,7 @@ jQuery(document).ready(function(){
 		<tr>
 		<td width="150"></td>
 		<td colspan="2">
-		<input type="hidden" name="item" value="<? echo $item; ?>" />
+		<input type="hidden" name="item" value="<?php echo $item; ?>" />
 	 		 <input type="submit" class="submit" name="submit" id="submit" value="Save changes to programme" /></td>
                 <td></td>
               </tr></table>
@@ -72,8 +72,8 @@ jQuery(document).ready(function(){
  	<tr >
 	<td>Select which courses should be part of this programme</td>
 	<td width="100"> 
-	<form id="selected" name="selectedfr" method="post" action="<? echo $this->core->conf['conf']['path'] . "/programmes/save/" . $this->core->item; ?>">
-	<input type="hidden" name="item" value="<? echo $item; ?>" />
+	<form id="selected" name="selectedfr" method="post" action="<?php echo $this->core->conf['conf']['path'] . "/programmes/save/" . $this->core->item; ?>">
+	<input type="hidden" name="item" value="<?php echo $item; ?>" />
 		<select name="selected[]" multiple="multiple" size="10" style="width: 130px">
 			<?php echo $selectedcourses;  ?> 
 		</select>
@@ -82,8 +82,8 @@ jQuery(document).ready(function(){
 	</td>
 	
 	<td  width="100">
-	<form id="nselected" name="nselectedfr" method="post" action="<? echo $this->core->conf['conf']['path'] . "/programmes/save/" . $this->core->item; ?>">
-	<input type="hidden" name="item" value="<? echo $item; ?>" />
+	<form id="nselected" name="nselectedfr" method="post" action="<?php echo $this->core->conf['conf']['path'] . "/programmes/save/" . $this->core->item; ?>">
+	<input type="hidden" name="item" value="<?php echo $item; ?>" />
 	<select name="nselected[]" multiple="multiple" size="10" style="width: 130px">';
 		<?php echo $notselectedcourses;  ?> 
 	</select>  

@@ -12,7 +12,9 @@ class auth {
 		$password = $this->core->cleanPost['password'];
 
 		if (isset($username) && isset($password)) {
+			
 			if (!$this->authenticateLDAP($username, $password)) {
+				
 				if (!$this->authenticateSQL($username, $password)) {
 					return FALSE;
 				} else {
@@ -33,7 +35,6 @@ class auth {
 
 	private function authenticateLDAP($username, $password) {
 		if ($this->core->conf['ldap']['ldapEnabled'] == TRUE && function_exists('ldap_connect')) {
-
 			if (is_numeric($username)) {
 				$ou = $this->core->conf['ldap']['studentou'];
 			} else {
@@ -43,18 +44,14 @@ class auth {
 			$ldapconn = ldap_connect($this->core->conf['ldap']['server'], $this->core->conf['ldap']['port']);
 			ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
 
-			$ldapbind = @ldap_bind($ldapconn, "uid=" . $username . "," . $ou, $password);
+			$ldapbind = ldap_bind($ldapconn, "uid=" . $username . "," . $ou, $password);
 
 			if ($ldapbind) {
-
 				$this->core->logEvent("User '$username' authenticated successfully", "4");
 				return $this->authenticateAccess($username, $password);
-					
-			} else {
-				
+			} else {	
 				$this->core->logEvent("User '$username' authentication failed", "4");
 				return FALSE;
-					
 			}
 
 		} else {
@@ -123,8 +120,10 @@ class auth {
 	
 		$passwordHashed = hash('sha512', $password . $this->core->conf['conf']['hash'] . $username);
 
+
 		$sql = "SELECT access.ID as UserID, RoleID FROM `access` LEFT JOIN `basic-information` ON `basic-information`.`ID`=`access`.`Username` WHERE `access`.Username = '$username' AND `access`.Password = '$passwordHashed'";
 		$run = $this->core->database->doSelectQuery($sql);
+		
 
 		if ($run->num_rows > 0) { //successful login
 			$this->core->logEvent("User '$username' authenticated successfully", "4");
@@ -142,6 +141,7 @@ class auth {
 			}
 			
 		} else {
+				//echo'dddddddddddddd';
 			$this->core->logEvent("User '$username' authentication failed", "2");
 			return FALSE;
 		}
@@ -151,8 +151,13 @@ class auth {
 
 	private function authenticateSession($username, $password, $userID, $role, $rolename, $nologin = FALSE) {
 
+		if($role == 1001){
+			$role = 1000;
+		}
+
 		if(isset($username, $password, $userID, $role, $rolename) && $nologin == FALSE){
 		
+			$_SESSION['path'] = $this->core->conf['conf']['path'];
 			$_SESSION['userid'] = $userID;
 			$_SESSION['username'] = $username;
 			$_SESSION['password'] = $password;
@@ -161,6 +166,7 @@ class auth {
 
 			$_SESSION['saobjects'] = $this->getStudyInformation($userID);
 
+			$this->core->setPath($this->core->conf['conf']['path']);
 			$this->core->setUsername($username);
 			$this->core->setUserID($userID);
 			$this->core->setRoleName($rolename);
@@ -231,7 +237,6 @@ class auth {
 
 	}
 
-
 	public function getUsername($item) {
 		$sql = "SELECT * FROM `access` WHERE `ID` = $item";
 
@@ -272,10 +277,10 @@ class auth {
 		$password = hash('sha512', $newpass . $this->core->conf['conf']['hash'] . $username);
 
 		$sql = "UPDATE `access` SET `Password` = '$password' WHERE `ID` = '$id'";
+		$run = $this->core->database->doInsertQuery($sql);
 
-		$run = $this->core->database->doSelectQuery($sql);
 
-		if($this->core->database->mysqli->affected_rows == 0){
+		if($this->core->database->mysqli->affected_rows == 0){	
 			$roleID = "10";
 			$sql = "INSERT INTO `access` (`ID`, `Username`, `RoleID`, `Password`) VALUES ('$id', '$username', '$roleID', '$password');";
 			$run = $this->core->database->doInsertQuery($sql);
@@ -301,14 +306,26 @@ class auth {
 		}
 	}
 
+
 	function logout() {
+		$username = $this->core->username;
+
 		session_destroy();
 		
+		$this->core->setPath(NULL);
 		$this->core->setUsername(NULL);
 		$this->core->setUserID(NULL);
 		$this->core->setRoleName(NULL);
 		$this->core->setRole(NULL);
-			
+
+		$ip = $_SERVER['REMOTE_ADDR'];
+		if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {
+			$ip = array_pop(explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']));
+		}
+		
+		$sql = 'UPDATE acl SET `status`="LOGOUT" WHERE `user` = "'.$username.'" AND `ip` = "'.$ip.'" AND `date` = CURDATE()';
+		$run = $this->core->database->doInsertQuery($sql);
+
 		$this->core->setPage(NULL);
 	}
 }
