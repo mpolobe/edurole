@@ -94,27 +94,29 @@ class statement {
 		$studentNo = $studentID;
 		$start = substr($studentID, 0, 4);
 
-		$sql = "SELECT Firstname, MiddleName, Surname, Status, Sex, Status
+		$sql = "SELECT *
 			FROM `basic-information`
+			LEFT JOIN `student-study-link` ON `student-study-link`.StudentID = `basic-information`.ID
+			LEFT JOIN `study` ON `student-study-link`.StudyID = `study`.ID
 			WHERE `basic-information`.ID = '$studentID'";
 			
 		$run = $this->core->database->doSelectQuery($sql);
 
 		$started = FALSE;
 
-		while ($fetch = $run->fetch_array()){
+		while ($fetch = $run->fetch_assoc()){
 
 			$started = TRUE;
 
-			$firstname = $fetch[0];
-			$middlename = $fetch[1];
-			$surname = $fetch[2];
-			$remark=$fetch[5];
-			$sex=$fetch[4]; 
+			$firstname = $fetch['FirstName'];
+			$middlename = $fetch['Middlename'];
+			$surname = $fetch['Surname'];
+			$remark=$fetch['Remark'];
+			$sex=$fetch['Sex']; 
 			$studentname = $firstname . " " . $middlename . " " . $surname;
 
-			$major = $fetch[6];
-			$minor = $fetch[7];
+			$program = $fetch['Name'];
+
 
 			// PAYMENT VERIFICATION FOR GRADES
 			require_once $this->core->conf['conf']['viewPath'] . "payments.view.php";
@@ -138,8 +140,7 @@ class statement {
 				echo"<div style=\" width: 660px; padding-left: 30px; margin-top: 15px; height: 40px;\">
 						Results for <b>$studentname</b>
 						<br> Student No.:<b>$studentID</b>
-						<br> Major: <b>$major</b>
-						<br> Minor: <b>$minor</b>
+						<br> Program: <b>$program</b>
 						<br>
 					</div>
 					<div style=\" margin-top: 15px; margin-left: 30px;\">";

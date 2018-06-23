@@ -29,6 +29,7 @@ class update {
 			$localfile = fopen("$filename", "w");
 
 			fwrite($localfile, $content);
+			fclose($localfile);
 	
 			echo date(" H:i:s ") . " - Downloading : $filename<br>";
 

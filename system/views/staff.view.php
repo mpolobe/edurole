@@ -109,11 +109,11 @@ class staff{
 			$end = $fetch['EndDate'];
 			$status = $fetch['Status'];
 			$id = $fetch['ID'];
-			
-			
+				
 		
         if($status==0){
 				$status= '<b><a href="' . $this->core->conf['conf']['path'] . '/staff/process/?ID='.$id.'&Status=approved"> Approve</a></b> |'.
+				
                           '<b><a href="' . $this->core->conf['conf']['path'] . '/staff/process/?ID='.$id.'&Status=rejected"> Reject</a></b>';
               
 		} elseif($status ==1){
@@ -205,7 +205,7 @@ class staff{
 			$sql = "SELECT * FROM `basic-information`
 			LEFT JOIN `staff` ON `basic-information`.`ID` = `staff`.`EmployeeNo`
 			WHERE `Status` = 'Employed'
-			AND `EndDate` != '0000-00-00'
+			AND `EndDate`>= NOW() AND `EndDate` <= NOW() + INTERVAL 6 MONTH
 			AND `EndDate` LIKE '2018%'
 			ORDER BY `staff`.`EndDate`  ASC";
 		} else {

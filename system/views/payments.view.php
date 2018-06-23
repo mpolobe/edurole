@@ -1053,23 +1053,27 @@ class payments {
 
 			$p = xml_parser_create();
 			xml_parse_into_struct($p, $output, $vals, $index);
+
 			xml_parser_free($p);
 
-			$balance = (float)$vals[1]["value"];
+
+			$balance = $vals[1]["value"];
+
+			$sql = "INSERT INTO `balances` (`StudentID`, `Amount`, `LastUpdate`, `LastTransaction`, `Original`) VALUES ($item, $balance, NOW(), '', 0) ON DUPLICATE KEY UPDATE `Amount`=$balance;";
+			$run = $this->core->database->doInsertQuery($sql);
 
 			return $balance;
 	} 
 
 	
 
-	public function showPayments($item){
 
-		$balance = $this->getBalance($this->core->userID);
+	public function showPayments($item, $print=FALSE){
+
+		$currentbalance = $this->getBalance($item);
 
 		$sql = "SELECT * FROM `basic-information`
 			WHERE `basic-information`.ID = '$item'";
-
-
 		$run = $this->core->database->doSelectQuery($sql);
 
 		while ($row = $run->fetch_row()) {
@@ -1080,18 +1084,13 @@ class payments {
 		$cleared = $this->getCleared($item);
 
 
-		if($this->core->role == 102 || $this->core->role == 1000){
+		if($this->core->role == 102 || $this->core->role == 1000 || $print == FALSE){
 			echo '<div class="toolbar">'.
 			'<a href="' . $this->core->conf['conf']['path'] . '/information/show/'.$item.'">Return to profile </a>'.
 			'<a href="' . $this->core->conf['conf']['path'] . '/payments/add/'.$item.'?type=10">Collect payment</a>'.
 			'<a href="' . $this->core->conf['conf']['path'] . '/billing/add/'.$item.'?amount=0&type=15&description=Bill">Bill student</a>'.
 			'<a href="' . $this->core->conf['conf']['path'] . '/payments/confirm/'.$item.'">Confirm payment</a>'.
 			'<a href="' . $this->core->conf['conf']['path'] . '/confirmation/print/'.$item.'">Print confirmation slip</a></div>';
-
-			if($cleared == FALSE){
-				echo '<div class="approval">
-				<a href="' . $this->core->conf['conf']['path'] . '/payments/clear/'.$item.'">Clear Student for period </a></div>';
-			}
 		}
 
 		if($sstatus!="Approved" && $sstatus != 'Graduated'){
@@ -1117,63 +1116,12 @@ class payments {
 		}
 
 
-		$sqlx = "SELECT * FROM `discount` WHERE `StudentID` = '$item'";
-		$runx = $this->core->database->doSelectQuery($sqlx);
-		while ($fetch = $runx->fetch_assoc()) {
-			$discount = $fetch['Percentage'];
 
-			echo'<div class="successpopup">THIS STUDENT IS ON A DISCOUNTED FEE SCHEDULE ('.$discount.'%)</div>';
-		}
+		$output = file_get_contents("http://41.63.17.247:8080/AccPackService/trans/$item");
 
-
-
-		$sqlp = "SELECT * FROM `transactions` 
-			LEFT JOIN `basic-information`
-			ON `transactions`.StudentID = `basic-information`.ID 
-			WHERE `basic-information`.ID = '$item'
-			ORDER BY TransactionDate";
-
-
-		$sqlp = "SELECT `basic-information`.ID, 
-				`basic-information`.FirstName, 
-				`basic-information`.Surname, 
-				`transactions`.ID as TID,
-				`transactions`.Amount, 
-				`transactions`.TransactionID, 
-				`transactions`.TransactionDate  as DATE, 
-				`transactions`.Data as DATA, 
-				`transactions`.Status,
-				`transactions`.Type  as TYPE
-			 FROM `transactions`, `basic-information` 
-			WHERE `transactions`.`StudentID` = `basic-information`.ID 
-			AND `basic-information`.ID = '$item' 
-			AND `transactions`.`Status` != 'REVERSED'
-				UNION 
-			SELECT  `basic-information`.ID, 
-				`basic-information`.FirstName, 
-				`basic-information`.Surname, 
-				`billing`.ID as TID,
-				`billing`.Amount, 
-				CONCAT('NCU-', `billing`.ID), 
-				`billing`.Date as DATE, 
-				`billing`.Description as DATA, 
-				'BILL',
-				'100' as TYPE
-			FROM `billing`, `basic-information`
-			WHERE `billing`.`StudentID` = `basic-information`.ID 
-			AND `basic-information`.ID = '$item'
-			AND `billing`.`Description` != 'REVERSED'
-			ORDER BY DATE ASC";
-
-		
-		
-		$runp = $this->core->database->doSelectQuery($sqlp);
-
-
-
-		$sqlb = "SELECT * FROM `balances`
-			WHERE StudentID = '$item'";
-		$runb = $this->core->database->doSelectQuery($sqlb);
+		$p = xml_parser_create();
+		xml_parse_into_struct($p, $output, $vals, $index);
+		xml_parser_free($p);
 
 
 		$housing = FALSE;
@@ -1185,13 +1133,12 @@ class payments {
 
 		echo '<div style=" padding: 0px; margin-bottom: 10px;">
 
-		<table cellpadding="3"  class="table table-striped"cellspacing="0" border="1" style="font-size: 9pt;  margin-left: 20px; width: 700px;">'.
-		'<tr>' .
-		'<td width="120px"><b>TRANSACTION</b></td>' .
-		'<td width="80px"><b>DATE</b></td>' .
+		<table cellpadding="3"  class="table table-striped"cellspacing="0" style="font-size: 9pt;  margin-left: 20px; width: 95%;">'.
+		'<tr style="border: 1px solid #ccc;">' .
+		'<td width=""><b>TRANSACTION</b></td>' .
+		'<td width="80px" ><b>DATE</b></td>' .
 		'<td width=""><b>TYPE</b></td>' .
-		'<td width="60px"><b>DESCRIPTION</b></td>' .
-		'<td width="60px"><b>OPT</b></td>' .
+		'<td><b>DESCRIPTION</b></td>' .
 		'<td width=""><b>DEBIT</b></td>' .
 		'<td width=""><b>CREDIT</b></td>' .	
 		'<td width=""><b>BALANCE</b></td>' .
@@ -1207,84 +1154,81 @@ class payments {
 		}
 
 	
-		echo '<tr>
-		<td><b> OPENING BALANCE</b></td>
-		<td><b> FROM ACCOUNTS</b></td>
-		<td colspan="5"></td>
+		echo '<tr style="background-color: #ccc;">
+		<td colspan="4"><b> OPENING BALANCE FROM ACCOUNTS</b></td>
+		<td colspan="2"></td>
 		<td style="text-align: right;"><b> '.$balance.' </b></td>
 		</tr>';
 
 		$i = 0;
-		while ($fetch = $runp->fetch_assoc()) {
 
-			$typet = $fetch['TYPE'];
-			$amount =  $fetch["Amount"];
-			$date = $fetch["DATE"];
-			$name = $fetch["FirstName"] .'  '. $fetch["Surname"];
-			$description = $fetch["DATA"];
 
-			if($type=="Fulltime"){
-				if( strtotime($date) < strtotime('2015-7-31') ) {
-					continue;
-				} 
-			}else{
-				if( strtotime($date) < strtotime('2016-3-01') ) {
-					continue;
-				}
+
+		$run = TRUE;
+
+
+		while($run == TRUE){
+			
+
+			$amount = $vals[$index["AMOUNT"][$i]]["value"];
+			$description = $vals[$index["ITEMDESCRIPTION"][$i]]["value"];
+			$iid = $vals[$index["ITEMID"][$i]]["value"];
+			$date = $vals[$index["TRANSDATE"][$i]]["value"];
+
+
+			$payment[$i]["amount"] = $amount;
+			$payment[$i]["description"] = $description;
+			$payment[$i]["iid"] = $iid;
+			$payment[$i]["date"] = $date;
+
+				
+
+			if($iid == ""){
+				$run = FALSE;
+				unset($payment[$i]);
 			}
+
+			$i++;
+
+		}
+
+
+		function date_compare($a, $b){
+    			$t1 = strtotime($a['date']);
+    			$t2 = strtotime($b['date']);
+    			return $t1 - $t2;
+		}    
+
+
+		usort($payment, 'date_compare');
+
+
+
+		foreach($payment as $trans){
+
+			$amount = $trans["amount"];
+			$description = $trans["description"];
+			$date = $trans["date"];
+			$iid = $trans["iid"];
+
+			$date = new DateTime($date);
+			$date = $date->format('Y-m-d');
+		
 
 			if($amount < 0){
-				$type = "CREDIT";
+				$type = "BILLING";
+				$amount = abs($amount);
 			}else if ($amount > 0){
-				$type = "BANK PAYMENT";
+				$type = "PAYMENT";
 			}
 
-			if($percent<70){
-				//$color = 'style="color: #FF0000;"';
-			} else {
-				$color = '';
-			}
-
-			if(!empty($name1)){
-				$percent = '<b>('. $percent .'%)</b>';
-			}
-			
-			if($fetch[14] == "REVERSED"){
+			if($amount == 0){
 				continue;
 			}
 
-			$ltype = 'payments';
-
-			if($fetch["Status"] == "BILL"){
-				$type = "BILLING";
-				if($discount > 1){
-					$amount = $amount/100*$discount;
-				}
-				$ltype = 'billing';
-			}
-
-
-			if($fetch["Status"] == "SUCCESS"){
-				//$color = 'style="color: #4F8A10;"';
-				$edit = "reassign";
-			}
-
-			if($fetch["Status"] == "PROCESSED"){
-				//$color = 'style="color: #333;"';
-				$edit = "reassign";
-			}
-
-			if($fetch["Status"] == "REVERSED" || $fetch["DATA"] == "REVERSED"){
-				//$color = 'style="color: #CCCCCC;"';
-				$type = "REVERSED";
-			}
-
-			if($fetch["Status"] == "MANUAL" || $fetch["Status"] == "SUCCESS"){
-				//$color = 'style="color: #D61EBE;"';
-				$reverse = TRUE; 
-				$type = "MANUAL DEPOSIT";
-			}
-
+			if (substr($iid, 0,2) == "CN") { $type = "CREDIT NOTE"; }
+			if (substr($iid, 0,2) == "IN") { $type = "BILLING"; }
+			if (substr($iid, 0,2) == "UC") { $type = "PAYMENT"; }
 
 			if($type == "BILLING"){
 				$debit = money_format('%!.0n', $amount);
@@ -1294,42 +1238,37 @@ class payments {
 				$balance = $balance-$amount;
 			}
 
-
-			$description = $fetch["DATA"];
-			if (strpos($description, '=============') !== false) { $description = "Billmuster Deposit (ZANACO)"; }
-
-
-
-			if($typet==20){
-				$type = "CREDIT NOTE";
+			$iid = ltrim(substr($iid, 2), '0');
+			$odd = substr($iid, 0, 4);
+			if($odd == "2017" || $odd == "2018"){
+				$iid = ltrim(substr($iid, 4), '0');
 			}
 
+			$description = substr($description, 0, 40);
+
 			echo '<tr ' . $color . '>
-			<td><b><a href="' . $this->core->conf['conf']['path'] . '/payments/view/' . $fetch["TID"] . '"> ' . $fetch["TransactionID"] . '</a></b></td>
+			<td style="border: 1px solid #ccc;"><b><a href="' . $this->core->conf['conf']['path'] . '/payments/view/' . $iid . '"> ' . $iid . '</a></b></td>
 
 			<td>' . $date . '</td>
-			<td><b>'. $type .'</b></td>
-			<td><i>'.$description.'</i></td>
-			<td>
-			<a href="' . $this->core->conf['conf']['path'] . '/'.$ltype.'/edit/' . $fetch['TID'] . '"> <img src="' . $this->core->fullTemplatePath . '/images/edi.png"> edit</a>
- 			</td>
-			<td style="text-align: right;">' . $debit . ' </td>
-			<td style="text-align: right;">' . $credit . '  </td>
-			<td style="text-align: right;"><b>' . $balance . ' </b></td>';
+			<td style="border: 1px solid #ccc;"><b>'. $type .'</b></td>
+			<td style="border: 1px solid #ccc;"><i>'.$description.'</i></td>
+			<td style="text-align: right; border: 1px solid #ccc;">' . $debit . ' </td>
+			<td style="text-align: right; border: 1px solid #ccc;">' . $credit . '  </td>
+			<td style="text-align: right; border: 1px solid #ccc;"><b>' . $balance . ' </b></td>';
 	
 
 			$credit = "";
 			$debit = "";
+
+
 		}
 
 
-		echo '<tr>
-		<td colspan="8">&nbsp;</td>
-		</tr>';
 
-		echo '<tr>
-		<td colspan="7"><b> CURRENT BALANCE</b></td>
-		<td style="text-align: right;"> <b>'.$balance.'</b> </td>
+
+		echo '<tr style="background-color: #ccc;">
+		<td colspan="6"><b> CURRENT BALANCE</b></td>
+		<td style="text-align: right;"> <b>'.$currentbalance .'</b> </td>
 		</tr>';
 
 		echo '</table>';

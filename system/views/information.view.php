@@ -418,6 +418,8 @@ class information {
 				}
 			}
 
+
+			echo'<a href="'.$this->core->conf['conf']['path'].'/picture/make/'.$uid.'">';
 			if (file_exists("datastore/identities/pictures/$uid.png_final.png")) {
 				echo '<img width="100%" src="'.$this->core->conf['conf']['path'].'/datastore/identities/pictures/' . $uid . '.png_final.png">';
 			} else 	if (file_exists("datastore/identities/pictures/$uid.png")) {
@@ -425,9 +427,10 @@ class information {
 			} else {
 				echo '<img width="100%" src="'.$this->core->conf['conf']['path'].'/templates/default/images/noprofile.png">';
 			}
+			echo'</a>';
 
 
-			if($sstatus=="Approved" || $sstatus=="Deregistered" || $sstatus == "Graduated"){
+			if($sstatus=="Approved" || $sstatus=="Deregistered" || $sstatus == "Graduated" || $sstatus == "Employed"){
 
 			if ($this->core->role == 108) {
 				echo '<div style="margin-top: 1px; border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/information/edit/' . $uid . '">Edit user information</a></b></div>';
@@ -438,7 +441,7 @@ class information {
 				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/sms/new/'. $mobilephone .'">Send student SMS</a></b></div>';
 				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/accommodation/swap/' . $uid . '">Correct boarding</a></b></div>';
 		
-			} elseif ($this->core->role >= 102) {
+			} elseif ($this->core->role == 102) {
 				echo '<div style="margin-top: 1px; border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/information/edit/' . $uid . '">Edit user information</a></b></div>';
 				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/statement/results/' . $uid . '">Grades</a></b></div>';
 				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/payments/show/' . $uid . ''.$other.'">Show payments</a></b></div>';
@@ -454,6 +457,7 @@ class information {
 				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/billing/show/'.$uid.'">Show bills</a></b></div>';
 				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/cards/show/' . $uid . ''.$other.'">EduCard</a></b></div>';
 				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/sms/new/'. $mobilephone .'">Send student SMS</a></b></div>';
+				echo '<div style="border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/cards/print/' . $uid . '">Print card</a></b></div>';
 	
 			} elseif ($this->core->role <= 10 && $personal == TRUE) {
 				echo '<div style="margin-top: 1px; border-top: solid 1px #ccc; padding:10px;"><b><a href="' . $this->core->conf['conf']['path'] . '/information/edit/">Edit user information</a></b></div>';
@@ -477,7 +481,7 @@ class information {
 
 
 			echo '</div>
-			<div style="float: left;">
+			<div>
 			<table width="400" height="63" border="0" cellpadding="0" cellspacing="0">
 			  <tr>
 			<td>'.$num.'</td>
@@ -572,7 +576,7 @@ class information {
 
 		
 	
-			echo '<div style="float: left;"><br> <h2>Student course information</h2><br>
+			echo '<div><br> <h2>Student course information</h2><br>
 			<table width="500" height="" border="0" cellpadding="0" cellspacing="0">
 			<tr>
 			<td width="200">Study</td>
@@ -622,19 +626,22 @@ class information {
 			}
 
 
-			echo'<tr><td colspan="2"><p><br><b>COURSE PROGRESSION: </b><br>';
+			echo'<tr><td colspan="2"><br><b>COURSE PROGRESSION: </b><br><br>';
 
-			$sqls = "SELECT *
-			FROM `course-electives`
-			LEFT JOIN `courses` ON `course-electives`.`CourseID` = `courses`.ID
-			LEFT JOIN `periods` ON `course-electives`.`PeriodID` = `periods`.ID 
+			$sqls = "SELECT *, `periods`.Year  FROM `course-electives`
+			LEFT JOIN `periods` ON `course-electives`.`PeriodID` = `periods`.ID
+			LEFT JOIN `courses` ON `course-electives`.`CourseID` = `courses`.ID 
 			WHERE `course-electives`.StudentID  = '$uid' 
 			AND `course-electives`.Approved IN (1)";
 
 			$runo = $this->core->database->doSelectQuery($sqls);
 
 			while ($fetchw = $runo->fetch_assoc()) {
-				echo'<li>'.$fetchw['Year'].' - Sem. '.$fetchw['Semester'].'  - <i>'.$fetchw['CourseDescription'].'</i> - <a href="' . $this->core->conf['conf']['path'] . '/register/course/delete/'.$fetchw['ID'].'?userid='.$uid.'">X</a></li>';
+				if($year != $fetchw['Year'] . $fetchw['Semester']){
+					echo '<b>' . $fetchw['Year'].' - Sem. '.$fetchw['Semester'] . '</b><br>';
+				}
+				echo'<li>'.$fetchw['Name'].'  - <i>'.$fetchw['CourseDescription'].'</i> - <a href="' . $this->core->conf['conf']['path'] . '/register/course/delete/'.$fetchw['ID'].'?userid='.$uid.'">X</a></li>';
+				$year = $fetchw['Year'] . $fetchw['Semester'];
 			}
 
 			if($runo->num_rows == 0){
@@ -668,7 +675,7 @@ class information {
 				$weeks = $fetch['Weeks'];
 
 				 
-				echo '<div style="float: left;">
+				echo '<div>
 				<div class="segment">Housing information</div>
 				<table width="500" height="" border="0" cellpadding="0" cellspacing="0">
 				<tr>
@@ -703,7 +710,7 @@ class information {
 					$RoomNumber = $fetch['RoomNumber'];
 					$RoomType = $fetch['RoomType'];	
 				
-					echo '<div style="float: left;">
+					echo '<div>
 					<div class="segment">HOUSING APPLICATION</div>
 					<table width="500" height="" border="0" cellpadding="0" cellspacing="0" style="color: #ccc">
 					<tr>
@@ -722,7 +729,7 @@ class information {
 
 			
 
-			echo '<div style="float: left;"><br>
+			echo '<div><br>
 			<h2>Student Contact Information</h2><br>
 			<table width="400" height="" border="0" cellpadding="0" cellspacing="0">
 			  <tr>
@@ -791,7 +798,7 @@ class information {
 				$town = $fetch[6];
 				$postalcode = $fetch[7];
 
-			echo '<div style="float: left;"><br>
+			echo '<div><br>
 			<h2>Emergency information (Next of Kin)</h2><br>
 				<table width="500" height="" border="0" cellpadding="0" cellspacing="0">
 				  <tr>
@@ -838,10 +845,10 @@ class information {
 				$filename = $row[5];
 
 				if ($n == 0) {
-					echo '<div style="float: left;"><div class="segment">Education history</div>';
+					echo '<br/><h2>Education history</h2><br>';
 					$n++;
 				} else {
-					echo '<div style="border-bottom: 1px solid #ccc; width:500px; margin-top: 15px; margin-bottom: 15px;" > </div>';
+					echo '<hr>';
 				}
 
 				echo '<table width="500" height="" border="0" cellpadding="0" cellspacing="0">
@@ -864,7 +871,7 @@ class information {
 					<td><a href="' . $this->core->conf['conf']['path'] . 'download/educationhistory/' . $filename . '"><b>View file</b></a></td>
 			 		</tr>';
 				}
-				echo '</table></div>';
+				echo '</table>';
 			}
 			echo "</div>";
 		}
