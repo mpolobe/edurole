@@ -6,6 +6,7 @@ session_start();
 	-> wwww.yoursite.com/edurole/installer/
 	Or manually open the system configuration:
 	-> system/config.inc.php
+sis
 
 	The application system are separated in the following directories:
 	system/				Core components, authentication, template-constructor, database connectors and the like.
